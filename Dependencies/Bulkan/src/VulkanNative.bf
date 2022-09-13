@@ -22,19 +22,19 @@ namespace Bulkan
 
 		private static bool mInitialized = false;
 
-		private static List<StringView> mLoadedFunctions = new .() ~ delete _;
+		private static List<String> mLoadedFunctions = new .() ~ delete _;
 
-		public static readonly Span<StringView> LoadedFunctions { get => mLoadedFunctions; }
+		public static readonly Span<String> LoadedFunctions { get => mLoadedFunctions; }
 
-		private static List<StringView> mPreInstanceFunctions = new .()
+		private static List<String> mPreInstanceFunctions = new .()
 			{
+				"vkGetInstanceProcAddr",
 				"vkCreateInstance",
 				"vkEnumerateInstanceExtensionProperties",
-				"vkEnumerateInstanceLayerProperties",
-				"vkGetInstanceProcAddr"
+				"vkEnumerateInstanceLayerProperties"
 			} ~ delete _;
 
-		private static List<StringView> mInstanceFunctions = new .()
+		private static List<String> mInstanceFunctions = new .()
 			{
 				"vkGetPhysicalDeviceSurfaceFormatsKHR",
 				"vkGetPhysicalDeviceSurfaceSupportKHR",
@@ -148,9 +148,9 @@ namespace Bulkan
 		{
 #if BF_PLATFORM_WINDOWS 
 			return "vulkan-1.dll";
-			#elif BF_PLATFORM_LINUX  
+#elif BF_PLATFORM_LINUX  
 			return "libvulkan.so.1";
-			#elif BF_PLATFORM_MACOS  
+#elif BF_PLATFORM_MACOS  
 			return "libvulkan.dylib";
 #else
 			Runtime.FatalError("Unsupported platform.");

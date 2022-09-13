@@ -3,6 +3,16 @@ namespace nri;
 
 sealed class DeviceAllocator<T>
 {
+	private MemoryAllocatorInterface m_Interface;
+
+	public this(MemoryAllocatorInterface @interface){
+		m_Interface = @interface;
+	}
+
+	public readonly ref MemoryAllocatorInterface GetInterface()
+	{
+		return ref m_Interface;
+	}
 }
 
 public static

@@ -56,9 +56,9 @@ struct PhysicalDeviceGroup
 
 struct VulkanExtensions
 {
-	public /*const*/ char8* /*const**/ instanceExtensions;
+	public /*const*/ char8** /*const**/ instanceExtensions;
 	public uint32 instanceExtensionNum;
-	public /*const*/ char8* /*const**/ deviceExtensions;
+	public /*const*/ char8** /*const**/ deviceExtensions;
 	public uint32 deviceExtensionNum;
 }
 
