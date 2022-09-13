@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "nri.vulkan"
+TargetType = "BeefLib"
+StartupObject = "nri.vulkan.Program"
