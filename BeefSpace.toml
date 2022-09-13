@@ -1,5 +1,5 @@
 FileVersion = 1
-Projects = {nri = {Path = "Engine/nri"}, "nri.vulkan" = {Path = "Engine/nri.vulkan"}}
+Projects = {nri = {Path = "Engine/nri"}, "nri.vulkan" = {Path = "Engine/nri.vulkan"}, Bulkan = {Path = "Dependencies/Bulkan"}}
 
 [Configs.Test.Win32]
 ConfigSelections = {corlib = {Config = "Debug"}}

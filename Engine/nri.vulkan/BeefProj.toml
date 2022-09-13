@@ -1,4 +1,5 @@
 FileVersion = 1
+Dependencies = {corlib = "*", Bulkan = "*", nri = "*"}
 
 [Project]
 Name = "nri.vulkan"
