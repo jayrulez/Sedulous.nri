@@ -19,6 +19,199 @@ public static
 		return Vendor.UNKNOWN;
 	}
 
+	private const uint32[(uint)Format.MAX_NUM] TEXEL_BLOCK_WIDTH = .(
+		0, // UNKNOWN
+
+		1, // R8_UNORM
+		1, // R8_SNORM
+		1, // R8_UINT
+		1, // R8_SINT
+
+		1, // RG8_UNORM
+		1, // RG8_SNORM
+		1, // RG8_UINT
+		1, // RG8_SINT
+
+		1, // BGRA8_UNORM
+		1, // BGRA8_SRGB
+
+		1, // RGBA8_UNORM
+		1, // RGBA8_SNORM
+		1, // RGBA8_UINT
+		1, // RGBA8_SINT
+		1, // RGBA8_SRGB
+
+		1, // R16_UNORM
+		1, // R16_SNORM
+		1, // R16_UINT
+		1, // R16_SINT
+		1, // R16_SFLOAT
+
+		1, // RG16_UNORM
+		1, // RG16_SNORM
+		1, // RG16_UINT
+		1, // RG16_SINT
+		1, // RG16_SFLOAT
+
+		1, // RGBA16_UNORM
+		1, // RGBA16_SNORM
+		1, // RGBA16_UINT
+		1, // RGBA16_SINT
+		1, // RGBA16_SFLOAT
+
+		1, // R32_UINT
+		1, // R32_SINT
+		1, // R32_SFLOAT
+
+		1, // RG32_UINT
+		1, // RG32_SINT
+		1, // RG32_SFLOAT
+
+		1, // RGB32_UINT
+		1, // RGB32_SINT
+		1, // RGB32_SFLOAT
+
+		1, // RGBA32_UINT
+		1, // RGBA32_SINT
+		1, // RGBA32_SFLOAT
+
+		1, // R10_G10_B10_A2_UNORM
+		1, // R10_G10_B10_A2_UINT
+		1, // R11_G11_B10_UFLOAT
+		1, // R9_G9_B9_E5_UFLOAT
+
+		4, // BC1_RGBA_UNORM
+		4, // BC1_RGBA_SRGB
+		4, // BC2_RGBA_UNORM
+		4, // BC2_RGBA_SRGB
+		4, // BC3_RGBA_UNORM
+		4, // BC3_RGBA_SRGB
+		4, // BC4_R_UNORM
+		4, // BC4_R_SNORM
+		4, // BC5_RG_UNORM
+		4, // BC5_RG_SNORM
+		4, // BC6H_RGB_UFLOAT
+		4, // BC6H_RGB_SFLOAT
+		4, // BC7_RGBA_UNORM
+		4, // BC7_RGBA_SRGB
+
+		// DEPTH_STENCIL_ATTACHMENT views
+		1, // D16_UNORM
+		1, // D24_UNORM_S8_UINT
+		1, // D32_SFLOAT
+		1, // D32_SFLOAT_S8_UINT_X24
+
+		// Depth-stencil specific SHADER_RESOURCE views
+		0, // R24_UNORM_X8
+		0, // X24_R8_UINT
+		0, // X32_R8_UINT_X24
+		0 // R32_SFLOAT_X8_X24
+		);
+
+	public static uint32 GetTexelBlockWidth(Format format)
+	{
+		return TEXEL_BLOCK_WIDTH[(uint)format];
+	}
+
+	private const uint32[(uint)Format.MAX_NUM] TEXEL_BLOCK_SIZE = .(
+		1, // UNKNOWN
+
+		1, // R8_UNORM
+		1, // R8_SNORM
+		1, // R8_UINT
+		1, // R8_SINT
+
+		2, // RG8_UNORM
+		2, // RG8_SNORM
+		2, // RG8_UINT
+		2, // RG8_SINT
+
+		4, // BGRA8_UNORM
+		4, // BGRA8_SRGB
+
+		4, // RGBA8_UNORM
+		4, // RGBA8_SNORM
+		4, // RGBA8_UINT
+		4, // RGBA8_SINT
+		4, // RGBA8_SRGB
+
+		2, // R16_UNORM
+		2, // R16_SNORM
+		2, // R16_UINT
+		2, // R16_SINT
+		2, // R16_SFLOAT
+
+		4, // RG16_UNORM
+		4, // RG16_SNORM
+		4, // RG16_UINT
+		4, // RG16_SINT
+		4, // RG16_SFLOAT
+
+		8, // RGBA16_UNORM
+		8, // RGBA16_SNORM
+		8, // RGBA16_UINT
+		8, // RGBA16_SINT
+		8, // RGBA16_SFLOAT
+
+		4, // R32_UINT
+		4, // R32_SINT
+		4, // R32_SFLOAT
+
+		8, // RG32_UINT
+		8, // RG32_SINT
+		8, // RG32_SFLOAT
+
+		12, // RGB32_UINT
+		12, // RGB32_SINT
+		12, // RGB32_SFLOAT
+
+		16, // RGBA32_UINT
+		16, // RGBA32_SINT
+		16, // RGBA32_SFLOAT
+
+		4, // R10_G10_B10_A2_UNORM
+		4, // R10_G10_B10_A2_UINT
+		4, // R11_G11_B10_UFLOAT
+		4, // R9_G9_B9_E5_UFLOAT
+
+		8, // BC1_RGBA_UNORM
+		8, // BC1_RGBA_SRGB
+		16, // BC2_RGBA_UNORM
+		16, // BC2_RGBA_SRGB
+		16, // BC3_RGBA_UNORM
+		16, // BC3_RGBA_SRGB
+		8, // BC4_R_UNORM
+		8, // BC4_R_SNORM
+		16, // BC5_RG_UNORM
+		16, // BC5_RG_SNORM
+		16, // BC6H_RGB_UFLOAT
+		16, // BC6H_RGB_SFLOAT
+		16, // BC7_RGBA_UNORM
+		16, // BC7_RGBA_SRGB
+
+		// DEPTH_STENCIL_ATTACHMENT views
+		2, // D16_UNORM
+		4, // D24_UNORM_S8_UINT
+		4, // D32_SFLOAT
+		8, // D32_SFLOAT_S8_UINT_X24
+
+		// Depth-stencil specific SHADER_RESOURCE views
+		0, // R24_UNORM_X8
+		0, // X24_R8_UINT
+		0, // X32_R8_UINT_X24
+		0 // R32_SFLOAT_X8_X24
+		);
+
+	public static uint32 GetTexelBlockSize(Format format)
+	{
+		return TEXEL_BLOCK_SIZE[(uint)format];
+	}
+
+	public static uint32 GetPhysicalDeviceGroupMask(uint32 mask)
+	{
+		return mask == WHOLE_DEVICE_GROUP ? 0xff : mask;
+	}
+
 	public static void MessageCallback(void* userArg, char8* message, Message messageType)
 	{
 		//MaybeUnused(userArg);

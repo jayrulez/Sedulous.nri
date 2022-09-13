@@ -55,266 +55,267 @@ public static
 	}
 
 	public static char8* GetObjectTypeName(VkObjectType objectType)
-{
-    switch(objectType)
-    {
-    case .VK_OBJECT_TYPE_INSTANCE:
-        return "VkInstance";
-    case .VK_OBJECT_TYPE_PHYSICAL_DEVICE:
-        return "VkPhysicalDevice";
-    case .VK_OBJECT_TYPE_DEVICE:
-        return "VkDevice";
-    case .VK_OBJECT_TYPE_QUEUE:
-        return "VkQueue";
-    case .VK_OBJECT_TYPE_SEMAPHORE:
-        return "VkSemaphore";
-    case .VK_OBJECT_TYPE_COMMAND_BUFFER:
-        return "VkCommandBuffer";
-    case .VK_OBJECT_TYPE_FENCE:
-        return "VkFence";
-    case .VK_OBJECT_TYPE_DEVICE_MEMORY:
-        return "VkDeviceMemory";
-    case .VK_OBJECT_TYPE_BUFFER:
-        return "VkBuffer";
-    case .VK_OBJECT_TYPE_IMAGE:
-        return "VkImage";
-    case .VK_OBJECT_TYPE_EVENT:
-        return "VkEvent";
-    case .VK_OBJECT_TYPE_QUERY_POOL:
-        return "VkQueryPool";
-    case .VK_OBJECT_TYPE_BUFFER_VIEW:
-        return "VkBufferView";
-    case .VK_OBJECT_TYPE_IMAGE_VIEW:
-        return "VkImageView";
-    case .VK_OBJECT_TYPE_SHADER_MODULE:
-        return "VkShaderModule";
-    case .VK_OBJECT_TYPE_PIPELINE_CACHE:
-        return "VkPipelineCache";
-    case .VK_OBJECT_TYPE_PIPELINE_LAYOUT:
-        return "VkPipelineLayout";
-    case .VK_OBJECT_TYPE_RENDER_PASS:
-        return "VkRenderPass";
-    case .VK_OBJECT_TYPE_PIPELINE:
-        return "VkPipeline";
-    case .VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT:
-        return "VkDescriptorSetLayout";
-    case .VK_OBJECT_TYPE_SAMPLER:
-        return "VkSampler";
-    case .VK_OBJECT_TYPE_DESCRIPTOR_POOL:
-        return "VkDescriptorPool";
-    case .VK_OBJECT_TYPE_DESCRIPTOR_SET:
-        return "VkDescriptorSet";
-    case .VK_OBJECT_TYPE_FRAMEBUFFER:
-        return "VkFramebuffer";
-    case .VK_OBJECT_TYPE_COMMAND_POOL:
-        return "VkCommandPool";
-    case .VK_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION:
-        return "VkSamplerYcbcrConversion";
-    case .VK_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE:
-        return "VkDescriptorUpdateTemplate";
-    case .VK_OBJECT_TYPE_SURFACE_KHR:
-        return "VkSurfaceKHR";
-    case .VK_OBJECT_TYPE_SWAPCHAIN_KHR:
-        return "VkSwapchainKHR";
-    case .VK_OBJECT_TYPE_DISPLAY_KHR:
-        return "VkDisplayKHR";
-    case .VK_OBJECT_TYPE_DISPLAY_MODE_KHR:
-        return "VkDisplayModeKHR";
-    case .VK_OBJECT_TYPE_DEBUG_REPORT_CALLBACK_EXT:
-        return "VkDebugReportCallbackEXT";
-    case .VK_OBJECT_TYPE_DEBUG_UTILS_MESSENGER_EXT:
-        return "VkDebugUtilsMessengerEXT";
-    case .VK_OBJECT_TYPE_ACCELERATION_STRUCTURE_KHR:
-        return "VkAccelerationStructureKHR";
-    case .VK_OBJECT_TYPE_VALIDATION_CACHE_EXT:
-        return "VkValidationCacheEXT";
-    case .VK_OBJECT_TYPE_PERFORMANCE_CONFIGURATION_INTEL:
-        return "VkPerformanceConfigurationINTEL";
-    case .VK_OBJECT_TYPE_DEFERRED_OPERATION_KHR:
-        return "VkDeferredOperationKHR";
-    case .VK_OBJECT_TYPE_INDIRECT_COMMANDS_LAYOUT_NV:
-        return "VkIndirectCommandsLayoutNV";
-    default:
-        return "unknown";
-    }
-}
+	{
+		switch (objectType)
+		{
+		case .VK_OBJECT_TYPE_INSTANCE:
+			return "VkInstance";
+		case .VK_OBJECT_TYPE_PHYSICAL_DEVICE:
+			return "VkPhysicalDevice";
+		case .VK_OBJECT_TYPE_DEVICE:
+			return "VkDevice";
+		case .VK_OBJECT_TYPE_QUEUE:
+			return "VkQueue";
+		case .VK_OBJECT_TYPE_SEMAPHORE:
+			return "VkSemaphore";
+		case .VK_OBJECT_TYPE_COMMAND_BUFFER:
+			return "VkCommandBuffer";
+		case .VK_OBJECT_TYPE_FENCE:
+			return "VkFence";
+		case .VK_OBJECT_TYPE_DEVICE_MEMORY:
+			return "VkDeviceMemory";
+		case .VK_OBJECT_TYPE_BUFFER:
+			return "VkBuffer";
+		case .VK_OBJECT_TYPE_IMAGE:
+			return "VkImage";
+		case .VK_OBJECT_TYPE_EVENT:
+			return "VkEvent";
+		case .VK_OBJECT_TYPE_QUERY_POOL:
+			return "VkQueryPool";
+		case .VK_OBJECT_TYPE_BUFFER_VIEW:
+			return "VkBufferView";
+		case .VK_OBJECT_TYPE_IMAGE_VIEW:
+			return "VkImageView";
+		case .VK_OBJECT_TYPE_SHADER_MODULE:
+			return "VkShaderModule";
+		case .VK_OBJECT_TYPE_PIPELINE_CACHE:
+			return "VkPipelineCache";
+		case .VK_OBJECT_TYPE_PIPELINE_LAYOUT:
+			return "VkPipelineLayout";
+		case .VK_OBJECT_TYPE_RENDER_PASS:
+			return "VkRenderPass";
+		case .VK_OBJECT_TYPE_PIPELINE:
+			return "VkPipeline";
+		case .VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT:
+			return "VkDescriptorSetLayout";
+		case .VK_OBJECT_TYPE_SAMPLER:
+			return "VkSampler";
+		case .VK_OBJECT_TYPE_DESCRIPTOR_POOL:
+			return "VkDescriptorPool";
+		case .VK_OBJECT_TYPE_DESCRIPTOR_SET:
+			return "VkDescriptorSet";
+		case .VK_OBJECT_TYPE_FRAMEBUFFER:
+			return "VkFramebuffer";
+		case .VK_OBJECT_TYPE_COMMAND_POOL:
+			return "VkCommandPool";
+		case .VK_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION:
+			return "VkSamplerYcbcrConversion";
+		case .VK_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE:
+			return "VkDescriptorUpdateTemplate";
+		case .VK_OBJECT_TYPE_SURFACE_KHR:
+			return "VkSurfaceKHR";
+		case .VK_OBJECT_TYPE_SWAPCHAIN_KHR:
+			return "VkSwapchainKHR";
+		case .VK_OBJECT_TYPE_DISPLAY_KHR:
+			return "VkDisplayKHR";
+		case .VK_OBJECT_TYPE_DISPLAY_MODE_KHR:
+			return "VkDisplayModeKHR";
+		case .VK_OBJECT_TYPE_DEBUG_REPORT_CALLBACK_EXT:
+			return "VkDebugReportCallbackEXT";
+		case .VK_OBJECT_TYPE_DEBUG_UTILS_MESSENGER_EXT:
+			return "VkDebugUtilsMessengerEXT";
+		case .VK_OBJECT_TYPE_ACCELERATION_STRUCTURE_KHR:
+			return "VkAccelerationStructureKHR";
+		case .VK_OBJECT_TYPE_VALIDATION_CACHE_EXT:
+			return "VkValidationCacheEXT";
+		case .VK_OBJECT_TYPE_PERFORMANCE_CONFIGURATION_INTEL:
+			return "VkPerformanceConfigurationINTEL";
+		case .VK_OBJECT_TYPE_DEFERRED_OPERATION_KHR:
+			return "VkDeferredOperationKHR";
+		case .VK_OBJECT_TYPE_INDIRECT_COMMANDS_LAYOUT_NV:
+			return "VkIndirectCommandsLayoutNV";
+		default:
+			return "unknown";
+		}
+	}
 
 	public static VkBool32 DebugUtilsMessenger(
-    VkDebugUtilsMessageSeverityFlagsEXT messageSeverity,
-    /*VkDebugUtilsMessageTypeFlagsEXT*/uint32 messageTypes,
-    VkDebugUtilsMessengerCallbackDataEXT* callbackData,
-    void* userData)
-{
-    //MaybeUnused(messageType);
+		VkDebugUtilsMessageSeverityFlagsEXT messageSeverity, /*VkDebugUtilsMessageTypeFlagsEXT*/ uint32 messageTypes,
+		VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+		void* userData)
+	{
+		//MaybeUnused(messageType);
 
-	var messageSeverity;
-	//VkDebugUtilsMessageTypeFlagsEXT messageType = (.)messageTypes;
+		var messageSeverity;
+		//VkDebugUtilsMessageTypeFlagsEXT messageType = (.)messageTypes;
 
-    bool isError = false;
-    bool isWarning = false;
+		bool isError = false;
+		bool isWarning = false;
 
-    // UNASSIGNED-CoreValidation-Shader-InconsistentSpirv
-    if (callbackData.messageIdNumber == 7060244)
-        messageSeverity = .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+		// UNASSIGNED-CoreValidation-Shader-InconsistentSpirv
+		if (callbackData.messageIdNumber == 7060244)
+			messageSeverity = .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
 
-    // VUID-VkShaderModuleCreateInfo-pCode-01090
-    if (callbackData.messageIdNumber == 738239446)
-        messageSeverity = .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+		// VUID-VkShaderModuleCreateInfo-pCode-01090
+		if (callbackData.messageIdNumber == 738239446)
+			messageSeverity = .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
 
-    char8* type;
-    switch( messageSeverity )
-    {
-    case .VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-        type = "verbose";
-        break;
-    case .VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-        type = "info";
-        break;
-    case .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-        type = "warning";
-        isWarning = true;
-        break;
-    case .VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-        type = "error";
-        isError = true;
-        break;
-    default:
-        type = "unknown";
-        break;
-    }
+		char8* type;
+		switch (messageSeverity)
+		{
+		case .VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+			type = "verbose";
+			break;
+		case .VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+			type = "info";
+			break;
+		case .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+			type = "warning";
+			isWarning = true;
+			break;
+		case .VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+			type = "error";
+			isError = true;
+			break;
+		default:
+			type = "unknown";
+			break;
+		}
 
-    if (!isWarning && !isError)
-        return VK_FALSE;
+		if (!isWarning && !isError)
+			return VK_FALSE;
 
-    DeviceVK device = (DeviceVK)Internal.UnsafeCastToObject(userData);
+		DeviceVK device = (DeviceVK)Internal.UnsafeCastToObject(userData);
 
-    String message = Allocate!<String>(device.GetAllocator());
-	defer {Deallocate!(device.GetAllocator(), message);}
+		String message = Allocate!<String>(device.GetAllocator());
+		defer { Deallocate!(device.GetAllocator(), message); }
 
-    message.AppendF("{0} {1} {2}", callbackData.messageIdNumber, scope String(callbackData.pMessageIdName), scope String(callbackData.pMessage));
+		message.AppendF("{0} {1} {2}", callbackData.messageIdNumber, scope String(callbackData.pMessageIdName), scope String(callbackData.pMessage));
 
-    // vkCmdCopyBufferToImage: For optimal performance VkImage 0x984b920000000104 layout should be VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL instead of GENERAL.
-    if (callbackData.messageIdNumber == 1303270965)
-        return VK_FALSE;
+		// vkCmdCopyBufferToImage: For optimal performance VkImage 0x984b920000000104 layout should be VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL instead of GENERAL.
+		if (callbackData.messageIdNumber == 1303270965)
+			return VK_FALSE;
 
-    if (messageSeverity == .VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-    {
-        message.AppendF("\nObjectNum: {0}", callbackData.objectCount);
+		if (messageSeverity == .VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+		{
+			message.AppendF("\nObjectNum: {0}", callbackData.objectCount);
 
-        for (uint32 i = 0; i < callbackData.objectCount; i++)
-        {
-            readonly ref VkDebugUtilsObjectNameInfoEXT object = ref callbackData.pObjects[i];
-            message.AppendF("\n\tObject {0} {1} ({2:2X})", object.pObjectName != null ? scope String(object.pObjectName) : "", GetObjectTypeName(object.objectType), object.objectHandle);
-        }
+			for (uint32 i = 0; i < callbackData.objectCount; i++)
+			{
+				readonly ref VkDebugUtilsObjectNameInfoEXT object = ref callbackData.pObjects[i];
+				message.AppendF("\n\tObject {0} {1} ({2:2X})", object.pObjectName != null ? scope String(object.pObjectName) : "", GetObjectTypeName(object.objectType), object.objectHandle);
+			}
 
-        REPORT_ERROR(device.GetLogger(), "DebugUtilsMessenger: {0}, {1}", scope String(type), message);
-    }
-    else if (messageSeverity == .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-    {
-        REPORT_WARNING(device.GetLogger(), "DebugUtilsMessenger: {0}, {1}", scope String(type), message);
-    }
-    else
-    {
-        REPORT_INFO(device.GetLogger(), "DebugUtilsMessenger: {0}, {1}", scope String(type), message);
-    }
+			REPORT_ERROR(device.GetLogger(), "DebugUtilsMessenger: {0}, {1}", scope String(type), message);
+		}
+		else if (messageSeverity == .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+		{
+			REPORT_WARNING(device.GetLogger(), "DebugUtilsMessenger: {0}, {1}", scope String(type), message);
+		}
+		else
+		{
+			REPORT_INFO(device.GetLogger(), "DebugUtilsMessenger: {0}, {1}", scope String(type), message);
+		}
 
-    return VK_FALSE;
-}
+		return VK_FALSE;
+	}
 }
 
 class DeviceVK : Device
 {
 	private Result CreateInstance(DeviceCreationDesc deviceCreationDesc)
-{
-    List<char8*> layers = Allocate!<List<char8*>>(GetAllocator());
-	defer {Deallocate!(GetAllocator(), layers);}
-    List<char8*> extensions = Allocate!<List<char8*>>(GetAllocator());
-	defer {Deallocate!(GetAllocator(), extensions);}
+	{
+		List<char8*> layers = Allocate!<List<char8*>>(GetAllocator());
+		defer { Deallocate!(GetAllocator(), layers); }
+		List<char8*> extensions = Allocate!<List<char8*>>(GetAllocator());
+		defer { Deallocate!(GetAllocator(), extensions); }
 
-    #if true// VK_USE_PLATFORM_WIN32_KHR
-        extensions.Add(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-    #endif
-    #if VK_USE_PLATFORM_METAL_EXT
-        extensions.Add(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
-    #endif
-    #if VK_USE_PLATFORM_XLIB_KHR
-        extensions.Add(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
-    #endif
-    #if VK_USE_PLATFORM_WAYLAND_KHR
-        extensions.Add(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
-    #endif
-    extensions.Add(VK_KHR_SURFACE_EXTENSION_NAME);
+		#if true // VK_USE_PLATFORM_WIN32_KHR
+		extensions.Add(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+		#endif
+		#if VK_USE_PLATFORM_METAL_EXT
+			extensions.Add(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
+		#endif
+		#if VK_USE_PLATFORM_XLIB_KHR
+			extensions.Add(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
+		#endif
+		#if VK_USE_PLATFORM_WAYLAND_KHR
+			extensions.Add(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
+		#endif
+		extensions.Add(VK_KHR_SURFACE_EXTENSION_NAME);
 
-    for (uint32 i = 0; i < deviceCreationDesc.vulkanExtensions.instanceExtensionNum; i++)
-        extensions.Add(deviceCreationDesc.vulkanExtensions.instanceExtensions[i]);
+		for (uint32 i = 0; i < deviceCreationDesc.vulkanExtensions.instanceExtensionNum; i++)
+			extensions.Add(deviceCreationDesc.vulkanExtensions.instanceExtensions[i]);
 
-    if (!FilterInstanceExtensions(extensions))
-    {
-        REPORT_ERROR(GetLogger(), "Can't create VkInstance: the required extensions are not supported.");
-        return Result.UNSUPPORTED;
-    }
+		if (!FilterInstanceExtensions(extensions))
+		{
+			REPORT_ERROR(GetLogger(), "Can't create VkInstance: the required extensions are not supported.");
+			return Result.UNSUPPORTED;
+		}
 
-    extensions.Add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		extensions.Add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
-    if (deviceCreationDesc.enableAPIValidation)
-        layers.Add("VK_LAYER_KHRONOS_validation");
+		if (deviceCreationDesc.enableAPIValidation)
+			layers.Add("VK_LAYER_KHRONOS_validation");
 
-    FilterInstanceLayers(layers);
-    FilterInstanceExtensions(extensions);
+		FilterInstanceLayers(layers);
+		FilterInstanceExtensions(extensions);
 
-    CheckSupportedInstanceExtensions(extensions);
+		CheckSupportedInstanceExtensions(extensions);
 
-    /*const*/ VkApplicationInfo appInfo = .(){
-        sType = .VK_STRUCTURE_TYPE_APPLICATION_INFO,
-        pNext = null,
-        pApplicationName  = null,
-        applicationVersion = 0,
-        pEngineName = null,
-        engineVersion  = 0,
-        apiVersion  = VulkanNative.VK_API_VERSION_1_2
-    };
+		/*const*/ VkApplicationInfo appInfo = .()
+			{
+				sType = .VK_STRUCTURE_TYPE_APPLICATION_INFO,
+				pNext = null,
+				pApplicationName  = null,
+				applicationVersion = 0,
+				pEngineName = null,
+				engineVersion  = 0,
+				apiVersion  = VulkanNative.VK_API_VERSION_1_2
+			};
 
-    /*const*/ VkInstanceCreateInfo info = .(){
-        sType = .VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-        pNext = null,
-        flags = (VkInstanceCreateFlags)0,
-        pApplicationInfo  = &appInfo,
-        enabledLayerCount  = (uint32)layers.Count,
-        ppEnabledLayerNames  = layers.Ptr,
-        enabledExtensionCount  = (uint32)extensions.Count,
-        ppEnabledExtensionNames  = extensions.Ptr,
-    };
+		/*const*/ VkInstanceCreateInfo info = .()
+			{
+				sType = .VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+				pNext = null,
+				flags = (VkInstanceCreateFlags)0,
+				pApplicationInfo  = &appInfo,
+				enabledLayerCount  = (uint32)layers.Count,
+				ppEnabledLayerNames  = layers.Ptr,
+				enabledExtensionCount  = (uint32)extensions.Count,
+				ppEnabledExtensionNames  = extensions.Ptr
+			};
 
-    VkResult result = VulkanNative.vkCreateInstance(&info, m_AllocationCallbackPtr, &m_Instance);
+		VkResult result = VulkanNative.vkCreateInstance(&info, m_AllocationCallbackPtr, &m_Instance);
 
-    RETURN_ON_FAILURE!(GetLogger(), result == .VK_SUCCESS, GetReturnCode(result),
-        "Can't create a VkInstance: vkCreateInstance returned {0}.", (int32)result);
+		RETURN_ON_FAILURE!(GetLogger(), result == .VK_SUCCESS, GetReturnCode(result),
+			"Can't create a VkInstance: vkCreateInstance returned {0}.", (int32)result);
 
-    if (deviceCreationDesc.enableAPIValidation)
-    {
-        vkCreateDebugUtilsMessengerEXTFunction vkCreateDebugUtilsMessengerEXT = null;
-        vkCreateDebugUtilsMessengerEXT = (vkCreateDebugUtilsMessengerEXTFunction)VulkanNative.vkGetInstanceProcAddr(m_Instance, "vkCreateDebugUtilsMessengerEXT");
+		if (deviceCreationDesc.enableAPIValidation)
+		{
+			vkCreateDebugUtilsMessengerEXTFunction vkCreateDebugUtilsMessengerEXT = null;
+			vkCreateDebugUtilsMessengerEXT = (vkCreateDebugUtilsMessengerEXTFunction)VulkanNative.vkGetInstanceProcAddr(m_Instance, "vkCreateDebugUtilsMessengerEXT");
 
-        VkDebugUtilsMessengerCreateInfoEXT createInfo = .(){ sType = .VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
+			VkDebugUtilsMessengerCreateInfoEXT createInfo = .() { sType = .VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
 
-        createInfo.messageSeverity = .VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | .VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
-        createInfo.messageSeverity |= .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | .VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+			createInfo.messageSeverity = .VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | .VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
+			createInfo.messageSeverity |= .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | .VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 
-        createInfo.messageType = .VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | .VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
-        createInfo.messageType |= .VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+			createInfo.messageType = .VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | .VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+			createInfo.messageType |= .VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 
-		PFN_vkDebugUtilsMessengerCallbackEXT debugCallbackFunction = => DebugUtilsMessenger;
-        createInfo.pUserData = Internal.UnsafeCastToPtr(this);
-        createInfo.pfnUserCallback = debugCallbackFunction;
+			PFN_vkDebugUtilsMessengerCallbackEXT debugCallbackFunction = => DebugUtilsMessenger;
+			createInfo.pUserData = Internal.UnsafeCastToPtr(this);
+			createInfo.pfnUserCallback = debugCallbackFunction;
 
-        result = vkCreateDebugUtilsMessengerEXT(m_Instance, &createInfo, m_AllocationCallbackPtr, &m_Messenger);
+			result = vkCreateDebugUtilsMessengerEXT(m_Instance, &createInfo, m_AllocationCallbackPtr, &m_Messenger);
 
-        RETURN_ON_FAILURE!(GetLogger(), result == .VK_SUCCESS, GetReturnCode(result),
-            "Can't create a debug utils messenger callback: vkCreateDebugUtilsMessengerEXT returned {0}.", (int32)result);
-    }
+			RETURN_ON_FAILURE!(GetLogger(), result == .VK_SUCCESS, GetReturnCode(result),
+				"Can't create a debug utils messenger callback: vkCreateDebugUtilsMessengerEXT returned {0}.", (int32)result);
+		}
 
-    return Result.SUCCESS;
-}
+		return Result.SUCCESS;
+	}
 
 	private Result FindPhysicalDeviceGroup(PhysicalDeviceGroup* physicalDeviceGroup, bool enableMGPU)
 	{

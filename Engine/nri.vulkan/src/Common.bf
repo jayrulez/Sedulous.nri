@@ -60,7 +60,7 @@ struct BufferVulkanDesc
 {
 	public NRIVkBuffer vkBuffer;
 	public uint64 bufferSize;
-	public Memory* memory;
+	public Memory memory;
 	public uint64 memoryOffset;
 	public uint64 deviceAddress;
 	public uint32 physicalDeviceMask;
