@@ -5,7 +5,8 @@ sealed class DeviceAllocator<T>
 {
 	private MemoryAllocatorInterface m_Interface;
 
-	public this(MemoryAllocatorInterface @interface){
+	public this(MemoryAllocatorInterface @interface)
+	{
 		m_Interface = @interface;
 	}
 
@@ -95,6 +96,18 @@ public static
 		}
 	}
 
+	public static mixin AllocateArray<T>(DeviceAllocator<uint8> allocator, uint arraySize) where T : var
+	{
+		T* data = null;
+
+#if USE_CUSTOM_ALLOCATOR
+		data = new:allocator T[arraySize]*;
+#else
+		data = new [Align(alignof(T))] T[arraySize]*;
+#endif
+		data
+	}
+
 	public static mixin AllocateArray<T>(DeviceAllocator<uint8> allocator, uint arraySize) where T : new, struct
 	{
 		T* data = null;
@@ -107,7 +120,7 @@ public static
 		data
 	}
 
-	public static mixin AllocateArray<T>(DeviceAllocator<uint8> allocator, uint arraySize) where T : new, var
+	/*public static mixin AllocateArray<T>(DeviceAllocator<uint8> allocator, uint arraySize) where T : new, var
 	{
 		T* data = null;
 
@@ -126,9 +139,10 @@ public static
 		}
 
 		data
-	}
+	}*/
 
-	public static mixin AllocateArray<T>(DeviceAllocator<uint8> allocator, uint arraySize, var p1) where T : var
+
+	/*public static mixin AllocateArray<T>(DeviceAllocator<uint8> allocator, uint arraySize, var p1) where T : var
 	{
 		T* data = null;
 
@@ -147,39 +161,40 @@ public static
 		}
 
 		data
-	}
+	}*/
 
 	public static mixin DeallocateArray<T>(DeviceAllocator<uint8> allocator, T* array, uint arraySize) where T : var
 	{
-		if (array == null)
-			return;
+		if (array != null)
+		{
 
 #if USE_CUSTOM_ALLOCATOR
 		delete: allocator array;
 #else
-		delete array;
+			delete array;
 #endif
+		}
 	}
 
 	public static mixin DeallocateArray<T>(DeviceAllocator<uint8> allocator, T* array, uint arraySize) where T : delete, var
 	{
-		if (array == null)
-			return;
-
-		for (uint i = 0; i < arraySize; i++)
+		if (array != null)
 		{
+			for (uint i = 0; i < arraySize; i++)
+			{
 #if USE_CUSTOM_ALLOCATOR
-			delete: allocator array[i];
+				delete: allocator array[i];
 #else
-			delete array[i];
+				delete array[i];
+#endif
+			}
+
+#if USE_CUSTOM_ALLOCATOR
+			delete: allocator array;
+#else
+			delete array;
 #endif
 		}
-
-#if USE_CUSTOM_ALLOCATOR
-		delete: allocator array;
-#else
-		delete array;
-#endif
 	}
 
 	private const uint STACK_ALLOC_MAX_SIZE = 65536;

@@ -593,6 +593,7 @@ enum Vendor : uint8
      VERTEX_BUFFER                = SetBit(6)
  }
 
+[CRepr]
  struct Rect
  {
      public int32 left;
@@ -601,6 +602,7 @@ enum Vendor : uint8
      public uint32 height;
  }
 
+[CRepr]
  struct Viewport
  {
      public float[2] offset;
@@ -632,6 +634,7 @@ struct ClearValueDesc
      public Color<int32> rgba32i;
  }
 
+[CRepr]
  struct ClearDesc
  {
      public ClearValueDesc value;
@@ -657,6 +660,7 @@ struct ClearValueDesc
      public uint32 offsetInRange;
  }
 
+[CRepr]
  struct TextureRegionDesc
  {
      public uint16[3] offset;
@@ -665,6 +669,7 @@ struct ClearValueDesc
      public uint16 arrayOffset;
  }
 
+[CRepr]
  struct TextureDataLayoutDesc
  {
      public uint64 offset;
@@ -707,6 +712,7 @@ struct ClearValueDesc
      public bool mustBeDedicated;
  }
 
+[CRepr]
  struct AddressModes
  {
      public AddressMode u;
@@ -955,11 +961,11 @@ struct ClearValueDesc
 
  struct VertexAttributeDesc
  {
-     VertexAttributeD3D d3d;
-     VertexAttributeVK vk;
-     uint32 offset;
-     Format format;
-     uint16 streamIndex;
+     public VertexAttributeD3D d3d;
+     public VertexAttributeVK vk;
+     public uint32 offset;
+     public Format format;
+     public uint16 streamIndex;
  }
 
  struct VertexStreamDesc

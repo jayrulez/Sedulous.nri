@@ -102,6 +102,7 @@ class DescriptorVK : Descriptor
 		public VkAccelerationStructureKHR[PHYSICAL_DEVICE_GROUP_MAX_SIZE] m_AccelerationStructures = .();
 		public VkSampler m_Sampler;
 	}
+
 	private using Resources m_Resources;
 
 	[Union]
@@ -267,7 +268,7 @@ class DescriptorVK : Descriptor
 
 	public VkBufferView GetBufferView(uint32 physicalDeviceIndex) => m_BufferViews[physicalDeviceIndex];
 	public VkImageView GetImageView(uint32 physicalDeviceIndex) => m_ImageViews[physicalDeviceIndex];
-	public readonly ref VkSampler GetSampler() => ref m_Sampler;
+	public /*readonly*/ ref VkSampler GetSampler() => ref m_Sampler;
 	public VkAccelerationStructureKHR GetAccelerationStructure(uint32 physicalDeviceIndex) => m_AccelerationStructures[physicalDeviceIndex];
 	public VkBuffer GetBuffer(uint32 physicalDeviceIndex) => m_BufferDesc.handles[physicalDeviceIndex];
 	public VkImage GetImage(uint32 physicalDeviceIndex) => m_TextureDesc.handles[physicalDeviceIndex];

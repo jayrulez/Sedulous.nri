@@ -1,6 +1,7 @@
 using System;
 namespace nri.vulkan;
 
+[CRepr]
 struct MemoryTypeInfo
 {
 	public uint16 memoryTypeIndex;

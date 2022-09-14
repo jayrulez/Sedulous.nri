@@ -17,7 +17,7 @@ struct SlabAllocator
 
 	public T* Allocate<T>(ref uint32 number) mut
 	{
-		T* items = (T*)Align(m_CurrentOffset, (.)alignof(T));
+		T* items = (T*)Align((void*)m_CurrentOffset, (.)alignof(T));
 		readonly uint itemsLeft = (m_End - (uint)(void*)items) / (.)sizeof(T);
 		number = Math.Min<uint32>((uint32)itemsLeft, number);
 		m_CurrentOffset = (uint8*)(items + number);
@@ -191,7 +191,7 @@ class DescriptorSetVK : DescriptorSet
 	public DeviceVK GetDevice() => m_Device;
 	public uint32 GetDynamicConstantBufferNum() => m_DynamicConstantBufferNum;
 
-	public void Create(VkDescriptorSet* handles, uint32 physicalDeviceMask, DescriptorSetDesc setDesc)
+	public void Create(VkDescriptorSet* handles, uint32 physicalDeviceMask, ref DescriptorSetDesc setDesc)
 	{
 		m_SetDesc = &setDesc;
 		m_DynamicConstantBufferNum = setDesc.dynamicConstantBufferNum;

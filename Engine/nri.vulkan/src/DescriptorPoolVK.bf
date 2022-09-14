@@ -145,7 +145,7 @@ class DescriptorPoolVK : DescriptorPool
 		m_UsedSets += numberOfCopies;
 
 		readonly VkDescriptorSetLayout setLayout = pipelineLayoutVK.GetDescriptorSetLayout(setIndex);
-		readonly ref DescriptorSetDesc setDesc = ref pipelineLayoutVK.GetRuntimeBindingInfo().descriptorSetDescs[setIndex];
+		/*readonly*/ ref DescriptorSetDesc setDesc = ref pipelineLayoutVK.GetRuntimeBindingInfo().descriptorSetDescs[setIndex];
 		readonly bool hasVariableDescriptorNum = pipelineLayoutVK.GetRuntimeBindingInfo().hasVariableDescriptorNum[setIndex];
 
 		VkDescriptorSetVariableDescriptorCountAllocateInfo variableDescriptorCountInfo;
@@ -179,7 +179,7 @@ class DescriptorPoolVK : DescriptorPool
 		for (uint32 i = 0; i < numberOfCopies && result == .VK_SUCCESS; i++)
 		{
 			result = VulkanNative.vkAllocateDescriptorSets(m_Device, &info, &handles);
-			((DescriptorSetVK)descriptorSets[i]).Create(&handles, physicalDeviceMask, setDesc);
+			((DescriptorSetVK)descriptorSets[i]).Create(&handles, physicalDeviceMask, ref setDesc);
 		}
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), result == .VK_SUCCESS, GetReturnCode(result),
