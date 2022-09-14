@@ -20,7 +20,7 @@ public static
 	[Inline]
 	public static T Align<T>(T x, uint alignment) where T : var
 	{
-		return (T)((uint(x) + alignment - 1) & ~(alignment - 1));
+		return (T)(((uint)x + alignment - 1) & ~(alignment - 1));
 	}
 
 	public static mixin Allocate<T>(DeviceAllocator<uint8> allocator) where T : var
@@ -95,8 +95,19 @@ public static
 		}
 	}
 
-	[Comptime]
-	public static mixin AllocateArray<T>(DeviceAllocator<uint8> allocator, uint arraySize) where T : var
+	public static mixin AllocateArray<T>(DeviceAllocator<uint8> allocator, uint arraySize) where T : new, struct
+	{
+		T* data = null;
+
+#if USE_CUSTOM_ALLOCATOR
+		data = new:allocator T[arraySize]*;
+#else
+		data = new [Align(alignof(T))] T[arraySize]*;
+#endif
+		data
+	}
+
+	public static mixin AllocateArray<T>(DeviceAllocator<uint8> allocator, uint arraySize) where T : new, var
 	{
 		T* data = null;
 
@@ -117,7 +128,6 @@ public static
 		data
 	}
 
-	[Comptime]
 	public static mixin AllocateArray<T>(DeviceAllocator<uint8> allocator, uint arraySize, var p1) where T : var
 	{
 		T* data = null;
@@ -139,8 +149,19 @@ public static
 		data
 	}
 
-	[Comptime]
 	public static mixin DeallocateArray<T>(DeviceAllocator<uint8> allocator, T* array, uint arraySize) where T : var
+	{
+		if (array == null)
+			return;
+
+#if USE_CUSTOM_ALLOCATOR
+		delete: allocator array;
+#else
+		delete array;
+#endif
+	}
+
+	public static mixin DeallocateArray<T>(DeviceAllocator<uint8> allocator, T* array, uint arraySize) where T : delete, var
 	{
 		if (array == null)
 			return;
@@ -163,13 +184,11 @@ public static
 
 	private const uint STACK_ALLOC_MAX_SIZE = 65536;
 
-	[Comptime]
 	public static uint CountStackAllocationSize<T>(uint arraySize)
 	{
 		return (uint)((int)arraySize * sizeof(T) + alignof(T));
 	}
 
-	[Comptime]
 	public static mixin ALLOCATE_SCRATCH<T>(Device device, uint arraySize) where T : var
 	{
 		T* data = null;
@@ -180,7 +199,8 @@ public static
 			{
 				data = scope:: [Align(alignof(T))] T[arraySize]*;
 			}
-		} else
+		}
+		else
 		{
 			data = AllocateArray!<T>(device.GetAllocator(), arraySize);
 		}
@@ -188,8 +208,7 @@ public static
 		data
 	}
 
-	[Comptime]
-	public static mixin ALLOCATE_SCRATCH<T>(Device device, T array, uint arraySize) where T : var
+	public static mixin FREE_SCRATCH<T>(Device device, T* array, uint arraySize) where T : var
 	{
 		if (array != null && CountStackAllocationSize<T>(arraySize) > STACK_ALLOC_MAX_SIZE)
 		{
@@ -197,7 +216,6 @@ public static
 		}
 	}
 
-	[Comptime]
 	public static mixin STACK_ALLOC<T>(uint arraySize)
 	{
 		T* data = null;

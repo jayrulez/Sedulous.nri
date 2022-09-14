@@ -14,7 +14,7 @@ struct MemoryTypeInfo
 
 public static
 {
-	public static void Asserts()
+	public static void Asserts1()
 	{
 		Compiler.Assert(sizeof(MemoryTypeInfo) <= sizeof(MemoryType), "Unexpected structure size");
 	}

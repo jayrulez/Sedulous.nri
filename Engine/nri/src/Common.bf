@@ -609,11 +609,13 @@ enum Vendor : uint8
      public float depthRangeMax;
  }
 
+[CRepr]
  struct Color<T>
  {
      public T r, g, b, a;
  }
 
+[CRepr]
  struct DepthStencilClearValue
  {
      public float depth;
@@ -621,7 +623,7 @@ enum Vendor : uint8
  }
 
 
-[Union]
+[Union, CRepr]
 struct ClearValueDesc
  {
      public DepthStencilClearValue depthStencil;
