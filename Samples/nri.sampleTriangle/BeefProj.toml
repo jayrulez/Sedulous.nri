@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", "nri.vulkan" = "*", "nri.sampleFramework.SDL" = "*", Dxc-Beef = "*"}
+Dependencies = {corlib = "*", "nri.vulkan" = "*", "nri.sampleFramework.SDL" = "*", Dxc-Beef = "*", StbImageBeef = "*"}
 
 [Project]
 Name = "nri.sampleTriangle"
