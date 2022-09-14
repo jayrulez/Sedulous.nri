@@ -1395,7 +1395,6 @@ class DeviceVK : Device
 
 	public this(DeviceLogger logger, DeviceAllocator<uint8> allocator)
 	{
-		m_Logger = logger;
 		m_Allocator = allocator;
 
 		m_PhysicalDeviceIndices = Allocate!<List<uint32>>(m_Allocator);
@@ -1426,7 +1425,6 @@ class DeviceVK : Device
 			vkDestroyDevice(m_Device, m_AllocationCallbackPtr);
 			vkDestroyInstance(m_Instance, m_AllocationCallbackPtr);
 		}
-
 		// todo sed: VulkanNative.Shutdown()
 	}
 
@@ -2291,8 +2289,8 @@ public static
 	{
 		device = ?;
 
-		DeviceLogger logger = scope .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
-		DeviceAllocator<uint8> allocator = scope .(deviceCreationDesc.memoryAllocatorInterface);
+		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
+		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
 
 		DeviceVK implementation = Allocate!<DeviceVK>(allocator, logger, allocator);
 
@@ -2311,8 +2309,8 @@ public static
 	public static Result CreateDeviceVK(DeviceCreationVulkanDesc deviceCreationDesc, out Device device)
 	{
 		device = ?;
-		DeviceLogger logger = scope .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
-		DeviceAllocator<uint8> allocator = scope .(deviceCreationDesc.memoryAllocatorInterface);
+		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
+		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
 
 		DeviceVK implementation = Allocate!<DeviceVK>(allocator, logger, allocator);
 		readonly Result res = implementation.Create(deviceCreationDesc);
@@ -2325,5 +2323,19 @@ public static
 
 		Deallocate!(allocator, implementation);
 		return res;
+	}
+
+	public static void DestroyDeviceVk(Device device)
+	{
+		DeviceVK implementation = (DeviceVK)device;
+
+
+		DeviceAllocator<uint8> allocator = implementation.GetAllocator();
+		DeviceLogger logger = implementation.GetLogger();
+
+		implementation.Destroy();
+
+		delete allocator;
+		delete logger;
 	}
 }

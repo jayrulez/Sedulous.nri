@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "nri.vulkan" = "*", "nri.sampleFramework.SDL" = "*"}
+
+[Project]
+Name = "nri.sampleTriangle"
+StartupObject = "nri.sampleTriangle.Program"

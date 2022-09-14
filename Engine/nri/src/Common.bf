@@ -1335,7 +1335,7 @@ struct MetalWindow
 }
 
 [Union]
-struct Window
+struct WindowHandle
 {
     public WindowsWindow windows;
     public X11Window x11;
@@ -1347,7 +1347,7 @@ struct Window
 struct SwapChainDesc
 {
     public WindowSystemType windowSystemType;
-    public Window window;
+    public WindowHandle window;
     public /*const*/ CommandQueue/***/ commandQueue;
     public uint16 width;
     public uint16 height;

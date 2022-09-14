@@ -1,8 +1,6 @@
 FileVersion = 1
-Projects = {nri = {Path = "Engine/nri"}, "nri.vulkan" = {Path = "Engine/nri.vulkan"}, Bulkan = {Path = "Dependencies/Bulkan"}}
+Projects = {nri = {Path = "Engine/nri"}, "nri.vulkan" = {Path = "Engine/nri.vulkan"}, Bulkan = {Path = "Dependencies/Bulkan"}, "nri.sampleFramework" = {Path = "Samples/nri.sampleFramework"}, SDL2 = "*", "nri.sampleTriangle" = {Path = "Samples/nri.sampleTriangle"}, "nri.sampleClear" = {Path = "Samples/nri.sampleClear"}, "nri.sampleFramework.SDL" = {Path = "Samples/nri.sampleFramework.SDL"}}
+WorkspaceFolders = {Samples = ["nri.sampleFramework", "nri.sampleTriangle", "nri.sampleClear", "nri.sampleFramework.SDL"], Dependencies = ["Bulkan", "corlib", "SDL2"], Engine = ["nri", "nri.vulkan"]}
 
-[Configs.Test.Win32]
-ConfigSelections = {corlib = {Config = "Debug"}}
-
-[Configs.Test.Win64]
-ConfigSelections = {corlib = {Config = "Debug"}}
+[Workspace]
+StartupProject = "nri.sampleClear"

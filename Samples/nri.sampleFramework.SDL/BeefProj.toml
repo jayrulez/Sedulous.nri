@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "nri.sampleFramework" = "*", SDL2 = "*"}
+
+[Project]
+Name = "nri.sampleFramework.SDL"
+TargetType = "BeefLib"
+StartupObject = "nri.sampleFramework.SDL.Program"
