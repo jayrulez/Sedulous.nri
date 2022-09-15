@@ -4,6 +4,7 @@ using Win32.Foundation;
 namespace nri.d3d12;
 
 typealias D3D12_RECT = RECT;
+typealias D3D12_GPU_VIRTUAL_ADDRESS = uint64;
 
 struct DeviceCreationD3D12Desc
 {

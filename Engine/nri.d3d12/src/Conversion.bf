@@ -2,6 +2,7 @@ using Win32.Graphics.Direct3D12;
 using Win32.Graphics.Dxgi.Common;
 using System;
 using Win32.Graphics.Direct3D;
+using nri.d3dcommon;
 namespace nri.d3d12;
 
 public static{
@@ -715,7 +716,7 @@ public static{
 	        textureDesc.usageMask = (TextureUsageBits)0xffff;
 	        Compiler.Assert(sizeof(TextureUsageBits) == sizeof(uint16), "invalid sizeof");
 
-	        textureDesc.format = GetFormatDXGI(desc.Format);
+	        textureDesc.format = GetFormatDXGI((.)desc.Format);
 	        textureDesc.size[0] = (uint16)desc.Width;
 	        textureDesc.size[1] = (uint16)desc.Height;
 	        textureDesc.size[2] = textureDesc.type == TextureType.TEXTURE_3D ? desc.DepthOrArraySize : 1;
