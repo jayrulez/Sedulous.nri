@@ -614,7 +614,10 @@ enum Vendor : uint8
 [CRepr]
  struct Color<T>
  {
-     public T r, g, b, a;
+     public T r;
+	 public T g;
+	 public T b;
+	 public T a;
  }
 
 [CRepr]

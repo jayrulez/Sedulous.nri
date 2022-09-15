@@ -396,10 +396,10 @@ sealed class DataUploadHelper
 
 			readonly ref TextureSubresourceUploadDesc subresource = ref textureUploadDescs[i].subresources[0];
 
-			readonly uint32 sliceRowNum = Math.Max(subresource.slicePitch / subresource.rowPitch, 1u);
+			readonly uint32 sliceRowNum = Math.Max(subresource.slicePitch / subresource.rowPitch, 1);
 			readonly uint64 alignedRowPitch = Align(subresource.rowPitch, deviceDesc.uploadBufferTextureRowAlignment);
 			readonly uint64 alignedSlicePitch = Align(sliceRowNum * alignedRowPitch, deviceDesc.uploadBufferTextureSliceAlignment);
-			readonly uint64 mipLevelContentSize = alignedSlicePitch * Math.Max(subresource.sliceNum, 1u);
+			readonly uint64 mipLevelContentSize = alignedSlicePitch * Math.Max(subresource.sliceNum, 1);
 			m_UploadBufferSize = Math.Max(m_UploadBufferSize, mipLevelContentSize);
 		}
 
