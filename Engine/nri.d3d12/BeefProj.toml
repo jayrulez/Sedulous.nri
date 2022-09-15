@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "nri.d3d12"
+TargetType = "BeefLib"
+StartupObject = "nri.d3d12.Program"
