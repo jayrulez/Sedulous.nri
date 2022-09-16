@@ -25,6 +25,7 @@ struct DescriptorSetMapping : IDisposable
 
 	public void Dispose()
 	{
+		descriptorRangeMappings.Clear();
 		Deallocate!(m_Allocator, descriptorRangeMappings);
 	}
 }
@@ -65,7 +66,7 @@ class DescriptorSetD3D12 : DescriptorSet
 	{
 		Deallocate!(m_Device.GetAllocator(), m_DynamicConstantBuffers);
 
-		//m_DescriptorSetMapping.Dispose(); // todo sed
+		m_DescriptorSetMapping.Dispose();
 	}
 
 	public DeviceD3D12 GetDevice() => m_Device;

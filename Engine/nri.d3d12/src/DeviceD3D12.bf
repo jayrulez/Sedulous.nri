@@ -285,7 +285,11 @@ class DeviceD3D12 : Device
 		m_DrawCommandSignatures = Allocate!<Dictionary<uint32, ComPtr<ID3D12CommandSignature>>>(GetAllocator());
 		m_DrawIndexedCommandSignatures = Allocate!<Dictionary<uint32, ComPtr<ID3D12CommandSignature>>>(GetAllocator());
 
-		m_FreeDescriptors.Resize(DESCRIPTOR_HEAP_TYPE_NUM, Allocate!<List<DescriptorHandle>>(GetAllocator()));
+		m_FreeDescriptors.Resize(DESCRIPTOR_HEAP_TYPE_NUM);
+
+		for(int i = 0; i < DESCRIPTOR_HEAP_TYPE_NUM; i++){
+			m_FreeDescriptors[i] = Allocate!<List<DescriptorHandle>>(GetAllocator());
+		}
 	}
 
 	public ~this()

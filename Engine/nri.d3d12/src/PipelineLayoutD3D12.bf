@@ -104,6 +104,9 @@ class PipelineLayoutD3D12 : PipelineLayout
 	{
 		Deallocate!(m_Device.GetAllocator(), m_DynamicConstantBufferMappings);
 		Deallocate!(m_Device.GetAllocator(), m_DescriptorSetRootMappings);
+		for(var item in ref m_DescriptorSetMappings){
+			item.Dispose();
+		}
 		Deallocate!(m_Device.GetAllocator(), m_DescriptorSetMappings);
 	}
 
@@ -182,8 +185,16 @@ class PipelineLayoutD3D12 : PipelineLayout
 		List<D3D12_STATIC_SAMPLER_DESC> staticSamplerDescs = Allocate!<List<D3D12_STATIC_SAMPLER_DESC>>(allocator);
 		defer { Deallocate!(allocator, staticSamplerDescs); }
 
-		m_DescriptorSetMappings.Resize(pipelineLayoutDesc.descriptorSetNum, DescriptorSetMapping(allocator));
-		m_DescriptorSetRootMappings.Resize(pipelineLayoutDesc.descriptorSetNum, DescriptorSetRootMapping(allocator));
+		m_DescriptorSetMappings.Resize(pipelineLayoutDesc.descriptorSetNum);
+		for(int i = 0; i < pipelineLayoutDesc.descriptorSetNum; i++){
+			m_DescriptorSetMappings[i] = DescriptorSetMapping(allocator);
+		}
+
+		m_DescriptorSetRootMappings.Resize(pipelineLayoutDesc.descriptorSetNum);
+		for(int i = 0; i < pipelineLayoutDesc.descriptorSetNum; i++){
+			m_DescriptorSetRootMappings[i] = DescriptorSetRootMapping(allocator);
+		}
+
 		m_DynamicConstantBufferMappings.Resize(pipelineLayoutDesc.descriptorSetNum);
 
 		for (uint32 i = 0; i < pipelineLayoutDesc.descriptorSetNum; i++)
@@ -220,7 +231,7 @@ class PipelineLayoutD3D12 : PipelineLayout
 
 				groupedRangeType = rangeType;
 				heapIndex = (uint32)descriptorRangeMapping.descriptorHeapType;
-				m_DescriptorSetRootMappings[i].rootOffsets[j] = groupedRangeNum > 0 ? ROOT_PARAMETER_UNUSED : (uint16)rootParameters.Count;
+				m_DescriptorSetRootMappings[i].rootOffsets[j] = groupedRangeNum != 0 ? ROOT_PARAMETER_UNUSED : (uint16)rootParameters.Count;
 
 				rootParameter.ShaderVisibility = shaderVisibility;
 				rootParameter.DescriptorTable.pDescriptorRanges = &descriptorRanges[totalRangeNum];
@@ -235,14 +246,14 @@ class PipelineLayoutD3D12 : PipelineLayout
 				groupedRangeNum++;
 			}
 
-			if (groupedRangeNum > 0)
+			if (groupedRangeNum != 0)
 			{
 				rootParameter.DescriptorTable.NumDescriptorRanges = groupedRangeNum;
 				rootParameters.Add(rootParameter);
 				totalRangeNum += groupedRangeNum;
 			}
 
-			if (descriptorSetDesc.dynamicConstantBufferNum > 0)
+			if (descriptorSetDesc.dynamicConstantBufferNum != 0)
 			{
 				D3D12_ROOT_PARAMETER1 rootParameterLocal = .();
 				rootParameterLocal.ParameterType = .D3D12_ROOT_PARAMETER_TYPE_CBV;
@@ -264,7 +275,7 @@ class PipelineLayoutD3D12 : PipelineLayout
 				m_DynamicConstantBufferMappings[i].rootOffset = 0;
 			}
 
-			if (descriptorSetDesc.staticSamplerNum > 0)
+			if (descriptorSetDesc.staticSamplerNum != 0)
 			{
 				for (uint32 j = 0; j < descriptorSetDesc.staticSamplerNum; j++)
 				{
@@ -300,7 +311,7 @@ class PipelineLayoutD3D12 : PipelineLayout
 			}
 		}
 
-		if (pipelineLayoutDesc.pushConstantNum > 0)
+		if (pipelineLayoutDesc.pushConstantNum != 0)
 		{
 			m_PushConstantsBaseIndex = (uint32)rootParameters.Count;
 
