@@ -18,6 +18,7 @@ class BufferD3D12 : Buffer
 
 	public ~this()
 	{
+		m_Buffer.Release();
 	}
 
 	public static implicit operator ID3D12Resource*(Self self) => self.m_Buffer /*.GetInterface()*/;

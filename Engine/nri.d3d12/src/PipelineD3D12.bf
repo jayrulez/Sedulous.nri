@@ -5,6 +5,7 @@ using System.Collections;
 using System;
 using Win32.Graphics.Direct3D;
 using Win32.Foundation;
+using Win32;
 namespace nri.d3d12;
 
 class PipelineD3D12 : Pipeline
@@ -203,10 +204,10 @@ class PipelineD3D12 : Pipeline
 
 	private void FillDepthStencilState(ref D3D12_DEPTH_STENCIL_DESC depthStencilDesc, OutputMergerDesc outputMergerDesc)
 	{
-		depthStencilDesc.DepthEnable = outputMergerDesc.depth.compareFunc == CompareFunc.NONE ? /*FALSE*/ 0 : /*TRUE*/ 1;
+		depthStencilDesc.DepthEnable = outputMergerDesc.depth.compareFunc == CompareFunc.NONE ? FALSE : TRUE;
 		depthStencilDesc.DepthWriteMask = outputMergerDesc.depth.write ? .D3D12_DEPTH_WRITE_MASK_ALL : .D3D12_DEPTH_WRITE_MASK_ZERO;
 		depthStencilDesc.DepthFunc = GetComparisonFunc(outputMergerDesc.depth.compareFunc);
-		depthStencilDesc.StencilEnable = (outputMergerDesc.stencil.front.compareFunc == CompareFunc.NONE && outputMergerDesc.stencil.back.compareFunc == CompareFunc.NONE) ? /*FALSE*/ 0 : /*TRUE*/ 1;
+		depthStencilDesc.StencilEnable = (outputMergerDesc.stencil.front.compareFunc == CompareFunc.NONE && outputMergerDesc.stencil.back.compareFunc == CompareFunc.NONE) ? FALSE : TRUE;
 		depthStencilDesc.StencilReadMask = (uint8)outputMergerDesc.stencil.compareMask;
 		depthStencilDesc.StencilWriteMask = (uint8)outputMergerDesc.stencil.writeMask;
 		depthStencilDesc.FrontFace.StencilFailOp = GetStencilOp(outputMergerDesc.stencil.front.fail);
@@ -225,7 +226,7 @@ class PipelineD3D12 : Pipeline
 			return;
 
 		blendDesc.AlphaToCoverageEnable = graphicsPipelineDesc.rasterization.alphaToCoverage ? 1 : 0;
-		blendDesc.IndependentBlendEnable = /*TRUE*/ 1;
+		blendDesc.IndependentBlendEnable = TRUE;
 
 		for (uint32 i = 0; i < graphicsPipelineDesc.outputMerger.colorNum; i++)
 		{
@@ -237,7 +238,7 @@ class PipelineD3D12 : Pipeline
 			if (colorAttachmentDesc.blendEnabled)
 			{
 				blendDesc.RenderTarget[i].LogicOp = GetLogicOp(graphicsPipelineDesc.outputMerger.colorLogicFunc);
-				blendDesc.RenderTarget[i].LogicOpEnable = blendDesc.RenderTarget[i].LogicOp == .D3D12_LOGIC_OP_NOOP ? /*FALSE*/ 0 : /*TRUE*/ 1;
+				blendDesc.RenderTarget[i].LogicOpEnable = blendDesc.RenderTarget[i].LogicOp == .D3D12_LOGIC_OP_NOOP ? FALSE : TRUE;
 				blendDesc.RenderTarget[i].SrcBlend = GetBlend(colorAttachmentDesc.colorBlend.srcFactor);
 				blendDesc.RenderTarget[i].DestBlend = GetBlend(colorAttachmentDesc.colorBlend.dstFactor);
 				blendDesc.RenderTarget[i].BlendOp = GetBlendOp(colorAttachmentDesc.colorBlend.func);

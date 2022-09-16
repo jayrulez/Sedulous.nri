@@ -17,6 +17,7 @@ class CommandAllocatorD3D12 : CommandAllocator
 	}
 	public ~this()
 	{
+		m_CommandAllocator.Release();
 	}
 
 	public static implicit operator ID3D12CommandAllocator*(Self self) => self.m_CommandAllocator /*.GetInterface()*/;

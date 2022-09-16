@@ -17,6 +17,7 @@ class MemoryD3D12 : Memory
 
 	public ~this()
 	{
+		m_Heap.Release();
 	}
 
 	public static implicit operator ID3D12Heap*(Self self) => self.m_Heap /*.GetInterface()*/;

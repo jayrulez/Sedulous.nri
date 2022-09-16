@@ -317,6 +317,8 @@ class DeviceD3D12 : Device
 		{
 			delete m_FreeDescriptorLocks[i];
 		}
+
+		m_Device.Release();
 	}
 
 	public static implicit operator ID3D12Device*(Self self) => self.m_Device /*.GetInterface()*/;

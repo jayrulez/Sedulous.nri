@@ -170,6 +170,7 @@ class DescriptorD3D12 : Descriptor
 
 		return Result.FAILURE;
 	}
+
 	public Result Create(Texture1DViewDesc textureViewDesc)
 	{
 		readonly TextureD3D12 texture = (TextureD3D12)textureViewDesc.texture;

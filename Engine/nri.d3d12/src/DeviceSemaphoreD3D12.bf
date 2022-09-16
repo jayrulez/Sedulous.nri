@@ -16,6 +16,7 @@ class DeviceSemaphoreD3D12 : DeviceSemaphore
 	}
 	public ~this()
 	{
+		m_Fence.Release();
 	}
 
 	public static implicit operator ID3D12Fence*(Self self) => self.m_Fence /*.GetInterface()*/;

@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", "nri.vulkan" = "*", "nri.sampleFramework.SDL" = "*"}
+Dependencies = {corlib = "*", "nri.vulkan" = "*", "nri.sampleFramework.SDL" = "*", "nri.d3d12" = "*"}
 
 [Project]
 Name = "nri.sampleClear"

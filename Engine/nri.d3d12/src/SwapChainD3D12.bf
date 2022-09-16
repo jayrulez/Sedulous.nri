@@ -5,6 +5,7 @@ using Win32.Graphics.Dxgi;
 using Win32.Graphics.Dxgi.Common;
 using Win32.Foundation;
 using System;
+using Win32;
 namespace nri.d3d12;
 
 public static
@@ -77,6 +78,8 @@ class SwapChainD3D12 : SwapChain
 		}
 
 		Deallocate!(m_Device.GetAllocator(), m_Textures);
+
+		m_SwapChain.Release();
 	}
 
 	public DeviceD3D12 GetDevice() => m_Device;
@@ -160,7 +163,7 @@ class SwapChainD3D12 : SwapChain
 				return Result.UNSUPPORTED;
 			}
 
-			hr = m_SwapChain.SetFullscreenState( /*TRUE*/1, null);
+			hr = m_SwapChain.SetFullscreenState( TRUE, null);
 			RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1::SetFullscreenState() failed, error code: 0x{0:X}.", hr);
 
 			hr = m_SwapChain.ResizeBuffers(swapChainDesc1.BufferCount, swapChainDesc1.Width, swapChainDesc1.Height, swapChainDesc1.Format, swapChainDesc1.Flags);

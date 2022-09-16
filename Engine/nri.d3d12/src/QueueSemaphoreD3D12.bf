@@ -17,6 +17,7 @@ class QueueSemaphoreD3D12 : QueueSemaphore
 
 	public ~this()
 	{
+		m_Fence.Release();
 	}
 
 	public Result Create()

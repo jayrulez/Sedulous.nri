@@ -276,7 +276,7 @@ struct Vertex
 
 class TriangleApplication : SDLApplication
 {
-	private const GraphicsAPI GraphicsAPI = .D3D12;
+	private const GraphicsAPI GraphicsAPI = .VULKAN;
 
 	private Device mDevice = null;
 
