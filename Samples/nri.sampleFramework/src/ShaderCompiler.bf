@@ -4,7 +4,7 @@ using Dxc_Beef;
 using System.IO;
 using System.Diagnostics;
 using static System.Windows.COM_IUnknown;
-namespace nri.sampleTriangle;
+namespace nri.sampleFramework;
 
 public static
 {

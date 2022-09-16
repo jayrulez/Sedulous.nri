@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Win32.Graphics.Direct3D12;
+using nri.Helpers;
 namespace nri.d3d12;
 
 struct DescriptorRangeMapping
@@ -17,16 +18,18 @@ struct DescriptorSetMapping : IDisposable
 	public this(DeviceAllocator<uint8> allocator)
 	{
 		m_Allocator = allocator;
-		descriptorRangeMappings = Allocate!<List<DescriptorRangeMapping>>(m_Allocator);
+		descriptorRangeMappings = .();
+		//descriptorRangeMappings = Allocate!<List<DescriptorRangeMapping>>(m_Allocator);
 	}
 
 	public uint32[(.)DescriptorHeapType.MAX_NUM] descriptorNum = .();
-	public List<DescriptorRangeMapping> descriptorRangeMappings;
+	//public List<DescriptorRangeMapping> descriptorRangeMappings;
+	public StaticList<DescriptorRangeMapping, 128> descriptorRangeMappings;
 
 	public void Dispose()
 	{
-		descriptorRangeMappings.Clear();
-		Deallocate!(m_Allocator, descriptorRangeMappings);
+		//descriptorRangeMappings.Clear();
+		//Deallocate!(m_Allocator, descriptorRangeMappings);
 	}
 }
 
@@ -65,8 +68,6 @@ class DescriptorSetD3D12 : DescriptorSet
 	public ~this()
 	{
 		Deallocate!(m_Device.GetAllocator(), m_DynamicConstantBuffers);
-
-		m_DescriptorSetMapping.Dispose();
 	}
 
 	public DeviceD3D12 GetDevice() => m_Device;

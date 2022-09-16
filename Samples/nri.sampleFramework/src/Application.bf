@@ -13,9 +13,7 @@ abstract class Application
 
 	protected virtual void OnShutdown() => void();
 
-	protected virtual void OnFrameBegin() => void();
-
-	protected virtual void OnFrameEnd() => void();
+	protected virtual void OnFrame() => void();
 
 	private Result<void> Startup()
 	{
@@ -40,8 +38,7 @@ abstract class Application
 
 	private void RunFrame()
 	{
-		OnFrameBegin();
-		OnFrameEnd();
+		OnFrame();
 	}
 
 	public void Run()

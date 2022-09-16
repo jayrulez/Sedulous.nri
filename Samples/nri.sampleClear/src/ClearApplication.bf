@@ -263,8 +263,10 @@ class ClearApplication : SDLApplication
 		mSwapChain.Present(ref mReleaseSemaphore);
 	}
 
-	protected override void OnFrameEnd()
+	protected override void OnFrame()
 	{
+		base.OnFrame();
+
 		PrepareFrame(mFrameNum);
 		RenderFrame(mFrameNum);
 		mFrameNum++;

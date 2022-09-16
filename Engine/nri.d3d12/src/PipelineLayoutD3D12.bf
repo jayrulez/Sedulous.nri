@@ -103,7 +103,12 @@ class PipelineLayoutD3D12 : PipelineLayout
 	public ~this()
 	{
 		Deallocate!(m_Device.GetAllocator(), m_DynamicConstantBufferMappings);
+
+		for(var item in ref m_DescriptorSetRootMappings){
+			item.Dispose();
+		}
 		Deallocate!(m_Device.GetAllocator(), m_DescriptorSetRootMappings);
+
 		for(var item in ref m_DescriptorSetMappings){
 			item.Dispose();
 		}

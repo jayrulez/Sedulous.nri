@@ -3,4 +3,4 @@ Projects = {nri = {Path = "Engine/nri"}, "nri.vulkan" = {Path = "Engine/nri.vulk
 WorkspaceFolders = {Samples = ["nri.sampleFramework", "nri.sampleTriangle", "nri.sampleClear", "nri.sampleFramework.SDL"], Dependencies = ["Bulkan", "corlib", "SDL2", "Dxc-Beef", "Stb.Native", "StbImageBeef", "Detex", "Win32"], Engine = ["nri", "nri.vulkan", "nri.d3d12", "nri.d3dcommon"]}
 
 [Workspace]
-StartupProject = "nri.sampleClear"
+StartupProject = "nri.sampleTriangle"

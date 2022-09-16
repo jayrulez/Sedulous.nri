@@ -1,4 +1,4 @@
-namespace nri;
+namespace nri.sampleFramework;
 
 struct ColorRGBA
 {

@@ -1,16 +1,53 @@
 using nri.Helpers;
 using System;
-namespace nri.sampleTriangle;
+using nri.sampleFramework;
+using System.IO;
+using StbImageBeef;
+namespace nri.sampleFramework;
 
-enum AlphaMode
+public static
 {
-	OPAQUE,
-	PREMULTIPLIED,
-	TRANSPARENT,
-	OFF // alpha is 0 everywhere
+	public static Result<void> LoadTexture(StringView path, ref StbTextureResource texture)
+	{
+		FileStream fs = scope FileStream();
+		fs.Open(path, .Open, .Read);
+		ImageResult image = ImageResult.FromStream(fs, ColorComponents.RedGreenBlueAlpha);
+
+		Format format = .UNKNOWN;
+		switch (image.Comp) {
+		case .Default:
+			break;
+		case .Grey:
+			format = .R8_UNORM;
+			break;
+		case .GreyAlpha:
+			format = .RG8_UNORM;
+			break;
+		case .RedGreenBlue:
+			format = .RGBA8_UNORM;
+			break;
+		case .RedGreenBlueAlpha:
+			format = .RGBA8_UNORM;
+			break;
+		}
+
+		texture.image = image;
+		texture.data = image.Data;
+		texture.avgColor = .();
+		texture.hash = 100;
+		texture.alphaMode = .OPAQUE;
+		texture.format = format;
+		texture.width = (.)image.Width;
+		texture.height = (.)image.Height;
+		texture.depth = 1;
+		texture.mipNum = 1;
+		texture.arraySize = 1;
+
+		return .();
+	}
 }
 
-struct TextureResource : IDisposable
+struct StbTextureResource : IDisposable
 {
 	public StbImageBeef.ImageResult image = null;
 	public void* data;

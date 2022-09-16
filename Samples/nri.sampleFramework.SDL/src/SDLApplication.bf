@@ -24,7 +24,7 @@ class SDLApplication : Application
 
 	protected override Result<void> OnInitialize() => .Ok;
 
-	protected override void OnFrameBegin()
+	protected override void OnFrame()
 	{
 		if (let sdlWindow = Window as SDLWindow)
 		{

@@ -21,7 +21,6 @@ class DescriptorPoolD3D12 : DescriptorPool
 	private List<DescriptorSetD3D12> m_DescriptorSets;
 	private uint32 m_DescriptorSetNum = 0;
 
-
 	public this(DeviceD3D12 device)
 	{
 		m_Device = device;
