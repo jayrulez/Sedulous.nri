@@ -231,6 +231,7 @@ public static
 #else
 //	    raise(SIGTRAP);
 #endif
+		System.Diagnostics.Debug.Break();
 	}
 
 	public static void CheckAndSetDefaultCallbacks(ref CallbackInterface callbackInterface)

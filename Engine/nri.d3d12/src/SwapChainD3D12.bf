@@ -229,8 +229,9 @@ class SwapChainD3D12 : SwapChain
 			return Result.SWAPCHAIN_RESIZE;
 
 		uint32 flags = (m_SwapChainDesc.verticalSyncInterval == 0 && m_IsTearingAllowed) ? DXGI_PRESENT_ALLOW_TEARING : 0;
-
+		
 		readonly HRESULT result = m_SwapChain.Present(m_SwapChainDesc.verticalSyncInterval, flags);
+
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), result, "Can't present the swapchain: IDXGISwapChain::Present() returned {0}.", (int32)result);
 
 		return Result.SUCCESS;
