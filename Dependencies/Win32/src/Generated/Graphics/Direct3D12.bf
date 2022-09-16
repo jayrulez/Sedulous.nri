@@ -5453,7 +5453,7 @@ public struct D3D12_PARAMETER_DESC
 	{
 		protected new function [CallingConvention(.Stdcall)] HRESULT(SelfOuter* self, uint32 Subresource, D3D12_RANGE* pReadRange, void** ppData) Map;
 		protected new function [CallingConvention(.Stdcall)] void(SelfOuter* self, uint32 Subresource, D3D12_RANGE* pWrittenRange) Unmap;
-		protected new function [CallingConvention(.Stdcall)] D3D12_RESOURCE_DESC(SelfOuter* self, out D3D12_RESOURCE_DESC @return) GetDesc;
+		protected new function [CallingConvention(.Stdcall)] /*D3D12_RESOURCE_DESC*/void(SelfOuter* self, out D3D12_RESOURCE_DESC @return) GetDesc;
 		protected new function [CallingConvention(.Stdcall)] uint64(SelfOuter* self) GetGPUVirtualAddress;
 		protected new function [CallingConvention(.Stdcall)] HRESULT(SelfOuter* self, uint32 DstSubresource, D3D12_BOX* pDstBox, void* pSrcData, uint32 SrcRowPitch, uint32 SrcDepthPitch) WriteToSubresource;
 		protected new function [CallingConvention(.Stdcall)] HRESULT(SelfOuter* self, void* pDstData, uint32 DstRowPitch, uint32 DstDepthPitch, uint32 SrcSubresource, D3D12_BOX* pSrcBox) ReadFromSubresource;
@@ -5465,7 +5465,7 @@ public struct D3D12_PARAMETER_DESC
 
 	public void Unmap(uint32 Subresource, D3D12_RANGE* pWrittenRange) mut => VT.[Friend]Unmap(&this, Subresource, pWrittenRange);
 
-	public D3D12_RESOURCE_DESC GetDesc() mut => VT.[Friend]GetDesc(&this, ..?);
+	public D3D12_RESOURCE_DESC GetDesc() mut => VT.[Friend]GetDesc(&this,.. var _);
 
 	public uint64 GetGPUVirtualAddress() mut => VT.[Friend]GetGPUVirtualAddress(&this);
 
@@ -5883,7 +5883,7 @@ public struct D3D12_PARAMETER_DESC
 		protected new function [CallingConvention(.Stdcall)] void(SelfOuter* self, D3D12_SAMPLER_DESC* pDesc, D3D12_CPU_DESCRIPTOR_HANDLE DestDescriptor) CreateSampler;
 		protected new function [CallingConvention(.Stdcall)] void(SelfOuter* self, uint32 NumDestDescriptorRanges, D3D12_CPU_DESCRIPTOR_HANDLE* pDestDescriptorRangeStarts, uint32* pDestDescriptorRangeSizes, uint32 NumSrcDescriptorRanges, D3D12_CPU_DESCRIPTOR_HANDLE* pSrcDescriptorRangeStarts, uint32* pSrcDescriptorRangeSizes, D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapsType) CopyDescriptors;
 		protected new function [CallingConvention(.Stdcall)] void(SelfOuter* self, uint32 NumDescriptors, D3D12_CPU_DESCRIPTOR_HANDLE DestDescriptorRangeStart, D3D12_CPU_DESCRIPTOR_HANDLE SrcDescriptorRangeStart, D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapsType) CopyDescriptorsSimple;
-		protected new function [CallingConvention(.Stdcall)] D3D12_RESOURCE_ALLOCATION_INFO(SelfOuter* self, out D3D12_RESOURCE_ALLOCATION_INFO @return, uint32 visibleMask, uint32 numResourceDescs, D3D12_RESOURCE_DESC* pResourceDescs) GetResourceAllocationInfo;
+		protected new function [CallingConvention(.Stdcall)] /*D3D12_RESOURCE_ALLOCATION_INFO*/void(SelfOuter* self, out D3D12_RESOURCE_ALLOCATION_INFO @return, uint32 visibleMask, uint32 numResourceDescs, D3D12_RESOURCE_DESC* pResourceDescs) GetResourceAllocationInfo;
 		protected new function [CallingConvention(.Stdcall)] D3D12_HEAP_PROPERTIES(SelfOuter* self, out D3D12_HEAP_PROPERTIES @return, uint32 nodeMask, D3D12_HEAP_TYPE heapType) GetCustomHeapProperties;
 		protected new function [CallingConvention(.Stdcall)] HRESULT(SelfOuter* self, D3D12_HEAP_PROPERTIES* pHeapProperties, D3D12_HEAP_FLAGS HeapFlags, D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES InitialResourceState, D3D12_CLEAR_VALUE* pOptimizedClearValue, in Guid riidResource, void** ppvResource) CreateCommittedResource;
 		protected new function [CallingConvention(.Stdcall)] HRESULT(SelfOuter* self, D3D12_HEAP_DESC* pDesc, in Guid riid, void** ppvHeap) CreateHeap;

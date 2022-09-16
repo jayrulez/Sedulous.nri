@@ -75,7 +75,7 @@ public static
 	}
 }
 
-enum OutputType
+enum ShaderCompilerOutputType
 {
 	DXIL,
 	SPIRV
@@ -87,7 +87,7 @@ struct ShaderCompilationOptions
 	public ShaderStage shaderStage;
 	public StringView shaderModel;
 	public StringView entryPoint;
-	public OutputType outputType;
+	public ShaderCompilerOutputType outputType;
 	public SPIRVBindingOffsets spirvBindingOffsets;
 	public Dictionary<StringView, StringView> defines;
 }

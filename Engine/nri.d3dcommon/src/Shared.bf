@@ -20,7 +20,7 @@ public static
 	    FormatSupportBits.STORAGE_BUFFER |
 	    FormatSupportBits.COLOR_ATTACHMENT;
 
-	private const FormatSupportBits[?] D3D_FORMAT_SUPPORT_TABLE = .(
+	public const FormatSupportBits[?] D3D_FORMAT_SUPPORT_TABLE = .(
 	    FormatSupportBits.UNSUPPORTED, // UNKNOWN,
 
 	    COMMON_SUPPORT_WITHOUT_VERTEX, // R8_UNORM,
@@ -266,6 +266,16 @@ public static
 		if (FAILED(hresult))
 		{
 			logger.ReportMessage(.TYPE_ERROR, format);
+
+			return GetResultFromHRESULT(hresult);
+		}
+	}
+
+	public static mixin RETURN_ON_BAD_HRESULT(DeviceLogger logger, HRESULT hresult, StringView format, Object arg1)
+	{
+		if (FAILED(hresult))
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1);
 
 			return GetResultFromHRESULT(hresult);
 		}

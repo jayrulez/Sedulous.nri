@@ -60,7 +60,7 @@ class TextureD3D12 : Texture
 
 	public Result BindMemory(MemoryD3D12 memory, uint64 offset)
 	{
-		readonly ref D3D12_HEAP_DESC heapDesc = ref memory.GetHeapDesc();
+		/*readonly ref*/ D3D12_HEAP_DESC heapDesc = /*ref*/ memory.GetHeapDesc();
 		D3D12_CLEAR_VALUE clearValue = .() { Format = GetFormat(m_Format) };
 		bool isRenderableSurface = m_TextureDesc.Flags & (.D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET | .D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL) != 0;
 

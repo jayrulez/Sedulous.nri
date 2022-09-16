@@ -276,6 +276,8 @@ struct Vertex
 
 class TriangleApplication : SDLApplication
 {
+	private const GraphicsAPI GraphicsAPI = .D3D12;
+
 	private Device mDevice = null;
 
 	private SwapChain mSwapChain = null;
@@ -317,14 +319,26 @@ class TriangleApplication : SDLApplication
 
 		DeviceCreationDesc deviceDesc = .()
 			{
-				graphicsAPI = .VULKAN,
+				graphicsAPI = GraphicsAPI,
 				enableAPIValidation = true,
 				enableNRIValidation = false,
 				D3D11CommandBufferEmulation = D3D11_COMMANDBUFFER_EMULATION,
 				spirvBindingOffsets = SPIRV_BINDING_OFFSETS
 			};
 
-		Result result = nri.vulkan.CreateDeviceVK(deviceDesc, out mDevice);
+		Result result = .SUCCESS;
+
+		if (GraphicsAPI == .VULKAN)
+		{
+			result = nri.vulkan.CreateDeviceVK(deviceDesc, out mDevice);
+		} else if (GraphicsAPI == .D3D12)
+		{
+			result = nri.d3d12.CreateDeviceD3D12(deviceDesc, out mDevice);
+		} else
+		{
+			Runtime.FatalError(scope $"GraphicsAPI {GraphicsAPI} is not supported.");
+		}
+
 		if (result != .SUCCESS)
 		{
 			Debug.WriteLine("Failed to create Device");
@@ -338,7 +352,16 @@ class TriangleApplication : SDLApplication
 	{
 		if (mDevice != null)
 		{
-			nri.vulkan.DestroyDeviceVK(mDevice);
+			if (GraphicsAPI == .VULKAN)
+			{
+				nri.vulkan.DestroyDeviceVK(mDevice);
+			} else if (GraphicsAPI == .D3D12)
+			{
+				nri.d3d12.DestroyDeviceD3D12(mDevice);
+			} else
+			{
+				Runtime.FatalError(scope $"GraphicsAPI {GraphicsAPI} is not supported.");
+			}
 			mDevice = null;
 		}
 
@@ -358,13 +381,15 @@ class TriangleApplication : SDLApplication
 
 		List<uint8> fragmentShaderByteCode = scope .();
 
+		ShaderCompilerOutputType outputType = GraphicsAPI == .VULKAN ? .SPIRV : .DXIL;
+
 		Result<void> compileResult = compiler.CompileShader(.()
 			{
 				shaderPath = "shaders/Triangle.fs.hlsl",
 				shaderStage = .FRAGMENT,
 				shaderModel = "6_5",
 				entryPoint = "main",
-				outputType = .SPIRV,
+				outputType = outputType,
 				spirvBindingOffsets = SPIRV_BINDING_OFFSETS
 			}, fragmentShaderByteCode);
 
@@ -381,7 +406,7 @@ class TriangleApplication : SDLApplication
 				shaderStage = .VERTEX,
 				shaderModel = "6_5",
 				entryPoint = "main",
-				outputType = .SPIRV,
+				outputType = outputType,
 				spirvBindingOffsets = SPIRV_BINDING_OFFSETS
 			}, vertexShaderByteCode);
 

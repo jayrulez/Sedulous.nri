@@ -56,7 +56,7 @@ class BufferD3D12 : Buffer
 
 	public Result BindMemory(MemoryD3D12 memory, uint64 offset, bool isAccelerationStructureBuffer = false)
 	{
-		readonly ref D3D12_HEAP_DESC heapDesc = ref memory.GetHeapDesc();
+		/*readonly ref*/ D3D12_HEAP_DESC heapDesc = /*ref*/ memory.GetHeapDesc();
 		D3D12_RESOURCE_STATES initialState = .D3D12_RESOURCE_STATE_COMMON;
 
 		if (heapDesc.Properties.Type == .D3D12_HEAP_TYPE_UPLOAD)

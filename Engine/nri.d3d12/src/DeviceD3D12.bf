@@ -5,6 +5,9 @@ using Win32.Graphics.Dxgi;
 using System.Threading;
 using Win32.Graphics.Direct3D;
 using Win32.Foundation;
+using System;
+using Win32.Graphics.Gdi;
+using nri.Helpers;
 namespace nri.d3d12;
 
 typealias DescriptorPointerCPU = uint;
@@ -264,11 +267,16 @@ class DeviceD3D12 : Device
 	private bool m_SkipLiveObjectsReporting = false;
 
 	private Monitor[DESCRIPTOR_HEAP_TYPE_NUM] m_FreeDescriptorLocks;
-	private Monitor m_DescriptorHeapLock;
-	private Monitor m_QueueLock;
+	private Monitor m_DescriptorHeapLock = new .() ~ delete _;
+	private Monitor m_QueueLock = new .() ~ delete _;
 
 	public this(DeviceLogger logger, DeviceAllocator<uint8> allocator)
 	{
+		for (int i = 0; i < m_FreeDescriptorLocks.Count; i++)
+		{
+			m_FreeDescriptorLocks[i] = new .();
+		}
+
 		m_Logger = logger;
 		m_Allocator = allocator;
 
@@ -300,6 +308,11 @@ class DeviceD3D12 : Device
 		}
 		Deallocate!(GetAllocator(), m_FreeDescriptors);
 		Deallocate!(GetAllocator(), m_DescriptorHeaps);
+
+		for (int i = 0; i < m_FreeDescriptorLocks.Count; i++)
+		{
+			delete m_FreeDescriptorLocks[i];
+		}
 	}
 
 	public static implicit operator ID3D12Device*(Self self) => self.m_Device /*.GetInterface()*/;
@@ -453,7 +466,7 @@ class DeviceD3D12 : Device
 		hr = m_Device.CreateCommandSignature(&commandSignatureDesc, null, ID3D12CommandSignature.IID, (void**)(&m_DispatchCommandSignature));
 		if (FAILED(hr))
 		{
-			REPORT_ERROR(GetLogger(), "ID3D12Device::CreateCommandSignature() failed, error code: 0x{0:X}.", hr);
+			REPORT_ERROR(GetLogger(), "ID3D12Device.CreateCommandSignature() failed, error code: 0x{0:X}.", hr);
 			return Result.FAILURE;
 		}
 
@@ -486,11 +499,11 @@ class DeviceD3D12 : Device
 	//#endif
 
 		if (deviceCreationDesc.d3d12GraphicsQueue != null)
-			CreateCommandQueue((ID3D12CommandQueue*)deviceCreationDesc.d3d12GraphicsQueue, m_CommandQueues[(uint32)CommandQueueType.GRAPHICS]);
+			CreateCommandQueue((ID3D12CommandQueue*)deviceCreationDesc.d3d12GraphicsQueue, out m_CommandQueues[(uint32)CommandQueueType.GRAPHICS]);
 		if (deviceCreationDesc.d3d12ComputeQueue != null)
-			CreateCommandQueue((ID3D12CommandQueue*)deviceCreationDesc.d3d12ComputeQueue, m_CommandQueues[(uint32)CommandQueueType.COMPUTE]);
+			CreateCommandQueue((ID3D12CommandQueue*)deviceCreationDesc.d3d12ComputeQueue, out m_CommandQueues[(uint32)CommandQueueType.COMPUTE]);
 		if (deviceCreationDesc.d3d12CopyQueue != null)
-			CreateCommandQueue((ID3D12CommandQueue*)deviceCreationDesc.d3d12CopyQueue, m_CommandQueues[(uint32)CommandQueueType.COPY]);
+			CreateCommandQueue((ID3D12CommandQueue*)deviceCreationDesc.d3d12CopyQueue, out m_CommandQueues[(uint32)CommandQueueType.COPY]);
 
 		CommandQueue commandQueue;
 		Result result = GetCommandQueue(CommandQueueType.GRAPHICS, out commandQueue);
@@ -646,5 +659,493 @@ class DeviceD3D12 : Device
 		readonly HRESULT result = m_Adapter.EnumOutputs(index, &output);
 
 		return SUCCEEDED(result);
+	}
+
+	public override DeviceLogger GetLogger()
+	{
+		return m_Logger;
+	}
+
+	public override DeviceAllocator<uint8> GetAllocator()
+	{
+		return m_Allocator;
+	}
+
+	public override void SetDebugName(char8* name)
+	{
+		SET_D3D_DEBUG_OBJECT_NAME(m_Device, scope String(name));
+	}
+
+	public override ref DeviceDesc GetDesc()
+	{
+		return ref m_DeviceDesc;
+	}
+
+	public override Result GetCommandQueue(CommandQueueType commandQueueType, out CommandQueue commandQueue)
+	{
+		m_QueueLock.Enter();
+		defer m_QueueLock.Exit();
+
+		uint32 queueIndex = (uint32)commandQueueType;
+
+		if (m_CommandQueues[queueIndex] != null)
+		{
+			commandQueue = (CommandQueue)m_CommandQueues[queueIndex];
+			return Result.SUCCESS;
+		}
+
+		Result result = CreateCommandQueue(commandQueueType, out commandQueue);
+		if (result != Result.SUCCESS)
+		{
+			REPORT_ERROR(GetLogger(), "Device.GetCommandQueue() failed.");
+			return result;
+		}
+
+		m_CommandQueues[queueIndex] = (CommandQueueD3D12)commandQueue;
+
+		return Result.SUCCESS;
+	}
+
+	public Result CreateCommandQueue(CommandQueueType commandQueueType, out CommandQueue commandQueue)
+	{
+		return CreateImplementation<CommandQueueD3D12...>(out commandQueue, commandQueueType);
+	}
+
+	public Result CreateCommandQueue(void* d3d12commandQueue, out CommandQueueD3D12 commandQueue)
+	{
+		return CreateImplementation<CommandQueueD3D12...>(out commandQueue, (ID3D12CommandQueue*)d3d12commandQueue);
+	}
+
+	public override Result CreateCommandAllocator(CommandQueue commandQueue, uint32 physicalDeviceMask, out CommandAllocator commandAllocator)
+	{
+		return CreateImplementation<CommandAllocatorD3D12...>(out commandAllocator, commandQueue);
+	}
+
+	public override Result CreateDescriptorPool(DescriptorPoolDesc descriptorPoolDesc, out DescriptorPool descriptorPool)
+	{
+		return CreateImplementation<DescriptorPoolD3D12...>(out descriptorPool, descriptorPoolDesc);
+	}
+
+	public override Result CreateBuffer(BufferDesc bufferDesc, out Buffer buffer)
+	{
+		return CreateImplementation<BufferD3D12...>(out buffer, bufferDesc);
+	}
+
+	public override Result CreateTexture(TextureDesc textureDesc, out Texture texture)
+	{
+		return CreateImplementation<TextureD3D12...>(out texture, textureDesc);
+	}
+
+	public override Result CreateBufferView(BufferViewDesc bufferViewDesc, out Descriptor bufferView)
+	{
+		return CreateImplementation<DescriptorD3D12...>(out bufferView, bufferViewDesc);
+	}
+
+	public override Result CreateTexture1DView(Texture1DViewDesc textureViewDesc, out Descriptor textureView)
+	{
+		return CreateImplementation<DescriptorD3D12...>(out textureView, textureViewDesc);
+	}
+
+	public override Result CreateTexture2DView(Texture2DViewDesc textureViewDesc, out Descriptor textureView)
+	{
+		return CreateImplementation<DescriptorD3D12...>(out textureView, textureViewDesc);
+	}
+
+	public override Result CreateTexture3DView(Texture3DViewDesc textureViewDesc, out Descriptor textureView)
+	{
+		return CreateImplementation<DescriptorD3D12...>(out textureView, textureViewDesc);
+	}
+
+	public override Result CreateSampler(SamplerDesc samplerDesc, out Descriptor sampler)
+	{
+		return CreateImplementation<DescriptorD3D12...>(out sampler, samplerDesc);
+	}
+
+	public Result CreateDescriptor(AccelerationStructure accelerationStructure, out Descriptor accelerationStructureView)
+	{
+		return CreateImplementation<DescriptorD3D12...>(out accelerationStructureView, accelerationStructure);
+	}
+
+	public override Result CreatePipelineLayout(PipelineLayoutDesc pipelineLayoutDesc, out PipelineLayout pipelineLayout)
+	{
+		return CreateImplementation<PipelineLayoutD3D12...>(out pipelineLayout, pipelineLayoutDesc);
+	}
+
+	public override Result CreateGraphicsPipeline(GraphicsPipelineDesc graphicsPipelineDesc, out Pipeline pipeline)
+	{
+		return CreateImplementation<PipelineD3D12...>(out pipeline, graphicsPipelineDesc);
+	}
+
+	public override Result CreateComputePipeline(ComputePipelineDesc computePipelineDesc, out Pipeline pipeline)
+	{
+		return CreateImplementation<PipelineD3D12...>(out pipeline, computePipelineDesc);
+	}
+
+	public override Result CreateFrameBuffer(FrameBufferDesc frameBufferDesc, out FrameBuffer frameBuffer)
+	{
+		return CreateImplementation<FrameBufferD3D12...>(out frameBuffer, frameBufferDesc);
+	}
+
+	public override Result CreateQueryPool(QueryPoolDesc queryPoolDesc, out QueryPool queryPool)
+	{
+		return CreateImplementation<QueryPoolD3D12...>(out queryPool, queryPoolDesc);
+	}
+
+	public override Result CreateQueueSemaphore(out QueueSemaphore queueSemaphore)
+	{
+		return CreateImplementation<QueueSemaphoreD3D12...>(out queueSemaphore);
+	}
+
+	public override Result CreateDeviceSemaphore(bool signaled, out DeviceSemaphore deviceSemaphore)
+	{
+		return CreateImplementation<DeviceSemaphoreD3D12...>(out deviceSemaphore, signaled);
+	}
+
+	public override Result CreateCommandBuffer(CommandAllocator commandAllocator, out CommandBuffer commandBuffer)
+	{
+		return commandAllocator.CreateCommandBuffer(out commandBuffer);
+	}
+
+	public override Result CreateSwapChain(SwapChainDesc swapChainDesc, out SwapChain swapChain)
+	{
+		return CreateImplementation<SwapChainD3D12...>(out swapChain, swapChainDesc);
+	}
+
+	public override Result CreateRayTracingPipeline(RayTracingPipelineDesc rayTracingPipelineDesc, out Pipeline pipeline)
+	{
+		return CreateImplementation<PipelineD3D12...>(out pipeline, rayTracingPipelineDesc);
+	}
+
+	public override Result CreateAccelerationStructure(AccelerationStructureDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure)
+	{
+		return CreateImplementation<AccelerationStructureD3D12...>(out accelerationStructure, accelerationStructureDesc);
+	}
+
+
+	public Result CreateCommandBuffer(CommandBufferD3D12Desc commandBufferDesc, out CommandBuffer commandBuffer)
+	{
+		return CreateImplementation<CommandBufferD3D12...>(out commandBuffer, commandBufferDesc);
+	}
+
+	public Result CreateBuffer(BufferD3D12Desc bufferDesc, out Buffer buffer)
+	{
+		return CreateImplementation<BufferD3D12...>(out buffer, bufferDesc);
+	}
+
+	public Result CreateTexture(TextureD3D12Desc textureDesc, out Texture texture)
+	{
+		return CreateImplementation<TextureD3D12...>(out texture, textureDesc);
+	}
+
+	public Result CreateMemory(MemoryD3D12Desc memoryDesc, out Memory memory)
+	{
+		return CreateImplementation<MemoryD3D12...>(out memory, memoryDesc);
+	}
+
+	public override void DestroyCommandAllocator(CommandAllocator commandAllocator)
+	{
+		Deallocate!(GetAllocator(), (CommandAllocatorD3D12)commandAllocator);
+	}
+
+	public override void DestroyDescriptorPool(DescriptorPool descriptorPool)
+	{
+		Deallocate!(GetAllocator(), (DescriptorPoolD3D12)descriptorPool);
+	}
+
+	public override void DestroyBuffer(Buffer buffer)
+	{
+		Deallocate!(GetAllocator(), (BufferD3D12)buffer);
+	}
+
+	public override void DestroyTexture(Texture texture)
+	{
+		Deallocate!(GetAllocator(), (TextureD3D12)texture);
+	}
+
+	public override void DestroyDescriptor(Descriptor descriptor)
+	{
+		Deallocate!(GetAllocator(), (DescriptorD3D12)descriptor);
+	}
+
+	public override void DestroyPipelineLayout(PipelineLayout pipelineLayout)
+	{
+		Deallocate!(GetAllocator(), (PipelineLayoutD3D12)pipelineLayout);
+	}
+
+	public override void DestroyPipeline(Pipeline pipeline)
+	{
+		Deallocate!(GetAllocator(), (PipelineD3D12)pipeline);
+	}
+
+	public override void DestroyFrameBuffer(FrameBuffer frameBuffer)
+	{
+		Deallocate!(GetAllocator(), (FrameBufferD3D12)frameBuffer);
+	}
+
+	public override void DestroyQueryPool(QueryPool queryPool)
+	{
+		Deallocate!(GetAllocator(), (QueryPoolD3D12)queryPool);
+	}
+
+	public override void DestroyQueueSemaphore(QueueSemaphore queueSemaphore)
+	{
+		Deallocate!(GetAllocator(), (QueueSemaphoreD3D12)queueSemaphore);
+	}
+
+	public override void DestroyDeviceSemaphore(DeviceSemaphore deviceSemaphore)
+	{
+		Deallocate!(GetAllocator(), (DeviceSemaphoreD3D12)deviceSemaphore);
+	}
+
+	public override void DestroyCommandBuffer(CommandBuffer commandBuffer)
+	{
+		Deallocate!(GetAllocator(), (CommandBufferD3D12)commandBuffer);
+	}
+
+	public override void DestroySwapChain(SwapChain swapChain)
+	{
+		Deallocate!(GetAllocator(), (SwapChainD3D12)swapChain);
+	}
+
+	public override void DestroyAccelerationStructure(AccelerationStructure accelerationStructure)
+	{
+		Deallocate!(GetAllocator(), (AccelerationStructureD3D12)accelerationStructure);
+	}
+
+	public override Result GetDisplays(Display** displays, ref uint32 displayNum)
+	{
+		HRESULT result = S_OK;
+
+		if (displays == null || displayNum == 0)
+		{
+			uint32 i = 0;
+			for (; result != DXGI_ERROR_NOT_FOUND; i++)
+			{
+				ComPtr<IDXGIOutput> output;
+				result = m_Adapter.EnumOutputs(i, &output);
+			}
+
+			displayNum = i;
+			return Result.SUCCESS;
+		}
+
+		uint32 i = 0;
+		for (; result != DXGI_ERROR_NOT_FOUND && i < displayNum; i++)
+		{
+			ComPtr<IDXGIOutput> output;
+			result = m_Adapter.EnumOutputs(i, &output);
+			if (result != DXGI_ERROR_NOT_FOUND)
+				displays[i] = (Display*)(void*)(int)(i + 1);
+		}
+
+		for (; i < displayNum; i++)
+			displays[i] = null;
+
+		return Result.SUCCESS;
+	}
+
+	public override Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height)
+	{
+		Display* address = &display;
+
+		if (address == null)
+			return Result.UNSUPPORTED;
+
+		readonly uint32 index = (*(uint32*)address) - 1;
+
+		ComPtr<IDXGIOutput> output = null;
+		HRESULT result = m_Adapter.EnumOutputs(index, &output);
+
+		if (FAILED(result))
+			return Result.UNSUPPORTED;
+
+		DXGI_OUTPUT_DESC outputDesc = .();
+		result = output.GetDesc(&outputDesc);
+
+		if (FAILED(result))
+			return Result.UNSUPPORTED;
+
+		MONITORINFO monitorInfo = .();
+		monitorInfo.cbSize = sizeof(decltype(monitorInfo));
+
+		if (GetMonitorInfoA(outputDesc.Monitor, &monitorInfo) == 0)
+			return Result.UNSUPPORTED;
+
+		readonly RECT rect = monitorInfo.rcMonitor;
+
+		width = uint16(rect.right - rect.left);
+		height = uint16(rect.bottom - rect.top);
+
+		return Result.SUCCESS;
+	}
+
+	public override Result AllocateMemory(uint32 physicalDeviceMask, uint32 memoryType, uint64 size, out Memory memory)
+	{
+		return CreateImplementation<MemoryD3D12...>(out memory, memoryType, size);
+	}
+
+	public override Result BindBufferMemory(BufferMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	{
+		for (uint32 i = 0; i < memoryBindingDescNum; i++)
+		{
+			Result result = ((BufferD3D12)memoryBindingDescs[i].buffer).BindMemory((MemoryD3D12)memoryBindingDescs[i].memory, memoryBindingDescs[i].offset);
+			if (result != Result.SUCCESS)
+				return result;
+		}
+
+		return Result.SUCCESS;
+	}
+
+	public override Result BindTextureMemory(TextureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	{
+		for (uint32 i = 0; i < memoryBindingDescNum; i++)
+		{
+			Result result = ((TextureD3D12)memoryBindingDescs[i].texture).BindMemory((MemoryD3D12)memoryBindingDescs[i].memory, memoryBindingDescs[i].offset);
+			if (result != Result.SUCCESS)
+				return result;
+		}
+
+		return Result.SUCCESS;
+	}
+
+	public override Result BindAccelerationStructureMemory(AccelerationStructureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	{
+		for (uint32 i = 0; i < memoryBindingDescNum; i++)
+		{
+			Result result = ((AccelerationStructureD3D12)memoryBindingDescs[i].accelerationStructure).BindMemory(memoryBindingDescs[i].memory, memoryBindingDescs[i].offset);
+			if (result != Result.SUCCESS)
+				return result;
+		}
+
+		return Result.SUCCESS;
+	}
+
+	public override void FreeMemory(Memory memory)
+	{
+		Deallocate!(GetAllocator(), (MemoryD3D12)memory);
+	}
+
+	public override FormatSupportBits GetFormatSupport(Format format)
+	{
+		readonly uint32 offset = Math.Min((uint32)format, (uint32)D3D_FORMAT_SUPPORT_TABLE.Count - 1);
+
+		return D3D_FORMAT_SUPPORT_TABLE[offset];
+	}
+
+	public override uint32 CalculateAllocationNumber(nri.Helpers.ResourceGroupDesc resourceGroupDesc)
+	{
+		DeviceMemoryAllocatorHelper allocator = scope .(this, m_Allocator);
+
+		return allocator.CalculateAllocationNumber(resourceGroupDesc);
+	}
+
+	public override Result AllocateAndBindMemory(nri.Helpers.ResourceGroupDesc resourceGroupDesc, Memory* allocations)
+	{
+		DeviceMemoryAllocatorHelper allocator = scope .(this, m_Allocator);
+
+		return allocator.AllocateAndBindMemory(resourceGroupDesc, allocations);
+	}
+
+	public override void Destroy()
+	{
+		bool skipLiveObjectsReporting = m_SkipLiveObjectsReporting;
+		Deallocate!(GetAllocator(), this);
+
+		if (!skipLiveObjectsReporting)
+		{
+			ComPtr<IDXGIDebug1> pDebug = null;
+			HRESULT hr = DXGIGetDebugInterface1(0, IDXGIDebug1.IID, (void**)(&pDebug));
+			if (SUCCEEDED(hr))
+				pDebug.ReportLiveObjects(DXGI_DEBUG_ALL, (DXGI_DEBUG_RLO_FLAGS)((uint32)DXGI_DEBUG_RLO_FLAGS.DXGI_DEBUG_RLO_DETAIL | (uint32)DXGI_DEBUG_RLO_FLAGS.DXGI_DEBUG_RLO_IGNORE_INTERNAL));
+		}
+	}
+}
+
+public static
+{
+	public static Result CreateDeviceD3D12(DeviceCreationD3D12Desc deviceCreationDesc, out Device device)
+	{
+		device = ?;
+		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
+		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
+
+		DeviceD3D12 implementation = Allocate!<DeviceD3D12>(allocator, logger, allocator);
+		readonly Result res = implementation.Create(deviceCreationDesc);
+
+		if (res == Result.SUCCESS)
+		{
+			device = implementation;
+			return Result.SUCCESS;
+		}
+
+		Deallocate!(allocator, implementation);
+		delete allocator;
+		delete logger;
+		return res;
+	}
+
+	public static Result CreateDeviceD3D12(DeviceCreationDesc deviceCreationDesc, out Device device)
+	{
+		device = ?;
+		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
+		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
+
+		ComPtr<IDXGIFactory4> factory = null;
+		HRESULT hr = CreateDXGIFactory2(0, IDXGIFactory4.IID, (void**)(&factory));
+		RETURN_ON_BAD_HRESULT!(logger, hr, "CreateDXGIFactory2() failed, error code: 0x{0:X}.", hr);
+
+		ComPtr<IDXGIAdapter> adapter = null;
+		if (deviceCreationDesc.physicalDeviceGroup != null)
+		{
+			LUID luid = *(LUID*)(uint64*)&deviceCreationDesc.physicalDeviceGroup.luid;
+			hr = factory.EnumAdapterByLuid(luid, IDXGIAdapter.IID, (void**)(&adapter));
+
+			if (FAILED(hr))
+			{
+				delete allocator;
+				delete logger;
+			}
+
+			RETURN_ON_BAD_HRESULT!(logger, hr, "IDXGIFactory4::EnumAdapterByLuid() failed, error code: 0x{0:X}.", hr);
+		}
+		else
+		{
+			hr = factory.EnumAdapters(0, &adapter);
+
+			if (FAILED(hr))
+			{
+				delete allocator;
+				delete logger;
+			}
+			RETURN_ON_BAD_HRESULT!(logger, hr, "IDXGIFactory4::EnumAdapters() failed, error code: 0x{0:X}.", hr);
+		}
+
+		DeviceD3D12 implementation = Allocate!<DeviceD3D12>(allocator, logger, allocator);
+		readonly Result result = implementation.Create(adapter, deviceCreationDesc.enableAPIValidation);
+		if (result != Result.SUCCESS)
+		{
+			Deallocate!(allocator, implementation);
+			delete allocator;
+			delete logger;
+			return result;
+		}
+
+		device = (Device)implementation;
+
+		return Result.SUCCESS;
+	}
+
+	public static void DestroyDeviceD3D12(Device device)
+	{
+		DeviceD3D12 implementation = (DeviceD3D12)device;
+
+
+		DeviceAllocator<uint8> allocator = implementation.GetAllocator();
+		DeviceLogger logger = implementation.GetLogger();
+
+		implementation.Destroy();
+
+		delete allocator;
+		delete logger;
 	}
 }
