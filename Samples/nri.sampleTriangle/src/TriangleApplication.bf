@@ -7,6 +7,7 @@ using System.Diagnostics;
 using nri.Helpers;
 using nri;
 using Detex;
+using nri.sampleFramework;
 namespace nri.sampleTriangle;
 
 internal static
@@ -18,6 +19,7 @@ internal static
 			constantBufferOffset = 300,
 			storageTextureAndBufferOffset = 400
 		};
+
 	public const bool D3D11_COMMANDBUFFER_EMULATION = false;
 	public const uint32 DEFAULT_MEMORY_ALIGNMENT = 16;
 	public const uint32 BUFFERED_FRAME_MAX_NUM = 2;
@@ -46,201 +48,6 @@ internal static
 		}) ~ delete _;
 
 	public static uint16[?] g_IndexData = .(0, 1, 2);
-
-	public static Result<void> LoadTexture(StringView path, ref TextureResource texture)
-	{
-		FileStream fs = scope FileStream();
-		fs.Open(path, .Open, .Read);
-		ImageResult image = ImageResult.FromStream(fs, ColorComponents.RedGreenBlueAlpha);
-
-		Format format = .UNKNOWN;
-		switch (image.Comp) {
-		case .Default:
-			break;
-		case .Grey:
-			format = .R8_UNORM;
-			break;
-		case .GreyAlpha:
-			format = .RG8_UNORM;
-			break;
-		case .RedGreenBlue:
-			format = .RGBA8_UNORM;
-			break;
-		case .RedGreenBlueAlpha:
-			format = .RGBA8_UNORM;
-			break;
-		}
-
-		texture.image = image;
-		texture.data = image.Data;
-		texture.avgColor = .();
-		texture.hash = 100;
-		texture.alphaMode = .OPAQUE;
-		texture.format = format;
-		texture.width = (.)image.Width;
-		texture.height = (.)image.Height;
-		texture.depth = 1;
-		texture.mipNum = 1;
-		texture.arraySize = 1;
-
-		return .();
-	}
-
-	public static uint64 ComputeHash(void* key, uint32 len)
-	{
-		var len;
-		/*readonly*/ uint8* p = (uint8*)key;
-		uint64 result = 14695981039346656037uL;
-		while (len-- > 0)
-			result = (result ^ (*p++)) * 1099511628211uL;
-
-		return result;
-	}
-
-	struct FormatMapping : this(uint32 detexFormat, Format nriFormat);
-
-	private const FormatMapping[?] formatTable = .( // Uncompressed formats.
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_RGB8, Format.UNKNOWN),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_RGBA8, Format.RGBA8_UNORM),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_R8, Format.R8_UNORM),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_SIGNED_R8, Format.R8_SNORM),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_RG8, Format.RG8_UNORM),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_SIGNED_RG8, Format.RG8_SNORM),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_R16, Format.R16_UNORM),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_SIGNED_R16, Format.R16_SNORM),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_RG16, Format.RG16_UNORM),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_SIGNED_RG16, Format.RG16_SNORM),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_RGB16, Format.UNKNOWN),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_RGBA16, Format.RGBA16_UNORM),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_FLOAT_R16, Format.R16_SFLOAT),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_FLOAT_RG16, Format.RG16_SFLOAT),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_FLOAT_RGB16, Format.UNKNOWN),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_FLOAT_RGBA16, Format.RGBA16_SFLOAT),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_FLOAT_R32, Format.R32_SFLOAT),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_FLOAT_RG32, Format.RG32_SFLOAT),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_FLOAT_RGB32, Format.RGB32_SFLOAT),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_FLOAT_RGBA32, Format.RGBA32_SFLOAT),
-		.((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_A8, Format.UNKNOWN), // Compressed formats.
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_BC1, Format.BC1_RGBA_UNORM),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_BC1A, Format.UNKNOWN),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_BC2, Format.BC2_RGBA_UNORM),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_BC3, Format.BC3_RGBA_UNORM),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_RGTC1, Format.BC4_R_UNORM),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_SIGNED_RGTC1, Format.BC4_R_SNORM),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_RGTC2, Format.BC5_RG_UNORM),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_SIGNED_RGTC2, Format.BC5_RG_SNORM),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_BPTC_FLOAT, Format.BC6H_RGB_UFLOAT),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_BPTC_SIGNED_FLOAT, Format.BC6H_RGB_SFLOAT),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_BPTC, Format.BC7_RGBA_UNORM),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_ETC1, Format.UNKNOWN),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_ETC2, Format.UNKNOWN),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_ETC2_PUNCHTHROUGH, Format.UNKNOWN),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_ETC2_EAC, Format.UNKNOWN),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_EAC_R11, Format.UNKNOWN),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_EAC_SIGNED_R11, Format.UNKNOWN),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_EAC_RG11, Format.UNKNOWN),
-		.((.)DETEX_TEXTURE_FORMAT.DETEX_TEXTURE_FORMAT_EAC_SIGNED_RG11, Format.UNKNOWN)
-		);
-
-	public static Format GetFormatNRI(uint32 detexFormat)
-	{
-		for (var entry in ref formatTable)
-		{
-			if (entry.detexFormat == detexFormat)
-				return entry.nriFormat;
-		}
-
-		return Format.UNKNOWN;
-	}
-
-	public static Result<void> LoadTexture(StringView path, DetexTextureResource texture, bool computeAvgColorAndAlphaMode = false)
-	{
-		detexTexture** dTexture = null;
-		int32 mipNum = 0;
-
-		if (!Detex.detexLoadTextureFileWithMipmaps(path.ToScopeCStr!(), 32, &dTexture, &mipNum))
-		{
-			Debug.WriteLine("ERROR: Can't load texture '{}'", path);
-
-			return .Err;
-		}
-
-		texture.texture = dTexture;
-		texture.name.Set(path);
-		texture.hash = ComputeHash(path.ToScopeCStr!(), (uint32)path.Length);
-		texture.format = GetFormatNRI(dTexture[0].format);
-		texture.width = (uint16)dTexture[0].width;
-		texture.height = (uint16)dTexture[0].height;
-		texture.mipNum = (uint16)mipNum;
-
-		// TODO: detex doesn't support cubemaps and 3D textures
-		texture.arraySize = 1;
-		texture.depth = 1;
-
-		texture.alphaMode = AlphaMode.OPAQUE;
-		if (computeAvgColorAndAlphaMode)
-		{
-			// Alpha mode
-			if (texture.format == nri.Format.BC1_RGBA_UNORM || texture.format == nri.Format.BC1_RGBA_SRGB)
-			{
-				bool hasTransparency = false;
-				for (int i = mipNum - 1; i >= 0 && !hasTransparency; i--)
-				{
-					readonly uint size = Detex.detexTextureSize((.)dTexture[i].width_in_blocks, (.)dTexture[i].height_in_blocks, dTexture[i].format);
-					/*readonly*/ uint8* bc1 = dTexture[i].data;
-
-					for (uint j = 0; j < size && !hasTransparency; j += 8)
-					{
-						readonly uint16* c = (uint16*)bc1;
-						if (c[0] <= c[1])
-						{
-							readonly uint32 bits = *(uint32*)(bc1 + 4);
-							for (uint32 k = 0; k < 32 && !hasTransparency; k += 2)
-								hasTransparency = ((bits >> k) & 0x3) == 0x3;
-						}
-						bc1 += 8;
-					}
-				}
-
-				if (hasTransparency)
-					texture.alphaMode = AlphaMode.PREMULTIPLIED;
-			}
-
-			// Decompress last mip
-			List<uint8> image = scope .();
-			detexTexture* lastMip = dTexture[mipNum - 1];
-			uint8* rgba8 = lastMip.data;
-			if (lastMip.format != (.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_RGBA8)
-			{
-				image.Resize(lastMip.width * lastMip.height * (.)Detex.detexGetPixelSize((.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_RGBA8));
-				// Converts to RGBA8 if the texture is not compressed
-				Detex.detexDecompressTextureLinear(lastMip, image.Ptr, (.)DETEX_PIXEL_FORMAT.DETEX_PIXEL_FORMAT_RGBA8);
-				rgba8 = image.Ptr;
-			}
-
-			// Average color
-			ColorRGBA avgColor = .();
-			readonly int pixelNum = lastMip.width * lastMip.height;
-			for (int i = 0; i < pixelNum; i++)
-				avgColor = avgColor + ColorRGBA.FromRgba(*(uint32*)(rgba8 + i * 4));
-
-			avgColor = (avgColor / (float)pixelNum);
-			texture.avgColor = avgColor;
-
-			if (texture.alphaMode != AlphaMode.PREMULTIPLIED && avgColor.r < 254.5f / 255.0f)
-				texture.alphaMode = avgColor.r == 0.0f ? AlphaMode.OFF : AlphaMode.TRANSPARENT;
-
-			// Useful to find a texture which is TRANSPARENT but needs to be OPAQUE or PREMULTIPLIED
-			/*if (texture.alphaMode == AlphaMode.TRANSPARENT || texture.alphaMode == AlphaMode.OFF)
-			{
-				char s[1024];
-				sprintf(s, "%s: %s\n", texture.alphaMode == AlphaMode.OFF ? "OFF" : "TRANSPARENT", path.c_str());
-				OutputDebugStringA(s);
-			}*/
-		}
-
-		return .Ok;
-	}
 }
 
 struct BackBuffer
@@ -276,6 +83,8 @@ struct Vertex
 
 class TriangleApplication : SDLApplication
 {
+	private const GraphicsAPI GraphicsAPI = .D3D12;
+
 	private Device mDevice = null;
 
 	private SwapChain mSwapChain = null;
@@ -317,14 +126,26 @@ class TriangleApplication : SDLApplication
 
 		DeviceCreationDesc deviceDesc = .()
 			{
-				graphicsAPI = .VULKAN,
+				graphicsAPI = GraphicsAPI,
 				enableAPIValidation = true,
 				enableNRIValidation = false,
 				D3D11CommandBufferEmulation = D3D11_COMMANDBUFFER_EMULATION,
 				spirvBindingOffsets = SPIRV_BINDING_OFFSETS
 			};
 
-		Result result = nri.vulkan.CreateDeviceVK(deviceDesc, out mDevice);
+		Result result = .SUCCESS;
+
+		if (GraphicsAPI == .VULKAN)
+		{
+			result = nri.vulkan.CreateDeviceVK(deviceDesc, out mDevice);
+		} else if (GraphicsAPI == .D3D12)
+		{
+			result = nri.d3d12.CreateDeviceD3D12(deviceDesc, out mDevice);
+		} else
+		{
+			Runtime.FatalError(scope $"GraphicsAPI {GraphicsAPI} is not supported.");
+		}
+
 		if (result != .SUCCESS)
 		{
 			Debug.WriteLine("Failed to create Device");
@@ -338,7 +159,16 @@ class TriangleApplication : SDLApplication
 	{
 		if (mDevice != null)
 		{
-			nri.vulkan.DestroyDeviceVK(mDevice);
+			if (GraphicsAPI == .VULKAN)
+			{
+				nri.vulkan.DestroyDeviceVK(mDevice);
+			} else if (GraphicsAPI == .D3D12)
+			{
+				nri.d3d12.DestroyDeviceD3D12(mDevice);
+			} else
+			{
+				Runtime.FatalError(scope $"GraphicsAPI {GraphicsAPI} is not supported.");
+			}
 			mDevice = null;
 		}
 
@@ -358,13 +188,15 @@ class TriangleApplication : SDLApplication
 
 		List<uint8> fragmentShaderByteCode = scope .();
 
+		ShaderCompilerOutputType outputType = GraphicsAPI == .VULKAN ? .SPIRV : .DXIL;
+
 		Result<void> compileResult = compiler.CompileShader(.()
 			{
 				shaderPath = "shaders/Triangle.fs.hlsl",
 				shaderStage = .FRAGMENT,
 				shaderModel = "6_5",
 				entryPoint = "main",
-				outputType = .SPIRV,
+				outputType = outputType,
 				spirvBindingOffsets = SPIRV_BINDING_OFFSETS
 			}, fragmentShaderByteCode);
 
@@ -381,7 +213,7 @@ class TriangleApplication : SDLApplication
 				shaderStage = .VERTEX,
 				shaderModel = "6_5",
 				entryPoint = "main",
-				outputType = .SPIRV,
+				outputType = outputType,
 				spirvBindingOffsets = SPIRV_BINDING_OFFSETS
 			}, vertexShaderByteCode);
 
@@ -464,7 +296,7 @@ class TriangleApplication : SDLApplication
 			descriptorRangeTexture[0] = .() { baseRegisterIndex = 0, descriptorNum = 1, descriptorType = DescriptorType.TEXTURE, visibility = ShaderStage.FRAGMENT };
 			descriptorRangeTexture[1] = .() { baseRegisterIndex = 0, descriptorNum = 1, descriptorType = DescriptorType.SAMPLER, visibility = ShaderStage.FRAGMENT };
 
-			DescriptorSetDesc[] descriptorSetDescs = scope:: .
+			DescriptorSetDesc[] descriptorSetDescs = scope .
 				(
 				.() { ranges = &descriptorRangeConstant, rangeNum = descriptorRangeConstant.Count },
 				.() { ranges = &descriptorRangeTexture, rangeNum = descriptorRangeTexture.Count }
@@ -683,12 +515,22 @@ class TriangleApplication : SDLApplication
 			m_TextureDescriptorSet.UpdateDescriptorRanges(WHOLE_DEVICE_GROUP, 0, descriptorRangeUpdateDescs.Count, &descriptorRangeUpdateDescs);
 
 			// Constant buffer
+			int i = 0;
 			for (ref Frame frame in ref mFrames)
 			{
+				if(i == 0){
+					int x = 1;
+				}
+				if(i == 1){
+					int x = 1;
+				}
 				m_DescriptorPool.AllocateDescriptorSets(m_PipelineLayout, 0, &frame.constantBufferDescriptorSet, 1, WHOLE_DEVICE_GROUP, 0);
 				if (result != .SUCCESS)
 					return .Err;
-
+				i++;
+				if(i == 2){
+					int x = 1;
+				}
 				DescriptorRangeUpdateDesc descriptorRangeUpdateDesc = .() { descriptors = &frame.constantBufferView, descriptorNum = 1 };
 				frame.constantBufferDescriptorSet.UpdateDescriptorRanges(WHOLE_DEVICE_GROUP, 0, 1, &descriptorRangeUpdateDesc);
 			}
@@ -883,8 +725,10 @@ class TriangleApplication : SDLApplication
 		mSwapChain.Present(ref mReleaseSemaphore);
 	}
 
-	protected override void OnFrameEnd()
+	protected override void OnFrame()
 	{
+		base.OnFrame();
+
 		PrepareFrame(mFrameNum);
 		RenderFrame(mFrameNum);
 		mFrameNum++;

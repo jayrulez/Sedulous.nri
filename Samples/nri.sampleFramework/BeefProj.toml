@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", nri = "*"}
+Dependencies = {corlib = "*", nri = "*", Detex = "*", StbImageBeef = "*", Dxc-Beef = "*"}
 
 [Project]
 Name = "nri.sampleFramework"

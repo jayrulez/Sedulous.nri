@@ -93,6 +93,7 @@ public static
 #else
 			delete instance;
 #endif
+			//instance = default;
 		}
 	}
 

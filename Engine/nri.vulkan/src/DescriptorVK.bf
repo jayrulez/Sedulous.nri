@@ -376,6 +376,7 @@ class DescriptorVK : Descriptor
 	{
 		return m_BufferViews[physicalDeviceIndex];
 	}
+
 	public VkImageView GetTextureDescriptorVK(uint32 physicalDeviceIndex, ref VkImageSubresourceRange subresourceRange)
 	{
 		GetImageSubresourceRange(ref subresourceRange);
