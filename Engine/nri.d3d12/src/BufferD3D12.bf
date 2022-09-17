@@ -2,6 +2,7 @@ using Win32.Graphics.Direct3D12;
 using nri.d3dcommon;
 using System;
 using Win32.Foundation;
+using Win32;
 namespace nri.d3d12;
 
 class BufferD3D12 : Buffer
@@ -18,10 +19,10 @@ class BufferD3D12 : Buffer
 
 	public ~this()
 	{
-		RELEASE!(m_Buffer);
+		m_Buffer.Dispose();
 	}
 
-	public static implicit operator ID3D12Resource*(Self self) => self.m_Buffer /*.GetInterface()*/;
+	public static implicit operator ID3D12Resource*(Self self) => self.m_Buffer.GetInterface();
 
 	public DeviceD3D12 GetDevice() => m_Device;
 
@@ -112,11 +113,11 @@ class BufferD3D12 : Buffer
 
 	public uint64 GetByteSize() => m_BufferDesc.Width;
 	public uint32 GetStructureStride() => m_StructureStride;
-	public D3D12_GPU_VIRTUAL_ADDRESS GetPointerGPU() => m_Buffer.GetGPUVirtualAddress();
+	public D3D12_GPU_VIRTUAL_ADDRESS GetPointerGPU() => m_Buffer->GetGPUVirtualAddress();
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_Buffer, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_Buffer, scope String(name));
 	}
 
 	public override void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
@@ -133,7 +134,7 @@ class BufferD3D12 : Buffer
 			size =  m_BufferDesc.Width;
 
 		D3D12_RANGE range = .() { Begin = (uint)offset, End = (uint)(offset + size) };
-		HRESULT hr = m_Buffer.Map(0, &range, (void**)&data);
+		HRESULT hr = m_Buffer->Map(0, &range, (void**)&data);
 		if (FAILED(hr))
 			REPORT_ERROR(m_Device.GetLogger(), "ID3D12Resource::Map() failed, error code: 0x{0:X}.", hr);
 
@@ -142,6 +143,6 @@ class BufferD3D12 : Buffer
 
 	public override void Unmap()
 	{
-		m_Buffer.Unmap(0, null);
+		m_Buffer->Unmap(0, null);
 	}
 }

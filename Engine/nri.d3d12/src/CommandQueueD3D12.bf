@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using nri.Helpers;
 using Win32.Foundation;
+using Win32;
 namespace nri.d3d12;
 
 class CommandQueueD3D12 : CommandQueue
@@ -19,10 +20,10 @@ class CommandQueueD3D12 : CommandQueue
 	}
 	public ~this()
 	{
-		RELEASE!(m_CommandQueue);
+		m_CommandQueue.Dispose();
 	}
 
-	public static implicit operator ID3D12CommandQueue*(Self self) => self.m_CommandQueue /*.GetInterface()*/;
+	public static implicit operator ID3D12CommandQueue*(Self self) => self.m_CommandQueue.GetInterface();
 
 	public DeviceD3D12 GetDevice() => m_Device;
 
@@ -63,7 +64,7 @@ class CommandQueueD3D12 : CommandQueue
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_CommandQueue, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_CommandQueue, scope String(name));
 	}
 
 	public override void SubmitWork(WorkSubmissionDesc workSubmissionDesc, DeviceSemaphore deviceSemaphore)
@@ -78,7 +79,7 @@ class CommandQueueD3D12 : CommandQueue
 			for (uint32 j = 0; j < workSubmissionDesc.commandBufferNum; j++)
 				commandLists.Add(((CommandBufferD3D12)workSubmissionDesc.commandBuffers[j]));
 
-			m_CommandQueue.ExecuteCommandLists((uint32)commandLists.Count, (ID3D12CommandList**)commandLists.Ptr);
+			m_CommandQueue->ExecuteCommandLists((uint32)commandLists.Count, (ID3D12CommandList**)commandLists.Ptr);
 		}
 
 		for (uint32 i = 0; i < workSubmissionDesc.signalNum; i++)

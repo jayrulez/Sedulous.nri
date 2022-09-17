@@ -65,9 +65,9 @@ class SwapChainD3D12 : SwapChain
 		if (m_IsFullscreenEnabled)
 		{
 			BOOL fullscreen = /*FALSE*/ 0;
-			m_SwapChain.GetFullscreenState(&fullscreen, null);
+			m_SwapChain->GetFullscreenState(&fullscreen, null);
 			if (fullscreen != 0)
-				m_SwapChain.SetFullscreenState( /*FALSE*/0, null);
+				m_SwapChain->SetFullscreenState( /*FALSE*/0, null);
 		}
 
 		Deallocate!(m_Device.GetAllocator(), m_TexturePointer);
@@ -79,7 +79,8 @@ class SwapChainD3D12 : SwapChain
 
 		Deallocate!(m_Device.GetAllocator(), m_Textures);
 
-		RELEASE!(m_SwapChain);
+		m_CommandQueue.Dispose();
+		m_SwapChain.Dispose();
 	}
 
 	public DeviceD3D12 GetDevice() => m_Device;
@@ -89,21 +90,24 @@ class SwapChainD3D12 : SwapChain
 		var swapChainDesc;
 		ID3D12Device* device = m_Device;
 
-		ComPtr<IDXGIFactory4> factory = null;
+		ComPtr<IDXGIFactory4> factory = default;
+		//defer factory.Dispose();
 		HRESULT hr = CreateDXGIFactory2(0, IDXGIFactory4.IID, (void**)(&factory));
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "CreateDXGIFactory2(), error code: 0x{0:X}.", hr);
 
-		ComPtr<IDXGIAdapter> adapter = null;
-		hr = factory.EnumAdapterByLuid(device.GetAdapterLuid(), IDXGIAdapter.IID, (void**)(&adapter));
+		ComPtr<IDXGIAdapter> adapter = default;
+		//defer adapter.Dispose();
+		hr = factory->EnumAdapterByLuid(device.GetAdapterLuid(), IDXGIAdapter.IID, (void**)(&adapter));
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGIFactory4::EnumAdapterByLuid(), error code: 0x{0:X}.", hr);
 
 		m_IsTearingAllowed = false;
-		ComPtr<IDXGIFactory5> dxgiFactory5 = null;
-		hr = factory.QueryInterface(IDXGIFactory5.IID, (void**)(&dxgiFactory5));
+		ComPtr<IDXGIFactory5> dxgiFactory5 = default;
+		//defer dxgiFactory5.Dispose();
+		hr = factory->QueryInterface(IDXGIFactory5.IID, (void**)(&dxgiFactory5));
 		if (SUCCEEDED(hr))
 		{
 			uint32 tearingSupport = 0;
-			hr = dxgiFactory5.CheckFeatureSupport(.DXGI_FEATURE_PRESENT_ALLOW_TEARING, &tearingSupport, sizeof(decltype(tearingSupport)));
+			hr = dxgiFactory5->CheckFeatureSupport(.DXGI_FEATURE_PRESENT_ALLOW_TEARING, &tearingSupport, sizeof(decltype(tearingSupport)));
 			m_IsTearingAllowed = (SUCCEEDED(hr) && tearingSupport > 0) ? true : false;
 		}
 
@@ -132,41 +136,44 @@ class SwapChainD3D12 : SwapChain
 		swapChainDesc1.Flags = m_IsTearingAllowed ? (.)DXGI_SWAP_CHAIN_FLAG.DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING : 0;
 		swapChainDesc1.Scaling = .DXGI_SCALING_NONE;
 
-		ComPtr<IDXGISwapChain1> swapChain = null;
-		hr = factory.CreateSwapChainForHwnd((ID3D12CommandQueue*)commandQueueD3D12, window, &swapChainDesc1, null, null, &swapChain);
+		ComPtr<IDXGISwapChain1> swapChain = default;
+		defer swapChain.Dispose();
+		hr = factory->CreateSwapChainForHwnd((ID3D12CommandQueue*)commandQueueD3D12, window, &swapChainDesc1, null, null, swapChain.GetAddressOf());
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGIFactory2::CreateSwapChainForHwnd() failed, error code: 0x{0:X}.", hr);
 
-		hr = factory.MakeWindowAssociation(window, DXGI_MWA_NO_ALT_ENTER);
+		hr = factory->MakeWindowAssociation(window, DXGI_MWA_NO_ALT_ENTER);
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "CreateSwapChainForHwnd::MakeWindowAssociation() failed, error code: 0x{0:X}.", hr);
 
-		hr = swapChain.QueryInterface(IDXGISwapChain4.IID, (void**)(&m_SwapChain));
+		hr = swapChain->QueryInterface(__uuidof(m_SwapChain), (void**)m_SwapChain.GetAddressOf());
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1::QueryInterface() failed, error code: 0x{0:X}.", hr);
 
 		uint32 colorSpaceSupport = 0;
-		hr = m_SwapChain.CheckColorSpaceSupport(colorSpace, &colorSpaceSupport);
+		hr = m_SwapChain->CheckColorSpaceSupport(colorSpace, &colorSpaceSupport);
 
 		if (!(colorSpaceSupport & (.)DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG.DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT != 0))
 			hr = E_FAIL;
 
 		if (SUCCEEDED(hr))
-			hr = m_SwapChain.SetColorSpace1(colorSpace);
+			hr = m_SwapChain->SetColorSpace1(colorSpace);
 
 		if (FAILED(hr))
 			REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain3::SetColorSpace1() failed, error code: 0x{0:X}.", hr);
 
 		if (swapChainDesc.display != null)
 		{
-			ComPtr<IDXGIOutput> output = null;
-			if (!m_Device.GetOutput(ref swapChainDesc.display, ref output))
+			using (ComPtr<IDXGIOutput> output = default)
 			{
-				REPORT_ERROR(m_Device.GetLogger(), "Failed to get IDXGIOutput for the specified display.");
-				return Result.UNSUPPORTED;
+				if (!m_Device.GetOutput(ref swapChainDesc.display, ref output))
+				{
+					REPORT_ERROR(m_Device.GetLogger(), "Failed to get IDXGIOutput for the specified display.");
+					return Result.UNSUPPORTED;
+				}
 			}
 
-			hr = m_SwapChain.SetFullscreenState( TRUE, null);
+			hr = m_SwapChain->SetFullscreenState(TRUE, null);
 			RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1::SetFullscreenState() failed, error code: 0x{0:X}.", hr);
 
-			hr = m_SwapChain.ResizeBuffers(swapChainDesc1.BufferCount, swapChainDesc1.Width, swapChainDesc1.Height, swapChainDesc1.Format, swapChainDesc1.Flags);
+			hr = m_SwapChain->ResizeBuffers(swapChainDesc1.BufferCount, swapChainDesc1.Width, swapChainDesc1.Height, swapChainDesc1.Format, swapChainDesc1.Flags);
 			RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1::ResizeBuffers() failed, error code: 0x{0:X}.", hr);
 
 			m_IsTearingAllowed = false;
@@ -178,16 +185,18 @@ class SwapChainD3D12 : SwapChain
 		m_Format = g_SwapChainTextureFormat[(uint32)swapChainDesc.format];
 		for (uint32 i = 0; i < swapChainDesc.textureNum; i++)
 		{
-			ComPtr<ID3D12Resource> resource = null;
-			hr = m_SwapChain.GetBuffer(i, ID3D12Resource.IID, (void**)(&resource));
-			if (FAILED(hr))
+			using (ComPtr<ID3D12Resource> resource = default)
 			{
-				REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain4::GetBuffer() failed, error code: 0x{0:X}.", hr);
-				return Result.FAILURE;
-			}
+				hr = m_SwapChain->GetBuffer(i, ID3D12Resource.IID, (void**)(&resource));
+				if (FAILED(hr))
+				{
+					REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain4::GetBuffer() failed, error code: 0x{0:X}.", hr);
+					return Result.FAILURE;
+				}
 
-			m_Textures.Add(new .(m_Device));
-			m_Textures[i].Initialize(resource);
+				m_Textures.Add(new .(m_Device));
+				m_Textures[i].Initialize(resource);
+			}
 		}
 
 		m_TexturePointer.Resize(swapChainDesc.textureNum);
@@ -201,7 +210,7 @@ class SwapChainD3D12 : SwapChain
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_SwapChain, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_SwapChain, scope String(name));
 	}
 
 	public override Texture* GetTextures(ref uint32 textureNum, ref Format format)
@@ -216,21 +225,21 @@ class SwapChainD3D12 : SwapChain
 	{
 		((QueueSemaphoreD3D12)textureReadyForRender).Signal(m_CommandQueue);
 
-		return m_SwapChain.GetCurrentBackBufferIndex();
+		return m_SwapChain->GetCurrentBackBufferIndex();
 	}
 
 	public override Result Present(ref QueueSemaphore textureReadyForPresent)
 	{
 		((QueueSemaphoreD3D12)textureReadyForPresent).Wait(m_CommandQueue);
 
-		BOOL fullscreen = /*FALSE*/ 0;
-		m_SwapChain.GetFullscreenState(&fullscreen, null);
+		BOOL fullscreen = FALSE;
+		m_SwapChain->GetFullscreenState(&fullscreen, null);
 		if (fullscreen != BOOL(m_IsFullscreenEnabled ? 1 : 0))
 			return Result.SWAPCHAIN_RESIZE;
 
 		uint32 flags = (m_SwapChainDesc.verticalSyncInterval == 0 && m_IsTearingAllowed) ? DXGI_PRESENT_ALLOW_TEARING : 0;
-		
-		readonly HRESULT result = m_SwapChain.Present(m_SwapChainDesc.verticalSyncInterval, flags);
+
+		readonly HRESULT result = m_SwapChain->Present(m_SwapChainDesc.verticalSyncInterval, flags);
 
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), result, "Can't present the swapchain: IDXGISwapChain::Present() returned {0}.", (int32)result);
 
@@ -253,7 +262,7 @@ class SwapChainD3D12 : SwapChain
 		data.MaxContentLightLevel = uint16(hdrMetadata.contentLightLevelMax);
 		data.MaxFrameAverageLightLevel = uint16(hdrMetadata.frameAverageLightLevelMax);
 
-		HRESULT hr = m_SwapChain.SetHDRMetaData(.DXGI_HDR_METADATA_TYPE_HDR10, sizeof(DXGI_HDR_METADATA_HDR10), &data);
+		HRESULT hr = m_SwapChain->SetHDRMetaData(.DXGI_HDR_METADATA_TYPE_HDR10, sizeof(DXGI_HDR_METADATA_HDR10), &data);
 		if (FAILED(hr))
 		{
 			REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain4::SetHDRMetaData() failed, error code: 0x{0:X}.", hr);

@@ -3,6 +3,7 @@ using Win32.Graphics.Direct3D12;
 using Win32.Foundation;
 using System;
 using System.Diagnostics;
+using Win32;
 namespace nri.d3d12;
 
 class DeviceSemaphoreD3D12 : DeviceSemaphore
@@ -17,10 +18,10 @@ class DeviceSemaphoreD3D12 : DeviceSemaphore
 	}
 	public ~this()
 	{
-		RELEASE!(m_Fence);
+		m_Fence.Dispose();
 	}
 
-	public static implicit operator ID3D12Fence*(Self self) => self.m_Fence /*.GetInterface()*/;
+	public static implicit operator ID3D12Fence*(Self self) => self.m_Fence.GetInterface();
 
 	public DeviceD3D12 GetDevice() => m_Device;
 
@@ -41,18 +42,18 @@ class DeviceSemaphoreD3D12 : DeviceSemaphore
 
 	public void Signal(ID3D12CommandQueue* commandQueue)
 	{
-		commandQueue.Signal(m_Fence, m_SignalValue);
+		commandQueue.Signal(m_Fence.Get(), m_SignalValue);
 	}
 
 	public void Wait()
 	{
-		while (m_Fence.GetCompletedValue() != m_SignalValue) { }
+		while (m_Fence->GetCompletedValue() != m_SignalValue) { }
 
 		m_SignalValue++;
 	}
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_Fence, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_Fence, scope String(name));
 	}
 }

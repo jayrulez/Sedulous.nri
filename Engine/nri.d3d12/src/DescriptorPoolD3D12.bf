@@ -2,6 +2,7 @@ using Win32.Graphics.Direct3D12;
 using System.Collections;
 using nri.d3dcommon;
 using Win32.Foundation;
+using Win32;
 namespace nri.d3d12;
 
 enum DescriptorHeapType : uint32
@@ -34,8 +35,14 @@ class DescriptorPoolD3D12 : DescriptorPool
 
 		Deallocate!(m_Device.GetAllocator(), m_DescriptorSets);
 
-		for(var item in m_DescriptorHeaps){
-		   RELEASE!(item);
+		for(var item in ref m_DescriptorHeapDescs){
+			item.Dispose();
+		}
+
+		for(var item in ref m_DescriptorHeaps){
+			if(item != null)
+		   		//item.Release();
+			item = null;
 		}
 	}
 
@@ -58,7 +65,7 @@ class DescriptorPoolD3D12 : DescriptorPool
 		{
 			if (descriptorHeapSize[i] > 0)
 			{
-				ComPtr<ID3D12DescriptorHeap> descriptorHeap = null;
+				ComPtr<ID3D12DescriptorHeap> descriptorHeap = default;
 				D3D12_DESCRIPTOR_HEAP_DESC desc = .() { Type = (D3D12_DESCRIPTOR_HEAP_TYPE)i, NumDescriptors = descriptorHeapSize[i], Flags = .D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, NodeMask = NRI_TEMP_NODE_MASK };
 				HRESULT hr = ((ID3D12Device*)m_Device).CreateDescriptorHeap(&desc, ID3D12DescriptorHeap.IID, (void**)(&descriptorHeap));
 				if (FAILED(hr))
@@ -68,11 +75,11 @@ class DescriptorPoolD3D12 : DescriptorPool
 				}
 
 				m_DescriptorHeapDescs[i].descriptorHeap = descriptorHeap;
-				m_DescriptorHeapDescs[i].descriptorPointerCPU = descriptorHeap.GetCPUDescriptorHandleForHeapStart().ptr;
-				m_DescriptorHeapDescs[i].descriptorPointerGPU = descriptorHeap.GetGPUDescriptorHandleForHeapStart().ptr;
+				m_DescriptorHeapDescs[i].descriptorPointerCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart().ptr;
+				m_DescriptorHeapDescs[i].descriptorPointerGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart().ptr;
 				m_DescriptorHeapDescs[i].descriptorSize = ((ID3D12Device*)m_Device).GetDescriptorHandleIncrementSize((D3D12_DESCRIPTOR_HEAP_TYPE)i);
 
-				m_DescriptorHeaps[m_DescriptorHeapNum] = descriptorHeap;
+				m_DescriptorHeaps[m_DescriptorHeapNum] = descriptorHeap.Move();
 				m_DescriptorHeapNum++;
 			}
 		}

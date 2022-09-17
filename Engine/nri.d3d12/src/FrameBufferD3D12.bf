@@ -1,5 +1,6 @@
 using System.Collections;
 using Win32.Graphics.Direct3D12;
+using Win32;
 namespace nri.d3d12;
 
 class FrameBufferD3D12 : FrameBuffer
@@ -60,7 +61,7 @@ class FrameBufferD3D12 : FrameBuffer
 	{
 		graphicsCommandList.OMSetRenderTargets(
 			(uint32)m_RenderTargets.Count,
-			&m_RenderTargets[0], /*FALSE*/ 0, m_DepthStencilTarget.ptr != 0 ? &m_DepthStencilTarget : null
+			&m_RenderTargets[0], FALSE, m_DepthStencilTarget.ptr != 0 ? &m_DepthStencilTarget : null
 			);
 
 		if (renderPassBeginFlag == RenderPassBeginFlag.SKIP_FRAME_BUFFER_CLEAR || m_ClearDescs.IsEmpty)

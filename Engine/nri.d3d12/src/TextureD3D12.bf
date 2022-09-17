@@ -2,6 +2,7 @@ using Win32.Graphics.Direct3D12;
 using nri.d3dcommon;
 using System;
 using Win32.Foundation;
+using Win32;
 namespace nri.d3d12;
 
 class TextureD3D12 : Texture
@@ -18,10 +19,10 @@ class TextureD3D12 : Texture
 
 	public ~this()
 	{
-		RELEASE!(m_Texture);
+		m_Texture.Dispose();
 	}
 
-	public static implicit operator ID3D12Resource*(Self self) => self.m_Texture /*.GetInterface()*/;
+	public static implicit operator ID3D12Resource*(Self self) => self.m_Texture.GetInterface();
 
 	public DeviceD3D12 GetDevice() => m_Device;
 
@@ -132,7 +133,7 @@ class TextureD3D12 : Texture
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_Texture, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_Texture, scope String(name));
 	}
 
 	public override void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)

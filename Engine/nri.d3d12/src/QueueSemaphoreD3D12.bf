@@ -2,6 +2,7 @@ using nri.d3dcommon;
 using Win32.Graphics.Direct3D12;
 using Win32.Foundation;
 using System;
+using Win32;
 namespace nri.d3d12;
 
 class QueueSemaphoreD3D12 : QueueSemaphore
@@ -17,7 +18,7 @@ class QueueSemaphoreD3D12 : QueueSemaphore
 
 	public ~this()
 	{
-		RELEASE!(m_Fence);
+		m_Fence.Dispose();
 	}
 
 	public Result Create()
@@ -34,22 +35,22 @@ class QueueSemaphoreD3D12 : QueueSemaphore
 		return Result.SUCCESS;
 	}
 
-	public static implicit operator ID3D12Fence*(Self self) => self.m_Fence /*.GetInterface()*/;
+	public static implicit operator ID3D12Fence*(Self self) => self.m_Fence.GetInterface();
 
 	public DeviceD3D12 GetDevice() => m_Device;
 
 	public void Signal(ID3D12CommandQueue* commandQueue)
 	{
-		commandQueue.Signal(m_Fence, m_SignalValue);
+		commandQueue.Signal(m_Fence.Get(), m_SignalValue);
 	}
 	public void Wait(ID3D12CommandQueue* commandQueue)
 	{
-		commandQueue.Wait(m_Fence, m_SignalValue);
+		commandQueue.Wait(m_Fence.Get(), m_SignalValue);
 		m_SignalValue++;
 	}
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_Fence, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_Fence, scope String(name));
 	}
 }
