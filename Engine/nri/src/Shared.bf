@@ -225,12 +225,11 @@ public static
 	{
 		//MaybeUnused(userArg);
 
-		// todo sed
-#if BF_PLATFORM_WINDOWS
+//#if BF_PLATFORM_WINDOWS
 //	    DebugBreak();
-#else
+//#else
 //	    raise(SIGTRAP);
-#endif
+//#endif
 		System.Diagnostics.Debug.Break();
 	}
 

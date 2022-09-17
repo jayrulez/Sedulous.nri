@@ -100,7 +100,7 @@ class SwapChainD3D12 : SwapChain
 		defer adapter.Dispose();
 
 		hr = factory->EnumAdapterByLuid(device.GetAdapterLuid(), IDXGIAdapter.IID, (void**)(&adapter));
-		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGIFactory4::EnumAdapterByLuid(), error code: 0x{0:X}.", hr);
+		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGIFactory4.EnumAdapterByLuid(), error code: 0x{0:X}.", hr);
 
 		m_IsTearingAllowed = false;
 
@@ -143,13 +143,13 @@ class SwapChainD3D12 : SwapChain
 		ComPtr<IDXGISwapChain1> swapChain = default;
 		defer swapChain.Dispose();
 		hr = factory->CreateSwapChainForHwnd((ID3D12CommandQueue*)commandQueueD3D12, window, &swapChainDesc1, null, null, swapChain.GetAddressOf());
-		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGIFactory2::CreateSwapChainForHwnd() failed, error code: 0x{0:X}.", hr);
+		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGIFactory2.CreateSwapChainForHwnd() failed, error code: 0x{0:X}.", hr);
 
 		hr = factory->MakeWindowAssociation(window, DXGI_MWA_NO_ALT_ENTER);
-		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "CreateSwapChainForHwnd::MakeWindowAssociation() failed, error code: 0x{0:X}.", hr);
+		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "CreateSwapChainForHwnd.MakeWindowAssociation() failed, error code: 0x{0:X}.", hr);
 
 		hr = swapChain->QueryInterface(__uuidof(m_SwapChain), (void**)m_SwapChain.GetAddressOf());
-		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1::QueryInterface() failed, error code: 0x{0:X}.", hr);
+		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1.QueryInterface() failed, error code: 0x{0:X}.", hr);
 
 		uint32 colorSpaceSupport = 0;
 		hr = m_SwapChain->CheckColorSpaceSupport(colorSpace, &colorSpaceSupport);
@@ -161,7 +161,7 @@ class SwapChainD3D12 : SwapChain
 			hr = m_SwapChain->SetColorSpace1(colorSpace);
 
 		if (FAILED(hr))
-			REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain3::SetColorSpace1() failed, error code: 0x{0:X}.", hr);
+			REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain3.SetColorSpace1() failed, error code: 0x{0:X}.", hr);
 
 		if (swapChainDesc.display != null)
 		{
@@ -175,10 +175,10 @@ class SwapChainD3D12 : SwapChain
 			}
 
 			hr = m_SwapChain->SetFullscreenState(TRUE, null);
-			RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1::SetFullscreenState() failed, error code: 0x{0:X}.", hr);
+			RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1.SetFullscreenState() failed, error code: 0x{0:X}.", hr);
 
 			hr = m_SwapChain->ResizeBuffers(swapChainDesc1.BufferCount, swapChainDesc1.Width, swapChainDesc1.Height, swapChainDesc1.Format, swapChainDesc1.Flags);
-			RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1::ResizeBuffers() failed, error code: 0x{0:X}.", hr);
+			RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1.ResizeBuffers() failed, error code: 0x{0:X}.", hr);
 
 			m_IsTearingAllowed = false;
 			m_IsFullscreenEnabled = true;
@@ -194,7 +194,7 @@ class SwapChainD3D12 : SwapChain
 				hr = m_SwapChain->GetBuffer(i, ID3D12Resource.IID, (void**)(&resource));
 				if (FAILED(hr))
 				{
-					REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain4::GetBuffer() failed, error code: 0x{0:X}.", hr);
+					REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain4.GetBuffer() failed, error code: 0x{0:X}.", hr);
 					return Result.FAILURE;
 				}
 
@@ -245,7 +245,7 @@ class SwapChainD3D12 : SwapChain
 
 		readonly HRESULT result = m_SwapChain->Present(m_SwapChainDesc.verticalSyncInterval, flags);
 
-		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), result, "Can't present the swapchain: IDXGISwapChain::Present() returned {0}.", (int32)result);
+		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), result, "Can't present the swapchain: IDXGISwapChain.Present() returned {0}.", (int32)result);
 
 		return Result.SUCCESS;
 	}
@@ -269,7 +269,7 @@ class SwapChainD3D12 : SwapChain
 		HRESULT hr = m_SwapChain->SetHDRMetaData(.DXGI_HDR_METADATA_TYPE_HDR10, sizeof(DXGI_HDR_METADATA_HDR10), &data);
 		if (FAILED(hr))
 		{
-			REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain4::SetHDRMetaData() failed, error code: 0x{0:X}.", hr);
+			REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain4.SetHDRMetaData() failed, error code: 0x{0:X}.", hr);
 			return Result.FAILURE;
 		}
 
