@@ -521,14 +521,14 @@ class DeviceD3D12 : Device
 		{
 			readonly LUID luid = m_Device->GetAdapterLuid();
 
-			ComPtr<IDXGIFactory4> DXGIFactory = default;
-			defer DXGIFactory.Dispose();
+			using(ComPtr<IDXGIFactory4> DXGIFactory = default)
+			{
+				HRESULT result = CreateDXGIFactory(IDXGIFactory4.IID, (void**)(&DXGIFactory));
+				RETURN_ON_BAD_HRESULT!(GetLogger(), result, "Failed to create IDXGIFactory4");
 
-			HRESULT result = CreateDXGIFactory(IDXGIFactory4.IID, (void**)(&DXGIFactory));
-			RETURN_ON_BAD_HRESULT!(GetLogger(), result, "Failed to create IDXGIFactory4");
-
-			result = DXGIFactory->EnumAdapterByLuid(luid, IDXGIAdapter.IID, (void**)(&m_Adapter));
-			RETURN_ON_BAD_HRESULT!(GetLogger(), result, "Failed to find IDXGIAdapter by LUID");
+				result = DXGIFactory->EnumAdapterByLuid(luid, IDXGIAdapter.IID, (void**)(&m_Adapter));
+				RETURN_ON_BAD_HRESULT!(GetLogger(), result, "Failed to find IDXGIAdapter by LUID");
+			}
 		}
 
 	//#ifdef __ID3D12Device5_INTERFACE_DEFINED__
