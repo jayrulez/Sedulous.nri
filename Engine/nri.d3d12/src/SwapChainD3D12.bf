@@ -79,7 +79,7 @@ class SwapChainD3D12 : SwapChain
 
 		Deallocate!(m_Device.GetAllocator(), m_Textures);
 
-		m_SwapChain.Release();
+		RELEASE!(m_SwapChain);
 	}
 
 	public DeviceD3D12 GetDevice() => m_Device;

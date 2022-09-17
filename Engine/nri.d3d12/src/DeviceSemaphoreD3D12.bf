@@ -2,6 +2,7 @@ using nri.d3dcommon;
 using Win32.Graphics.Direct3D12;
 using Win32.Foundation;
 using System;
+using System.Diagnostics;
 namespace nri.d3d12;
 
 class DeviceSemaphoreD3D12 : DeviceSemaphore
@@ -16,7 +17,7 @@ class DeviceSemaphoreD3D12 : DeviceSemaphore
 	}
 	public ~this()
 	{
-		m_Fence.Release();
+		RELEASE!(m_Fence);
 	}
 
 	public static implicit operator ID3D12Fence*(Self self) => self.m_Fence /*.GetInterface()*/;

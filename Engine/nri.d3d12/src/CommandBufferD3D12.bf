@@ -53,10 +53,7 @@ class CommandBufferD3D12 : CommandBuffer
 
 	public ~this()
 	{
-		m_GraphicsCommandList6?.Release();
-		m_GraphicsCommandList4?.Release();
-		m_GraphicsCommandList1?.Release();
-		m_GraphicsCommandList.Release();
+		RELEASE!(m_GraphicsCommandList);
 	}
 
 	public static implicit operator ID3D12GraphicsCommandList*(Self self) => self.m_GraphicsCommandList /*.GetInterface()*/;

@@ -302,8 +302,15 @@ class DeviceD3D12 : Device
 				commandQueueD3D12 = null;
 			}
 		}
-
+		
+		for(var entry in m_DrawIndexedCommandSignatures){
+			entry.value.Release();
+		}
 		Deallocate!(GetAllocator(), m_DrawIndexedCommandSignatures);
+
+		for(var entry in m_DrawCommandSignatures){
+			entry.value.Release();
+		}
 		Deallocate!(GetAllocator(), m_DrawCommandSignatures);
 
 		for (var item in ref m_FreeDescriptors)
@@ -318,7 +325,7 @@ class DeviceD3D12 : Device
 			delete m_FreeDescriptorLocks[i];
 		}
 
-		m_Device.Release();
+		RELEASE!(m_Device);
 	}
 
 	public static implicit operator ID3D12Device*(Self self) => self.m_Device /*.GetInterface()*/;

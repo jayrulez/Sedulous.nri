@@ -18,7 +18,7 @@ class TextureD3D12 : Texture
 
 	public ~this()
 	{
-		m_Texture.Release();
+		RELEASE!(m_Texture);
 	}
 
 	public static implicit operator ID3D12Resource*(Self self) => self.m_Texture /*.GetInterface()*/;

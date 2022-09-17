@@ -33,6 +33,10 @@ class DescriptorPoolD3D12 : DescriptorPool
 			Deallocate!(m_Device.GetAllocator(), m_DescriptorSets[i]);
 
 		Deallocate!(m_Device.GetAllocator(), m_DescriptorSets);
+
+		for(var item in m_DescriptorHeaps){
+		   RELEASE!(item);
+		}
 	}
 
 	public DeviceD3D12 GetDevice() => m_Device;

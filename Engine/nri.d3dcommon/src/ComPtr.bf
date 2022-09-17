@@ -1,3 +1,4 @@
+using Win32.System.Com;
 namespace nri.d3dcommon;
 
 /*using System;
@@ -36,3 +37,14 @@ struct COMPtr<T> : IDisposable where T : IUnknown
 }*/
 
 typealias ComPtr<T> = T*;
+
+public static{
+	public static mixin RELEASE(IUnknown* object){
+		if(object == null)
+			return;
+
+		object.Release();
+
+		//object = null;
+	}
+}

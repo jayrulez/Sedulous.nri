@@ -49,6 +49,7 @@ class QueryPoolD3D12 : QueryPool
 
 	public ~this()
 	{
+		RELEASE!(m_QueryHeap);
 	}
 
 	public static implicit operator ID3D12QueryHeap*(Self self) => self.m_QueryHeap /*.GetInterface()*/;

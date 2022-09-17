@@ -113,6 +113,8 @@ class PipelineLayoutD3D12 : PipelineLayout
 			item.Dispose();
 		}
 		Deallocate!(m_Device.GetAllocator(), m_DescriptorSetMappings);
+
+		RELEASE!(m_RootSignature);
 	}
 
 	public static implicit operator ID3D12RootSignature*(Self self) => self.m_RootSignature /*.GetInterface()*/;

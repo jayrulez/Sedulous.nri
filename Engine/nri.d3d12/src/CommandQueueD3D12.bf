@@ -19,7 +19,7 @@ class CommandQueueD3D12 : CommandQueue
 	}
 	public ~this()
 	{
-		m_CommandQueue.Release();
+		RELEASE!(m_CommandQueue);
 	}
 
 	public static implicit operator ID3D12CommandQueue*(Self self) => self.m_CommandQueue /*.GetInterface()*/;
