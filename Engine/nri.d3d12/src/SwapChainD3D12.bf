@@ -91,18 +91,22 @@ class SwapChainD3D12 : SwapChain
 		ID3D12Device* device = m_Device;
 
 		ComPtr<IDXGIFactory4> factory = default;
-		//defer factory.Dispose();
+		defer factory.Dispose();
+
 		HRESULT hr = CreateDXGIFactory2(0, IDXGIFactory4.IID, (void**)(&factory));
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "CreateDXGIFactory2(), error code: 0x{0:X}.", hr);
 
 		ComPtr<IDXGIAdapter> adapter = default;
-		//defer adapter.Dispose();
+		defer adapter.Dispose();
+
 		hr = factory->EnumAdapterByLuid(device.GetAdapterLuid(), IDXGIAdapter.IID, (void**)(&adapter));
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGIFactory4::EnumAdapterByLuid(), error code: 0x{0:X}.", hr);
 
 		m_IsTearingAllowed = false;
+
 		ComPtr<IDXGIFactory5> dxgiFactory5 = default;
-		//defer dxgiFactory5.Dispose();
+		defer dxgiFactory5.Dispose();
+
 		hr = factory->QueryInterface(IDXGIFactory5.IID, (void**)(&dxgiFactory5));
 		if (SUCCEEDED(hr))
 		{
