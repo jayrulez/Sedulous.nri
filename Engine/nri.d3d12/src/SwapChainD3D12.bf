@@ -64,10 +64,10 @@ class SwapChainD3D12 : SwapChain
 	{
 		if (m_IsFullscreenEnabled)
 		{
-			BOOL fullscreen = /*FALSE*/ 0;
+			BOOL fullscreen = FALSE;
 			m_SwapChain->GetFullscreenState(&fullscreen, null);
 			if (fullscreen != 0)
-				m_SwapChain->SetFullscreenState( /*FALSE*/0, null);
+				m_SwapChain->SetFullscreenState( FALSE, null);
 		}
 
 		Deallocate!(m_Device.GetAllocator(), m_TexturePointer);
