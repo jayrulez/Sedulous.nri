@@ -80,7 +80,6 @@ class SwapChainD3D12 : SwapChain
 		Deallocate!(m_Device.GetAllocator(), m_Textures);
 
 		m_CommandQueue.Dispose();
-		m_CommandQueue = null;
 		m_SwapChain.Dispose();
 	}
 
@@ -92,18 +91,18 @@ class SwapChainD3D12 : SwapChain
 		ID3D12Device* device = m_Device;
 
 		ComPtr<IDXGIFactory4> factory = default;
-		defer factory.Dispose();
+		//defer factory.Dispose();
 		HRESULT hr = CreateDXGIFactory2(0, IDXGIFactory4.IID, (void**)(&factory));
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "CreateDXGIFactory2(), error code: 0x{0:X}.", hr);
 
 		ComPtr<IDXGIAdapter> adapter = default;
-		defer adapter.Dispose();
+		//defer adapter.Dispose();
 		hr = factory->EnumAdapterByLuid(device.GetAdapterLuid(), IDXGIAdapter.IID, (void**)(&adapter));
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGIFactory4::EnumAdapterByLuid(), error code: 0x{0:X}.", hr);
 
 		m_IsTearingAllowed = false;
 		ComPtr<IDXGIFactory5> dxgiFactory5 = default;
-		defer dxgiFactory5.Dispose();
+		//defer dxgiFactory5.Dispose();
 		hr = factory->QueryInterface(IDXGIFactory5.IID, (void**)(&dxgiFactory5));
 		if (SUCCEEDED(hr))
 		{
@@ -145,7 +144,7 @@ class SwapChainD3D12 : SwapChain
 		hr = factory->MakeWindowAssociation(window, DXGI_MWA_NO_ALT_ENTER);
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "CreateSwapChainForHwnd::MakeWindowAssociation() failed, error code: 0x{0:X}.", hr);
 
-		hr = swapChain->QueryInterface(IDXGISwapChain4.IID, (void**)(&m_SwapChain));
+		hr = swapChain->QueryInterface(__uuidof(m_SwapChain), (void**)m_SwapChain.GetAddressOf());
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1::QueryInterface() failed, error code: 0x{0:X}.", hr);
 
 		uint32 colorSpaceSupport = 0;
@@ -162,15 +161,16 @@ class SwapChainD3D12 : SwapChain
 
 		if (swapChainDesc.display != null)
 		{
-			ComPtr<IDXGIOutput> output = default;
-			defer output.Dispose();
-			if (!m_Device.GetOutput(ref swapChainDesc.display, ref output))
+			using (ComPtr<IDXGIOutput> output = default)
 			{
-				REPORT_ERROR(m_Device.GetLogger(), "Failed to get IDXGIOutput for the specified display.");
-				return Result.UNSUPPORTED;
+				if (!m_Device.GetOutput(ref swapChainDesc.display, ref output))
+				{
+					REPORT_ERROR(m_Device.GetLogger(), "Failed to get IDXGIOutput for the specified display.");
+					return Result.UNSUPPORTED;
+				}
 			}
 
-			hr = m_SwapChain->SetFullscreenState( TRUE, null);
+			hr = m_SwapChain->SetFullscreenState(TRUE, null);
 			RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), hr, "IDXGISwapChain1::SetFullscreenState() failed, error code: 0x{0:X}.", hr);
 
 			hr = m_SwapChain->ResizeBuffers(swapChainDesc1.BufferCount, swapChainDesc1.Width, swapChainDesc1.Height, swapChainDesc1.Format, swapChainDesc1.Flags);
@@ -185,17 +185,18 @@ class SwapChainD3D12 : SwapChain
 		m_Format = g_SwapChainTextureFormat[(uint32)swapChainDesc.format];
 		for (uint32 i = 0; i < swapChainDesc.textureNum; i++)
 		{
-			ComPtr<ID3D12Resource> resource = default;
-			defer resource.Dispose();
-			hr = m_SwapChain->GetBuffer(i, ID3D12Resource.IID, (void**)(&resource));
-			if (FAILED(hr))
+			using (ComPtr<ID3D12Resource> resource = default)
 			{
-				REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain4::GetBuffer() failed, error code: 0x{0:X}.", hr);
-				return Result.FAILURE;
-			}
+				hr = m_SwapChain->GetBuffer(i, ID3D12Resource.IID, (void**)(&resource));
+				if (FAILED(hr))
+				{
+					REPORT_ERROR(m_Device.GetLogger(), "IDXGISwapChain4::GetBuffer() failed, error code: 0x{0:X}.", hr);
+					return Result.FAILURE;
+				}
 
-			m_Textures.Add(new .(m_Device));
-			m_Textures[i].Initialize(resource);
+				m_Textures.Add(new .(m_Device));
+				m_Textures[i].Initialize(resource);
+			}
 		}
 
 		m_TexturePointer.Resize(swapChainDesc.textureNum);
@@ -237,7 +238,7 @@ class SwapChainD3D12 : SwapChain
 			return Result.SWAPCHAIN_RESIZE;
 
 		uint32 flags = (m_SwapChainDesc.verticalSyncInterval == 0 && m_IsTearingAllowed) ? DXGI_PRESENT_ALLOW_TEARING : 0;
-		
+
 		readonly HRESULT result = m_SwapChain->Present(m_SwapChainDesc.verticalSyncInterval, flags);
 
 		RETURN_ON_BAD_HRESULT!(m_Device.GetLogger(), result, "Can't present the swapchain: IDXGISwapChain::Present() returned {0}.", (int32)result);

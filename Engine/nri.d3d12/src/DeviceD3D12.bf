@@ -29,7 +29,7 @@ struct DescriptorHeapDesc : IDisposable
 	public DescriptorPointerGPU descriptorPointerGPU;
 	public uint32 descriptorSize;
 
-	public void Dispose()
+	public void Dispose() mut
 	{
 		descriptorHeap.Dispose();
 	}
@@ -339,10 +339,10 @@ class DeviceD3D12 : Device
 			delete m_FreeDescriptorLocks[i];
 		}
 
-		m_Adapter.Dispose();
 		m_DispatchCommandSignature.Dispose();
-		m_Device.Dispose();
 		m_Device5.Dispose();
+		m_Device.Dispose();
+		m_Adapter.Dispose();
 	}
 
 	public static implicit operator ID3D12Device*(Self self) => self.m_Device.GetInterface();
@@ -456,30 +456,32 @@ class DeviceD3D12 : Device
 		// TODO: this code is currently needed to disable known false-positive errors reported by the debug layer
 		if (enableValidation)
 		{
-			ComPtr<ID3D12InfoQueue> pInfoQueue = default;
-			defer pInfoQueue.Dispose();
-			m_Device->QueryInterface(ID3D12InfoQueue.IID, (void**)&pInfoQueue);
-
-			if (pInfoQueue.Get() != null)
+			using (ComPtr<ID3D12InfoQueue> pInfoQueue = default)
 			{
-				#if DEBUG
-					pInfoQueue->SetBreakOnSeverity(.D3D12_MESSAGE_SEVERITY_CORRUPTION, /*true*/1);
-					pInfoQueue->SetBreakOnSeverity(.D3D12_MESSAGE_SEVERITY_ERROR, /*true*/1);
-				#endif
+				m_Device->QueryInterface(ID3D12InfoQueue.IID, (void**)&pInfoQueue);
 
-				D3D12_MESSAGE_ID[?] disableMessageIDs = .(
-					.D3D12_MESSAGE_ID_COMMAND_LIST_STATIC_DESCRIPTOR_RESOURCE_DIMENSION_MISMATCH // TODO: descriptor validation doesn't understand acceleration structures used outside of RAYGEN shaders
-					);
+				if (pInfoQueue.Get() != null)
+				{
+					#if DEBUG
+						pInfoQueue->SetBreakOnSeverity(.D3D12_MESSAGE_SEVERITY_CORRUPTION, /*true*/1);
+						pInfoQueue->SetBreakOnSeverity(.D3D12_MESSAGE_SEVERITY_ERROR, /*true*/1);
+					#endif
 
-				D3D12_INFO_QUEUE_FILTER filter = .();
-				filter.DenyList.pIDList = &disableMessageIDs;
-				filter.DenyList.NumIDs = disableMessageIDs.Count;
-				pInfoQueue->AddStorageFilterEntries(&filter);
+					D3D12_MESSAGE_ID[?] disableMessageIDs = .(
+						.D3D12_MESSAGE_ID_COMMAND_LIST_STATIC_DESCRIPTOR_RESOURCE_DIMENSION_MISMATCH // TODO: descriptor validation doesn't understand acceleration structures used outside of RAYGEN shaders
+						);
+
+					D3D12_INFO_QUEUE_FILTER filter = .();
+					filter.DenyList.pIDList = &disableMessageIDs;
+					filter.DenyList.NumIDs = disableMessageIDs.Count;
+					pInfoQueue->AddStorageFilterEntries(&filter);
+				}
 			}
 		}
 
 	//#ifdef __ID3D12Device5_INTERFACE_DEFINED__
 		m_Device->QueryInterface(ID3D12Device5.IID, (void**)(&m_Device5));
+		//m_Device.As(ref m_Device5);
 	//#endif
 
 		CommandQueue commandQueue = null;
@@ -1088,7 +1090,7 @@ class DeviceD3D12 : Device
 
 		if (!skipLiveObjectsReporting)
 		{
-			using (ComPtr<IDXGIDebug1> pDebug = null)
+			using (ComPtr<IDXGIDebug1> pDebug = default)
 			{
 				HRESULT hr = DXGIGetDebugInterface1(0, IDXGIDebug1.IID, (void**)(&pDebug));
 				if (SUCCEEDED(hr))
@@ -1127,11 +1129,15 @@ public static
 		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
 		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
 
-		ComPtr<IDXGIFactory4> factory = null;
+		ComPtr<IDXGIFactory4> factory = default;
+		defer factory.Dispose();
+
 		HRESULT hr = CreateDXGIFactory2(0, IDXGIFactory4.IID, (void**)(&factory));
 		RETURN_ON_BAD_HRESULT!(logger, hr, "CreateDXGIFactory2() failed, error code: 0x{0:X}.", hr);
 
-		ComPtr<IDXGIAdapter> adapter = null;
+		ComPtr<IDXGIAdapter> adapter = default;
+		defer adapter.Dispose();
+
 		if (deviceCreationDesc.physicalDeviceGroup != null)
 		{
 			LUID luid = *(LUID*)(uint64*)&deviceCreationDesc.physicalDeviceGroup.luid;

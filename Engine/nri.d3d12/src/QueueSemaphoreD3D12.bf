@@ -41,7 +41,7 @@ class QueueSemaphoreD3D12 : QueueSemaphore
 
 	public void Signal(ID3D12CommandQueue* commandQueue)
 	{
-		commandQueue.Signal(m_Fence, m_SignalValue);
+		commandQueue.Signal(m_Fence.Get(), m_SignalValue);
 	}
 	public void Wait(ID3D12CommandQueue* commandQueue)
 	{

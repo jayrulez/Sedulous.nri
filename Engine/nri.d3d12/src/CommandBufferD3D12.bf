@@ -76,7 +76,7 @@ class CommandBufferD3D12 : CommandBuffer
 		}
 
 		m_CommandAllocator = commandAllocator;
-		m_GraphicsCommandList = graphicsCommandList;
+		m_GraphicsCommandList = graphicsCommandList.Move();
 		m_GraphicsCommandList->QueryInterface(ID3D12GraphicsCommandList1.IID, (void**)(&m_GraphicsCommandList1));
 
 	//#ifdef __ID3D12GraphicsCommandList4_INTERFACE_DEFINED__

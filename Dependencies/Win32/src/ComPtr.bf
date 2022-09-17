@@ -2,11 +2,22 @@ using Win32.System.Com;
 using System;
 using Win32.Foundation;
 using System.Diagnostics;
+using Win32.Graphics.Direct3D12;
 namespace Win32;
 
 public static
 {
 	public static Guid __uuidof<T>() where T : IUnknown
+	{
+		return T.IID;
+	}
+
+	public static Guid __uuidof<T>(T* object) where T : IUnknown
+	{
+		return T.IID;
+	}
+
+	public static Guid __uuidof<T>(ComPtr<T> object) where T : IUnknown
 	{
 		return T.IID;
 	}
@@ -16,31 +27,41 @@ public static
 struct ComPtr<T> : IDisposable where T : IUnknown
 {
 	private T* mPtr;
+	private uint32 mRefCount = 0;
 
 	// Increments the reference count for the current COM object, if any
-	private void InternalAddRef()
+	private uint32 InternalAddRef() mut
 	{
+		int x = 0;
+		if(typeof(T) == typeof(IUnknown)){
+			x = 2;
+		}
+
+		if(x == 2){
+			x = 3;
+		}
+
 		T* ptr = mPtr;
 		if (ptr != null)
 		{
-			((IUnknown*)ptr).AddRef();
+			mRefCount = ((IUnknown*)ptr).AddRef();
 		}
+
+		return 0;
 	}
 
 	// Decrements the reference count for the current COM object, if any
 	private uint32 InternalRelease() mut
 	{
-		uint32 refCount = 0;
-
 		T* ptr = mPtr;
 		if (ptr != null)
 		{
 			mPtr = null;
 
-			refCount = ((IUnknown*)ptr).Release();
+			mRefCount = ((IUnknown*)ptr).Release();
 		}
 
-		return refCount;
+		return mRefCount;
 	}
 
 	/// <summary>Creates a new <see cref="ComPtr{T}"/> instance from a raw pointer and increments the ref count.</summary>
@@ -48,7 +69,7 @@ struct ComPtr<T> : IDisposable where T : IUnknown
 	public this(T* ptr)
 	{
 		mPtr = ptr;
-		InternalAddRef();
+		 InternalAddRef();
 	}
 
 	/// <summary>Creates a new <see cref="ComPtr{T}"/> instance from a second one and increments the ref count.</summary>
@@ -56,7 +77,7 @@ struct ComPtr<T> : IDisposable where T : IUnknown
 	public this(Self other)
 	{
 		mPtr = other.mPtr;
-		InternalAddRef();
+		 InternalAddRef();
 	}
 
 	/// <summary>Converts a raw pointer to a new <see cref="ComPtr{T}"/> instance and increments the ref count.</summary>
@@ -192,7 +213,7 @@ struct ComPtr<T> : IDisposable where T : IUnknown
 	/// <summary>Increments the reference count for the current COM object, if any, and copies its address to a target raw pointer.</summary>
 	/// <param name="ptr">The target raw pointer to copy the address of the current COM object to.</param>
 	/// <returns>This method always returns <see cref="S_OK"/>.</returns>
-	public HRESULT CopyTo(T** ptr)
+	public HRESULT CopyTo(T** ptr) mut
 	{
 		InternalAddRef();
 		*ptr = mPtr;
@@ -202,7 +223,7 @@ struct ComPtr<T> : IDisposable where T : IUnknown
 	/// <summary>Increments the reference count for the current COM object, if any, and copies its address to a target <see cref="ComPtr{T}"/>.</summary>
 	/// <param name="other">The target raw pointer to copy the address of the current COM object to.</param>
 	/// <returns>This method always returns <see cref="S_OK"/>.</returns>
-	public HRESULT CopyTo(ComPtr<T>* other)
+	public HRESULT CopyTo(ComPtr<T>* other) mut
 	{
 		InternalAddRef();
 		*other.ReleaseAndGetAddressOf() = mPtr;
@@ -212,9 +233,9 @@ struct ComPtr<T> : IDisposable where T : IUnknown
 	/// <summary>Increments the reference count for the current COM object, if any, and copies its address to a target <see cref="ComPtr{T}"/>.</summary>
 	/// <param name="other">The target reference to copy the address of the current COM object to.</param>
 	/// <returns>This method always returns <see cref="S_OK"/>.</returns>
-	public HRESULT CopyTo(ref ComPtr<T> other)
+	public HRESULT CopyTo(ref ComPtr<T> other) mut
 	{
-		InternalAddRef();
+		 InternalAddRef();
 		other.Attach(mPtr);
 		return S_OK;
 	}
@@ -305,13 +326,13 @@ struct ComPtr<T> : IDisposable where T : IUnknown
 	}
 
 	[Inline]
-	public void Dispose()
+	public void Dispose() mut
 	{
 		T* ptr = mPtr;
 
 		if (ptr != null)
 		{
-			((IUnknown*)ptr).Release();
+			mRefCount = ((IUnknown*)ptr).Release();
 		}
 	}
 

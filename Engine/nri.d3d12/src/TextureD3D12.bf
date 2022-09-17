@@ -58,7 +58,6 @@ class TextureD3D12 : Texture
 		m_Texture = resource;
 		m_TextureDesc = resource.GetDesc();
 		m_Format = GetFormat((uint32)m_TextureDesc.Format);
-		resource.Release();
 	}
 
 	public Result BindMemory(MemoryD3D12 memory, uint64 offset)

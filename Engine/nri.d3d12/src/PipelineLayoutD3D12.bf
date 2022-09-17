@@ -344,10 +344,10 @@ class PipelineLayoutD3D12 : PipelineLayout
 		rootSignatureDesc.Desc_1_1.Flags = GetRootSignatureStageFlags(pipelineLayoutDesc, m_Device);
 
 		ComPtr<ID3DBlob> rootSignatureBlob = default;
-		defer rootSignatureBlob.Dispose();
+		//defer rootSignatureBlob.Dispose();
 
 		ComPtr<ID3DBlob> errorBlob = null;
-		defer errorBlob.Dispose();
+		//defer errorBlob.Dispose();
 
 		HRESULT hr = D3D12SerializeVersionedRootSignature(&rootSignatureDesc, rootSignatureBlob.GetAddressOf(), errorBlob.GetAddressOf());
 		if (FAILED(hr))
