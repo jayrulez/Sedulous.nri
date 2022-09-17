@@ -2,6 +2,7 @@ using nri.d3dcommon;
 using Win32.Graphics.Direct3D12;
 using Win32.Foundation;
 using System;
+using Win32;
 namespace nri.d3d12;
 
 class CommandAllocatorD3D12 : CommandAllocator
@@ -18,10 +19,10 @@ class CommandAllocatorD3D12 : CommandAllocator
 
 	public ~this()
 	{
-		RELEASE!(m_CommandAllocator);
+		m_CommandAllocator.Dispose();
 	}
 
-	public static implicit operator ID3D12CommandAllocator*(Self self) => self.m_CommandAllocator /*.GetInterface()*/;
+	public static implicit operator ID3D12CommandAllocator*(Self self) => self.m_CommandAllocator.GetInterface();
 
 	public DeviceD3D12 GetDevice() => m_Device;
 
@@ -41,7 +42,7 @@ class CommandAllocatorD3D12 : CommandAllocator
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_CommandAllocator, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_CommandAllocator, scope String(name));
 	}
 
 	public override Result CreateCommandBuffer(out CommandBuffer commandBuffer)

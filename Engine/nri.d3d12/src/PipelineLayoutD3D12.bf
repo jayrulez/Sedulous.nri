@@ -4,6 +4,7 @@ using Win32.Graphics.Direct3D12;
 using nri.d3dcommon;
 using Win32.Graphics.Direct3D;
 using Win32.Foundation;
+using Win32;
 namespace nri.d3d12;
 
 public static
@@ -114,10 +115,10 @@ class PipelineLayoutD3D12 : PipelineLayout
 		}
 		Deallocate!(m_Device.GetAllocator(), m_DescriptorSetMappings);
 
-		RELEASE!(m_RootSignature);
+		m_RootSignature.Dispose();
 	}
 
-	public static implicit operator ID3D12RootSignature*(Self self) => self.m_RootSignature /*.GetInterface()*/;
+	public static implicit operator ID3D12RootSignature*(Self self) => self.m_RootSignature.GetInterface();
 
 	public DeviceD3D12 GetDevice() => m_Device;
 	public bool IsGraphicsPipelineLayout() => m_IsGraphicsPipelineLayout;
@@ -342,16 +343,20 @@ class PipelineLayoutD3D12 : PipelineLayout
 		rootSignatureDesc.Desc_1_1.pStaticSamplers = staticSamplerDescs.IsEmpty ? null : &staticSamplerDescs[0];
 		rootSignatureDesc.Desc_1_1.Flags = GetRootSignatureStageFlags(pipelineLayoutDesc, m_Device);
 
-		ComPtr<ID3DBlob> rootSignatureBlob = null;
+		ComPtr<ID3DBlob> rootSignatureBlob = default;
+		defer rootSignatureBlob.Dispose();
+
 		ComPtr<ID3DBlob> errorBlob = null;
-		HRESULT hr = D3D12SerializeVersionedRootSignature(&rootSignatureDesc, &rootSignatureBlob, &errorBlob);
+		defer errorBlob.Dispose();
+
+		HRESULT hr = D3D12SerializeVersionedRootSignature(&rootSignatureDesc, rootSignatureBlob.GetAddressOf(), errorBlob.GetAddressOf());
 		if (FAILED(hr))
 		{
 			REPORT_ERROR(m_Device.GetLogger(), "D3D12SerializeVersionedRootSignature() failed, error code: 0x{0:X}.", hr);
 			return Result.FAILURE;
 		}
 
-		hr = ((ID3D12Device*)m_Device).CreateRootSignature(NRI_TEMP_NODE_MASK, rootSignatureBlob.GetBufferPointer(), rootSignatureBlob.GetBufferSize(), ID3D12RootSignature.IID, (void**)(&m_RootSignature));
+		hr = ((ID3D12Device*)m_Device).CreateRootSignature(NRI_TEMP_NODE_MASK, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), ID3D12RootSignature.IID, (void**)(&m_RootSignature));
 		if (FAILED(hr))
 		{
 			REPORT_ERROR(m_Device.GetLogger(), "ID3D12Device.CreateRootSignature() failed, error code: 0x{0:X}.", hr);
@@ -363,6 +368,6 @@ class PipelineLayoutD3D12 : PipelineLayout
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_RootSignature, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_RootSignature, scope String(name));
 	}
 }

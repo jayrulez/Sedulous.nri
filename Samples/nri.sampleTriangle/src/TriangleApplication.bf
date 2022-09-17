@@ -146,6 +146,8 @@ class TriangleApplication : SDLApplication
 			Runtime.FatalError(scope $"GraphicsAPI {GraphicsAPI} is not supported.");
 		}
 
+		mDevice.SetDebugName("Sample Device");
+
 		if (result != .SUCCESS)
 		{
 			Debug.WriteLine("Failed to create Device");
@@ -515,22 +517,12 @@ class TriangleApplication : SDLApplication
 			m_TextureDescriptorSet.UpdateDescriptorRanges(WHOLE_DEVICE_GROUP, 0, descriptorRangeUpdateDescs.Count, &descriptorRangeUpdateDescs);
 
 			// Constant buffer
-			int i = 0;
 			for (ref Frame frame in ref mFrames)
 			{
-				if(i == 0){
-					int x = 1;
-				}
-				if(i == 1){
-					int x = 1;
-				}
 				m_DescriptorPool.AllocateDescriptorSets(m_PipelineLayout, 0, &frame.constantBufferDescriptorSet, 1, WHOLE_DEVICE_GROUP, 0);
 				if (result != .SUCCESS)
 					return .Err;
-				i++;
-				if(i == 2){
-					int x = 1;
-				}
+
 				DescriptorRangeUpdateDesc descriptorRangeUpdateDesc = .() { descriptors = &frame.constantBufferView, descriptorNum = 1 };
 				frame.constantBufferDescriptorSet.UpdateDescriptorRanges(WHOLE_DEVICE_GROUP, 0, 1, &descriptorRangeUpdateDesc);
 			}

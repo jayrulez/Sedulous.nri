@@ -2,6 +2,7 @@ using nri.d3dcommon;
 using Win32.Graphics.Direct3D12;
 using System;
 using Win32.Foundation;
+using Win32;
 namespace nri.d3d12;
 
 class MemoryD3D12 : Memory
@@ -17,10 +18,10 @@ class MemoryD3D12 : Memory
 
 	public ~this()
 	{
-		RELEASE!(m_Heap);
+		m_Heap.Dispose();
 	}
 
-	public static implicit operator ID3D12Heap*(Self self) => self.m_Heap /*.GetInterface()*/;
+	public static implicit operator ID3D12Heap*(Self self) => self.m_Heap.GetInterface();
 
 	public DeviceD3D12 GetDevice() => m_Device;
 
@@ -54,20 +55,20 @@ class MemoryD3D12 : Memory
 	public Result Create(MemoryD3D12Desc memoryDesc)
 	{
 		m_Heap = (ID3D12Heap*)memoryDesc.d3d12Heap;
-		m_HeapDesc = m_Heap.GetDesc();
+		m_HeapDesc = m_Heap->GetDesc();
 
 		return Result.SUCCESS;
 	}
 
 	public bool RequiresDedicatedAllocation()
 	{
-		return m_Heap /*.GetInterface()*/ != null ? false : true;
+		return m_Heap.GetInterface() != null ? false : true;
     }
 
 	public readonly ref D3D12_HEAP_DESC GetHeapDesc() => ref m_HeapDesc;
 
 	public override void SetDebugName(char8* name)
 	{
-    SET_D3D_DEBUG_OBJECT_NAME(m_Heap, scope String(name));
+    	SET_D3D_DEBUG_OBJECT_NAME!(m_Heap, scope String(name));
 	}
 }

@@ -36,8 +36,9 @@ struct COMPtr<T> : IDisposable where T : IUnknown
 	}
 }*/
 
-typealias ComPtr<T> = T*;
+//typealias ComPtr<T> = T*;
 
+/*
 public static{
 	public static mixin RELEASE(IUnknown* object){
 		if(object == null)
@@ -48,3 +49,4 @@ public static{
 		//object = null;
 	}
 }
+*/

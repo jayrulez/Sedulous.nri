@@ -8,6 +8,7 @@ using Win32.Foundation;
 using System;
 using Win32.Graphics.Gdi;
 using nri.Helpers;
+using Win32;
 namespace nri.d3d12;
 
 typealias DescriptorPointerCPU = uint;
@@ -21,12 +22,17 @@ struct DescriptorHandle
 	public HeapOffsetType heapOffset;
 }
 
-struct DescriptorHeapDesc
+struct DescriptorHeapDesc : IDisposable
 {
 	public ComPtr<ID3D12DescriptorHeap> descriptorHeap;
 	public DescriptorPointerCPU descriptorPointerCPU;
 	public DescriptorPointerGPU descriptorPointerGPU;
 	public uint32 descriptorSize;
+
+	public void Dispose()
+	{
+		descriptorHeap.Dispose();
+	}
 }
 
 public static
@@ -43,14 +49,14 @@ class DeviceD3D12 : Device
 		CreateDXGIFactory(IDXGIFactory4.IID, (void**)(&DXGIFactory));
 
 		DXGI_ADAPTER_DESC desc = .();
-		if (DXGIFactory != null)
+		if (DXGIFactory.Get() != null)
 		{
 			LUID luid = device.GetAdapterLuid();
 
 			ComPtr<IDXGIAdapter> adapter = null;
-			DXGIFactory.EnumAdapterByLuid(luid, IDXGIAdapter.IID, (void**)(&adapter));
-			if (adapter != null)
-				adapter.GetDesc(&desc);
+			DXGIFactory->EnumAdapterByLuid(luid, IDXGIAdapter.IID, (void**)(&adapter));
+			if (adapter.Get() != null)
+				adapter->GetDesc(&desc);
 		}
 
 		return GetVendorFromID(desc.VendorId);
@@ -59,25 +65,25 @@ class DeviceD3D12 : Device
 	private void UpdateDeviceDesc(bool enableValidation)
 	{
 		D3D12_FEATURE_DATA_D3D12_OPTIONS options = .();
-		m_Device.CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS, &options, sizeof(decltype(options)));
+		m_Device->CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS, &options, sizeof(decltype(options)));
 
 		D3D12_FEATURE_DATA_D3D12_OPTIONS1 options1 = .();
-		m_Device.CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS1, &options1, sizeof(decltype(options)));
+		m_Device->CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS1, &options1, sizeof(decltype(options)));
 
 		D3D12_FEATURE_DATA_D3D12_OPTIONS2 options2 = .();
-		m_Device.CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS2, &options2, sizeof(decltype(options)));
+		m_Device->CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS2, &options2, sizeof(decltype(options)));
 
 		D3D12_FEATURE_DATA_D3D12_OPTIONS3 options3 = .();
-		m_Device.CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS3, &options3, sizeof(decltype(options)));
+		m_Device->CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS3, &options3, sizeof(decltype(options)));
 
 		D3D12_FEATURE_DATA_D3D12_OPTIONS4 options4 = .();
-		m_Device.CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS4, &options4, sizeof(decltype(options)));
+		m_Device->CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS4, &options4, sizeof(decltype(options)));
 
 		D3D12_FEATURE_DATA_D3D12_OPTIONS5 options5 = .();
-		m_Device.CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS5, &options5, sizeof(decltype(options)));
+		m_Device->CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS5, &options5, sizeof(decltype(options)));
 
 		D3D12_FEATURE_DATA_D3D12_OPTIONS7 options7 = .();
-		m_Device.CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS7, &options7, sizeof(decltype(options)));
+		m_Device->CheckFeatureSupport(.D3D12_FEATURE_D3D12_OPTIONS7, &options7, sizeof(decltype(options)));
 
 		m_IsRaytracingSupported = options5.RaytracingTier >= .D3D12_RAYTRACING_TIER_1_0;
 		m_IsMeshShaderSupported = options7.MeshShaderTier >= .D3D12_MESH_SHADER_TIER_1;
@@ -91,7 +97,7 @@ class DeviceD3D12 : Device
 			);
 		levels.NumFeatureLevels = (uint32)levelsList.Count;
 		levels.pFeatureLevelsRequested = &levelsList;
-		m_Device.CheckFeatureSupport(.D3D12_FEATURE_FEATURE_LEVELS, &levels, sizeof(decltype(levels)));
+		m_Device->CheckFeatureSupport(.D3D12_FEATURE_FEATURE_LEVELS, &levels, sizeof(decltype(levels)));
 
 		uint64 timestampFrequency = 0;
 
@@ -228,7 +234,7 @@ class DeviceD3D12 : Device
 		m_DeviceDesc.combinedClipAndCullDistanceMaxNum = D3D12_CLIP_OR_CULL_DISTANCE_COUNT;
 		m_DeviceDesc.conservativeRasterTier = (uint8)options.ConservativeRasterizationTier;
 		m_DeviceDesc.timestampFrequencyHz = timestampFrequency;
-		m_DeviceDesc.phyiscalDeviceGroupSize = m_Device.GetNodeCount();
+		m_DeviceDesc.phyiscalDeviceGroupSize = m_Device->GetNodeCount();
 
 		m_DeviceDesc.isAPIValidationEnabled = enableValidation;
 		m_DeviceDesc.isTextureFilterMinMaxSupported = levels.MaxSupportedFeatureLevel >= .D3D_FEATURE_LEVEL_11_1 ? true : false;
@@ -287,7 +293,8 @@ class DeviceD3D12 : Device
 
 		m_FreeDescriptors.Resize(DESCRIPTOR_HEAP_TYPE_NUM);
 
-		for(int i = 0; i < DESCRIPTOR_HEAP_TYPE_NUM; i++){
+		for (int i = 0; i < DESCRIPTOR_HEAP_TYPE_NUM; i++)
+		{
 			m_FreeDescriptors[i] = Allocate!<List<DescriptorHandle>>(GetAllocator());
 		}
 	}
@@ -302,14 +309,16 @@ class DeviceD3D12 : Device
 				commandQueueD3D12 = null;
 			}
 		}
-		
-		for(var entry in m_DrawIndexedCommandSignatures){
-			entry.value.Release();
+
+		for (var entry in m_DrawIndexedCommandSignatures)
+		{
+			entry.value.Dispose();
 		}
 		Deallocate!(GetAllocator(), m_DrawIndexedCommandSignatures);
 
-		for(var entry in m_DrawCommandSignatures){
-			entry.value.Release();
+		for (var entry in m_DrawCommandSignatures)
+		{
+			entry.value.Dispose();
 		}
 		Deallocate!(GetAllocator(), m_DrawCommandSignatures);
 
@@ -318,6 +327,11 @@ class DeviceD3D12 : Device
 			Deallocate!(GetAllocator(), item);
 		}
 		Deallocate!(GetAllocator(), m_FreeDescriptors);
+
+		for (var item in ref m_DescriptorHeaps)
+		{
+			item.Dispose();
+		}
 		Deallocate!(GetAllocator(), m_DescriptorHeaps);
 
 		for (int i = 0; i < m_FreeDescriptorLocks.Count; i++)
@@ -325,11 +339,14 @@ class DeviceD3D12 : Device
 			delete m_FreeDescriptorLocks[i];
 		}
 
-		RELEASE!(m_Device);
+		m_Adapter.Dispose();
+		m_DispatchCommandSignature.Dispose();
+		m_Device.Dispose();
+		m_Device5.Dispose();
 	}
 
-	public static implicit operator ID3D12Device*(Self self) => self.m_Device /*.GetInterface()*/;
-	public static implicit operator ID3D12Device5*(Self self) => self.m_Device5 /*.GetInterface()*/;
+	public static implicit operator ID3D12Device*(Self self) => self.m_Device.GetInterface();
+	public static implicit operator ID3D12Device5*(Self self) => self.m_Device5.GetInterface();
 
 	private Result CreateImplementation<Implementation, Interface>(out Interface entity)
 		where Implementation : Interface, var
@@ -417,9 +434,11 @@ class DeviceD3D12 : Device
 		// NOTE: Enabling the debug layer after device creation will invalidate the active device.
 		if (enableValidation)
 		{
-			ComPtr<ID3D12Debug> debugController = null;
-			if (SUCCEEDED(D3D12GetDebugInterface(ID3D12Debug.IID, (void**)(&debugController))))
-				debugController.EnableDebugLayer();
+			using (ComPtr<ID3D12Debug> debugController = default)
+			{
+				if (SUCCEEDED(D3D12GetDebugInterface(ID3D12Debug.IID, (void**)(&debugController))))
+					debugController->EnableDebugLayer();
+			}
 
 			// GPU-based validation
 			//ComPtr<ID3D12Debug1> debugController1 = null;
@@ -437,14 +456,15 @@ class DeviceD3D12 : Device
 		// TODO: this code is currently needed to disable known false-positive errors reported by the debug layer
 		if (enableValidation)
 		{
-			ComPtr<ID3D12InfoQueue> pInfoQueue = null;
-			m_Device.QueryInterface(ID3D12InfoQueue.IID, (void**)&pInfoQueue);
+			ComPtr<ID3D12InfoQueue> pInfoQueue = default;
+			defer pInfoQueue.Dispose();
+			m_Device->QueryInterface(ID3D12InfoQueue.IID, (void**)&pInfoQueue);
 
-			if (pInfoQueue != null)
+			if (pInfoQueue.Get() != null)
 			{
 				#if DEBUG
-					pInfoQueue.SetBreakOnSeverity(.D3D12_MESSAGE_SEVERITY_CORRUPTION, /*true*/1);
-					pInfoQueue.SetBreakOnSeverity(.D3D12_MESSAGE_SEVERITY_ERROR, /*true*/1);
+					pInfoQueue->SetBreakOnSeverity(.D3D12_MESSAGE_SEVERITY_CORRUPTION, /*true*/1);
+					pInfoQueue->SetBreakOnSeverity(.D3D12_MESSAGE_SEVERITY_ERROR, /*true*/1);
 				#endif
 
 				D3D12_MESSAGE_ID[?] disableMessageIDs = .(
@@ -454,12 +474,12 @@ class DeviceD3D12 : Device
 				D3D12_INFO_QUEUE_FILTER filter = .();
 				filter.DenyList.pIDList = &disableMessageIDs;
 				filter.DenyList.NumIDs = disableMessageIDs.Count;
-				pInfoQueue.AddStorageFilterEntries(&filter);
+				pInfoQueue->AddStorageFilterEntries(&filter);
 			}
 		}
 
 	//#ifdef __ID3D12Device5_INTERFACE_DEFINED__
-		m_Device.QueryInterface(ID3D12Device5.IID, (void**)(&m_Device5));
+		m_Device->QueryInterface(ID3D12Device5.IID, (void**)(&m_Device5));
 	//#endif
 
 		CommandQueue commandQueue = null;
@@ -476,7 +496,7 @@ class DeviceD3D12 : Device
 		commandSignatureDesc.NodeMask = NRI_TEMP_NODE_MASK;
 		commandSignatureDesc.ByteStride = 12;
 
-		hr = m_Device.CreateCommandSignature(&commandSignatureDesc, null, ID3D12CommandSignature.IID, (void**)(&m_DispatchCommandSignature));
+		hr = m_Device->CreateCommandSignature(&commandSignatureDesc, null, ID3D12CommandSignature.IID, (void**)(&m_DispatchCommandSignature));
 		if (FAILED(hr))
 		{
 			REPORT_ERROR(GetLogger(), "ID3D12Device.CreateCommandSignature() failed, error code: 0x{0:X}.", hr);
@@ -495,20 +515,22 @@ class DeviceD3D12 : Device
 
 		m_Adapter = deviceCreationDesc.d3d12PhysicalAdapter;
 
-		if (m_Adapter == null)
+		if (m_Adapter.Get() == null)
 		{
-			readonly LUID luid = m_Device.GetAdapterLuid();
+			readonly LUID luid = m_Device->GetAdapterLuid();
 
-			ComPtr<IDXGIFactory4> DXGIFactory = null;
+			ComPtr<IDXGIFactory4> DXGIFactory = default;
+			defer DXGIFactory.Dispose();
+
 			HRESULT result = CreateDXGIFactory(IDXGIFactory4.IID, (void**)(&DXGIFactory));
 			RETURN_ON_BAD_HRESULT!(GetLogger(), result, "Failed to create IDXGIFactory4");
 
-			result = DXGIFactory.EnumAdapterByLuid(luid, IDXGIAdapter.IID, (void**)(&m_Adapter));
+			result = DXGIFactory->EnumAdapterByLuid(luid, IDXGIAdapter.IID, (void**)(&m_Adapter));
 			RETURN_ON_BAD_HRESULT!(GetLogger(), result, "Failed to find IDXGIAdapter by LUID");
 		}
 
 	//#ifdef __ID3D12Device5_INTERFACE_DEFINED__
-		m_Device.QueryInterface(ID3D12Device5.IID, (void**)(&m_Device5));
+		m_Device->QueryInterface(ID3D12Device5.IID, (void**)(&m_Device5));
 	//#endif
 
 		if (deviceCreationDesc.d3d12GraphicsQueue != null)
@@ -537,7 +559,7 @@ class DeviceD3D12 : Device
 		if (heapIndex >= HeapIndexType(-1))
 			return Result.OUT_OF_MEMORY;
 
-		ComPtr<ID3D12DescriptorHeap> descriptorHeap = null;
+		ComPtr<ID3D12DescriptorHeap> descriptorHeap = default;
 		D3D12_DESCRIPTOR_HEAP_DESC desc = .() { Type = type, NumDescriptors = DESCRIPTORS_BATCH_SIZE, Flags = .D3D12_DESCRIPTOR_HEAP_FLAG_NONE, NodeMask = NRI_TEMP_NODE_MASK };
 		HRESULT hr = ((ID3D12Device*)m_Device).CreateDescriptorHeap(&desc, ID3D12DescriptorHeap.IID, (void**)(&descriptorHeap));
 		if (FAILED(hr))
@@ -547,9 +569,9 @@ class DeviceD3D12 : Device
 		}
 
 		DescriptorHeapDesc descriptorHeapDesc = .();
-		descriptorHeapDesc.descriptorHeap = descriptorHeap;
-		descriptorHeapDesc.descriptorPointerCPU = descriptorHeap.GetCPUDescriptorHandleForHeapStart().ptr;
-		descriptorHeapDesc.descriptorSize = m_Device.GetDescriptorHandleIncrementSize(type);
+		descriptorHeapDesc.descriptorPointerCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart().ptr;
+		descriptorHeapDesc.descriptorHeap = descriptorHeap.Move();
+		descriptorHeapDesc.descriptorSize = m_Device->GetDescriptorHandleIncrementSize(type);
 		m_DescriptorHeaps.Add(descriptorHeapDesc);
 
 		var freeDescriptors = ref m_FreeDescriptors[(.)type];
@@ -603,7 +625,7 @@ class DeviceD3D12 : Device
 		var resourceDesc;
 		memoryDesc.type = GetMemoryType(memoryLocation, resourceDesc);
 
-		D3D12_RESOURCE_ALLOCATION_INFO resourceAllocationInfo = m_Device.GetResourceAllocationInfo(NRI_TEMP_NODE_MASK, 1, &resourceDesc);
+		D3D12_RESOURCE_ALLOCATION_INFO resourceAllocationInfo = m_Device->GetResourceAllocationInfo(NRI_TEMP_NODE_MASK, 1, &resourceDesc);
 		memoryDesc.size = (uint64)resourceAllocationInfo.SizeInBytes;
 		memoryDesc.alignment = (uint32)resourceAllocationInfo.Alignment;
 
@@ -611,7 +633,7 @@ class DeviceD3D12 : Device
 	}
 
 
-	public ID3D12CommandSignature* CreateCommandSignature(D3D12_INDIRECT_ARGUMENT_TYPE indirectArgumentType, uint32 stride)
+	public ComPtr<ID3D12CommandSignature> CreateCommandSignature(D3D12_INDIRECT_ARGUMENT_TYPE indirectArgumentType, uint32 stride)
 	{
 		D3D12_INDIRECT_ARGUMENT_DESC indirectArgumentDesc = .();
 		indirectArgumentDesc.Type = indirectArgumentType;
@@ -622,43 +644,43 @@ class DeviceD3D12 : Device
 		commandSignatureDesc.NodeMask = NRI_TEMP_NODE_MASK;
 		commandSignatureDesc.ByteStride = stride;
 
-		ID3D12CommandSignature* commandSignature = null;
-		HRESULT hr = m_Device.CreateCommandSignature(&commandSignatureDesc, null, ID3D12CommandSignature.IID, (void**)(&commandSignature));
+		ComPtr<ID3D12CommandSignature> commandSignature = default;
+		HRESULT hr = m_Device->CreateCommandSignature(&commandSignatureDesc, null, ID3D12CommandSignature.IID, (void**)(&commandSignature));
 		if (FAILED(hr))
 			REPORT_ERROR(GetLogger(), "ID3D12Device.CreateCommandSignature() failed, error code: 0x{0:X}.", hr);
 
 		return commandSignature;
 	}
 
-	public ID3D12CommandSignature* GetDrawCommandSignature(uint32 stride)
+	public ComPtr<ID3D12CommandSignature> GetDrawCommandSignature(uint32 stride)
 	{
 		if (m_DrawCommandSignatures.ContainsKey(stride))
 		{
 			return m_DrawCommandSignatures[stride];
 		}
 
-		ID3D12CommandSignature* commandSignature = CreateCommandSignature(.D3D12_INDIRECT_ARGUMENT_TYPE_DRAW, stride);
-		m_DrawCommandSignatures[stride] = commandSignature;
+		ComPtr<ID3D12CommandSignature> commandSignature = CreateCommandSignature(.D3D12_INDIRECT_ARGUMENT_TYPE_DRAW, stride);
+		m_DrawCommandSignatures[stride] = commandSignature.Move();
 
 		return commandSignature;
 	}
 
-	public ID3D12CommandSignature* GetDrawIndexedCommandSignature(uint32 stride)
+	public ComPtr<ID3D12CommandSignature> GetDrawIndexedCommandSignature(uint32 stride)
 	{
 		if (m_DrawIndexedCommandSignatures.ContainsKey(stride))
 		{
 			return m_DrawIndexedCommandSignatures[stride];
 		}
 
-		ID3D12CommandSignature* commandSignature = CreateCommandSignature(.D3D12_INDIRECT_ARGUMENT_TYPE_DRAW_INDEXED, stride);
-		m_DrawIndexedCommandSignatures[stride] = commandSignature;
+		ComPtr<ID3D12CommandSignature> commandSignature = CreateCommandSignature(.D3D12_INDIRECT_ARGUMENT_TYPE_DRAW_INDEXED, stride);
+		m_DrawIndexedCommandSignatures[stride] = commandSignature.Move();
 
 		return commandSignature;
 	}
 
 	public ID3D12CommandSignature* GetDispatchCommandSignature()
 	{
-		return m_DispatchCommandSignature /*.GetInterface()*/;
+		return m_DispatchCommandSignature.GetInterface();
 	}
 
 	public bool IsMeshShaderSupported() => m_IsMeshShaderSupported;
@@ -669,7 +691,7 @@ class DeviceD3D12 : Device
 			return false;
 
 		readonly uint32 index = (*(uint32*)&display) - 1;
-		readonly HRESULT result = m_Adapter.EnumOutputs(index, &output);
+		readonly HRESULT result = m_Adapter->EnumOutputs(index, output.GetAddressOf());
 
 		return SUCCEEDED(result);
 	}
@@ -686,7 +708,7 @@ class DeviceD3D12 : Device
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_Device, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_Device, scope String(name));
 	}
 
 	public override ref DeviceDesc GetDesc()
@@ -934,8 +956,8 @@ class DeviceD3D12 : Device
 			uint32 i = 0;
 			for (; result != DXGI_ERROR_NOT_FOUND; i++)
 			{
-				ComPtr<IDXGIOutput> output;
-				result = m_Adapter.EnumOutputs(i, &output);
+				ComPtr<IDXGIOutput> output = default;
+				result = m_Adapter->EnumOutputs(i, output.GetAddressOf());
 			}
 
 			displayNum = i;
@@ -945,8 +967,8 @@ class DeviceD3D12 : Device
 		uint32 i = 0;
 		for (; result != DXGI_ERROR_NOT_FOUND && i < displayNum; i++)
 		{
-			ComPtr<IDXGIOutput> output;
-			result = m_Adapter.EnumOutputs(i, &output);
+			ComPtr<IDXGIOutput> output = default;
+			result = m_Adapter->EnumOutputs(i, output.GetAddressOf());
 			if (result != DXGI_ERROR_NOT_FOUND)
 				displays[i] = (Display*)(void*)(int)(i + 1);
 		}
@@ -967,13 +989,13 @@ class DeviceD3D12 : Device
 		readonly uint32 index = (*(uint32*)address) - 1;
 
 		ComPtr<IDXGIOutput> output = null;
-		HRESULT result = m_Adapter.EnumOutputs(index, &output);
+		HRESULT result = m_Adapter->EnumOutputs(index, output.GetAddressOf());
 
 		if (FAILED(result))
 			return Result.UNSUPPORTED;
 
 		DXGI_OUTPUT_DESC outputDesc = .();
-		result = output.GetDesc(&outputDesc);
+		result = output->GetDesc(&outputDesc);
 
 		if (FAILED(result))
 			return Result.UNSUPPORTED;
@@ -1066,10 +1088,12 @@ class DeviceD3D12 : Device
 
 		if (!skipLiveObjectsReporting)
 		{
-			ComPtr<IDXGIDebug1> pDebug = null;
-			HRESULT hr = DXGIGetDebugInterface1(0, IDXGIDebug1.IID, (void**)(&pDebug));
-			if (SUCCEEDED(hr))
-				pDebug.ReportLiveObjects(DXGI_DEBUG_ALL, (DXGI_DEBUG_RLO_FLAGS)((uint32)DXGI_DEBUG_RLO_FLAGS.DXGI_DEBUG_RLO_DETAIL | (uint32)DXGI_DEBUG_RLO_FLAGS.DXGI_DEBUG_RLO_IGNORE_INTERNAL));
+			using (ComPtr<IDXGIDebug1> pDebug = null)
+			{
+				HRESULT hr = DXGIGetDebugInterface1(0, IDXGIDebug1.IID, (void**)(&pDebug));
+				if (SUCCEEDED(hr))
+					pDebug->ReportLiveObjects(DXGI_DEBUG_ALL, (DXGI_DEBUG_RLO_FLAGS)((uint32)DXGI_DEBUG_RLO_FLAGS.DXGI_DEBUG_RLO_DETAIL | (uint32)DXGI_DEBUG_RLO_FLAGS.DXGI_DEBUG_RLO_IGNORE_INTERNAL));
+			}
 		}
 	}
 }
@@ -1111,7 +1135,7 @@ public static
 		if (deviceCreationDesc.physicalDeviceGroup != null)
 		{
 			LUID luid = *(LUID*)(uint64*)&deviceCreationDesc.physicalDeviceGroup.luid;
-			hr = factory.EnumAdapterByLuid(luid, IDXGIAdapter.IID, (void**)(&adapter));
+			hr = factory->EnumAdapterByLuid(luid, IDXGIAdapter.IID, (void**)(&adapter));
 
 			if (FAILED(hr))
 			{
@@ -1123,7 +1147,7 @@ public static
 		}
 		else
 		{
-			hr = factory.EnumAdapters(0, &adapter);
+			hr = factory->EnumAdapters(0, adapter.GetAddressOf());
 
 			if (FAILED(hr))
 			{

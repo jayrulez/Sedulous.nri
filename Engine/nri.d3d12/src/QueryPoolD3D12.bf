@@ -2,6 +2,7 @@ using Win32.Graphics.Direct3D12;
 using nri.d3dcommon;
 using System;
 using Win32.Foundation;
+using Win32;
 namespace nri.d3d12;
 
 class QueryPoolD3D12 : QueryPool
@@ -49,10 +50,11 @@ class QueryPoolD3D12 : QueryPool
 
 	public ~this()
 	{
-		RELEASE!(m_QueryHeap);
+		m_ReadbackBuffer.Dispose();
+		m_QueryHeap.Dispose();
 	}
 
-	public static implicit operator ID3D12QueryHeap*(Self self) => self.m_QueryHeap /*.GetInterface()*/;
+	public static implicit operator ID3D12QueryHeap*(Self self) => self.m_QueryHeap.GetInterface();
 
 	public DeviceD3D12 GetDevice() => m_Device;
 
@@ -81,11 +83,11 @@ class QueryPoolD3D12 : QueryPool
 	}
 
 	public D3D12_QUERY_TYPE GetQueryType() => m_QueryType;
-	public ID3D12Resource* GetReadbackBuffer() => m_ReadbackBuffer /*.GetInterface()*/;
+	public ID3D12Resource* GetReadbackBuffer() => m_ReadbackBuffer.GetInterface();
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_QueryHeap, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_QueryHeap, scope String(name));
 	}
 
 	public override uint32 GetQuerySize() => m_QuerySize;

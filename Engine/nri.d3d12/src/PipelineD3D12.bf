@@ -83,7 +83,7 @@ class PipelineD3D12 : Pipeline
 			m_PrimitiveTopology = GetPrimitiveTopology(graphicsPipelineDesc.inputAssembly.topology, graphicsPipelineDesc.inputAssembly.tessControlPointNum);
 		Stream stream = .();
 
-		stream.rootSignature = m_PipelineLayout.[Friend]m_RootSignature;
+		stream.rootSignature = m_PipelineLayout.[Friend]m_RootSignature.Get();
 		stream.nodeMask = NRI_TEMP_NODE_MASK;
 
 		for (uint32 i = 0; i < graphicsPipelineDesc.shaderStageNum; i++)
@@ -288,11 +288,13 @@ class PipelineD3D12 : Pipeline
 	public ~this()
 	{
 		Deallocate!(m_Device.GetAllocator(), m_ShaderGroupNames);
+
+		m_PipelineState.Dispose();
 	}
 
 	public DeviceD3D12 GetDevice() => m_Device;
 
-	public static implicit operator ID3D12PipelineState*(Self self) => self.m_PipelineState /*.GetInterface()*/;
+	public static implicit operator ID3D12PipelineState*(Self self) => self.m_PipelineState.GetInterface();
 
 	public Result Create(GraphicsPipelineDesc graphicsPipelineDesc)
 	{
@@ -531,7 +533,7 @@ class PipelineD3D12 : Pipeline
 			return Result.FAILURE;
 		}
 
-		m_StateObject.QueryInterface(ID3D12StateObjectProperties.IID, (void**)&m_StateObjectProperties);
+		m_StateObject->QueryInterface(ID3D12StateObjectProperties.IID, (void**)&m_StateObjectProperties);
 
 		return Result.SUCCESS;
 //#else
@@ -542,7 +544,7 @@ class PipelineD3D12 : Pipeline
 	public void Bind(ID3D12GraphicsCommandList* graphicsCommandList, ref D3D_PRIMITIVE_TOPOLOGY primitiveTopology)
 	{
 //#ifdef __ID3D12Device5_INTERFACE_DEFINED__
-		if (m_StateObject != null)
+		if (m_StateObject.Get() != null)
 			((ID3D12GraphicsCommandList4*)graphicsCommandList).SetPipelineState1(m_StateObject);
 		else
 //#endif
@@ -567,7 +569,7 @@ class PipelineD3D12 : Pipeline
 
 	public override void SetDebugName(char8* name)
 	{
-		SET_D3D_DEBUG_OBJECT_NAME(m_PipelineState, scope String(name));
+		SET_D3D_DEBUG_OBJECT_NAME!(m_PipelineState, scope String(name));
 	}
 
 	public override Result WriteShaderGroupIdentifiers(uint32 baseShaderGroupIndex, uint32 shaderGroupNum, void* buffer)
@@ -576,7 +578,7 @@ class PipelineD3D12 : Pipeline
 		uint8* byteBuffer = (uint8*)buffer;
 		for (uint32 i = 0; i < shaderGroupNum; i++)
 		{
-			Internal.MemCpy(byteBuffer + i * D3D12_RAYTRACING_SHADER_TABLE_BYTE_ALIGNMENT, m_StateObjectProperties.GetShaderIdentifier(m_ShaderGroupNames[baseShaderGroupIndex + i].ToScopedNativeWChar!()),
+			Internal.MemCpy(byteBuffer + i * D3D12_RAYTRACING_SHADER_TABLE_BYTE_ALIGNMENT, m_StateObjectProperties->GetShaderIdentifier(m_ShaderGroupNames[baseShaderGroupIndex + i].ToScopedNativeWChar!()),
 				(int)m_Device.GetDesc().rayTracingShaderGroupIdentifierSize);
 		}
 
