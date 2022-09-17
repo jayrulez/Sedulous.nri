@@ -32,15 +32,6 @@ struct ComPtr<T> : IDisposable where T : IUnknown
 	// Increments the reference count for the current COM object, if any
 	private uint32 InternalAddRef() mut
 	{
-		int x = 0;
-		if(typeof(T) == typeof(IUnknown)){
-			x = 2;
-		}
-
-		if(x == 2){
-			x = 3;
-		}
-
 		T* ptr = mPtr;
 		if (ptr != null)
 		{
