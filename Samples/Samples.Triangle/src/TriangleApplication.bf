@@ -640,7 +640,7 @@ class TriangleApplication : NRIApplication
 			};
 
 		mCommandQueue.SubmitWork(workSubmissionDesc, frame.deviceSemaphore);
-		mSwapChain.Present(ref mReleaseSemaphore);
+		mSwapChain.Present(mReleaseSemaphore);
 	}
 
 	protected override void OnFrame()

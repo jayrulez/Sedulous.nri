@@ -1,5 +1,5 @@
 using Win32.Graphics.Direct3D12;
-using NRI.d3dcommon;
+using NRI.D3DCommon;
 using Win32.Graphics.Direct3D;
 using Win32.Foundation;
 using System;

@@ -2,7 +2,7 @@ using Win32.Graphics.Direct3D12;
 using Win32.Graphics.Dxgi.Common;
 using System;
 using Win32.Graphics.Direct3D;
-using NRI.d3dcommon;
+using NRI.D3DCommon;
 namespace NRI.D3D12;
 
 public static{

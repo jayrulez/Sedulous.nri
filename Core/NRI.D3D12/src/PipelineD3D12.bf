@@ -1,6 +1,6 @@
 using Win32.Graphics.Direct3D12;
 using Win32.Graphics.Dxgi.Common;
-using NRI.d3dcommon;
+using NRI.D3DCommon;
 using System.Collections;
 using System;
 using Win32.Graphics.Direct3D;

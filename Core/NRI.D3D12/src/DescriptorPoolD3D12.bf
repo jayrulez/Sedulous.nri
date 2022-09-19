@@ -1,6 +1,6 @@
 using Win32.Graphics.Direct3D12;
 using System.Collections;
-using NRI.d3dcommon;
+using NRI.D3DCommon;
 using Win32.Foundation;
 using Win32;
 namespace NRI.D3D12;

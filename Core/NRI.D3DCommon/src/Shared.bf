@@ -1,7 +1,8 @@
-using Win32.Foundation;
 using System;
+using Win32;
+using Win32.Foundation;
 using Win32.Graphics.Dxgi;
-namespace NRI.d3dcommon;
+namespace NRI.D3DCommon;
 
 public static
 {

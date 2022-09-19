@@ -263,7 +263,7 @@ class SwapChainVK : SwapChain
 		return m_TextureIndex;
 	}
 
-	public override Result Present(ref QueueSemaphore textureReadyForPresent)
+	public override Result Present(QueueSemaphore textureReadyForPresent)
 	{
 	/*readonly*/ VkSemaphore semaphore = (QueueSemaphoreVK)textureReadyForPresent;
 

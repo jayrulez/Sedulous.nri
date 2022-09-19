@@ -1,4 +1,4 @@
-using NRI.d3dcommon;
+using NRI.D3DCommon;
 using Win32.Graphics.Direct3D12;
 using System.Collections;
 using Win32.Graphics.Dxgi;
@@ -232,7 +232,7 @@ class SwapChainD3D12 : SwapChain
 		return m_SwapChain->GetCurrentBackBufferIndex();
 	}
 
-	public override Result Present(ref QueueSemaphore textureReadyForPresent)
+	public override Result Present(QueueSemaphore textureReadyForPresent)
 	{
 		((QueueSemaphoreD3D12)textureReadyForPresent).Wait(m_CommandQueue);
 
