@@ -12,6 +12,7 @@ public static
 	{
 		if (object != null)
 		{
+			// todo sed: enable this when beef allows -> on var
 			//object->SetPrivateData(WKPDID_D3DDebugObjectName, (.)name.Length, name.ToScopedNativeWChar!());
 		}
 	}
