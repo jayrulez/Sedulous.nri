@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", NRI = "*", Win32 = "*", "NRI.D3DCommon" = "*"}
+Dependencies = {corlib = "*", NRI = "*", Win32 = "*", "NRI.D3DCommon" = "*", "Win32.WinPixEventRuntime" = "*"}
 
 [Project]
 Name = "NRI.D3D12"

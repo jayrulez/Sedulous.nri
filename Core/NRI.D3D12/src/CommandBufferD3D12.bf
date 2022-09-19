@@ -429,18 +429,12 @@ class CommandBufferD3D12 : CommandBuffer
 
 	public override void BeginAnnotation(char8* name)
 	{
-		// todo sed
-	/*uint len = strlen(name) + 1;
-	wchar_t* s = STACK_ALLOC(wchar_t, len);
-	ConvertCharToWchar(name, s, len);
-
-	PIXBeginEvent(m_GraphicsCommandList, PIX_COLOR_DEFAULT, s);*/
+		WinPixEventRuntime.PIXBeginEvent(m_GraphicsCommandList.Get(), WinPixEventRuntime.PIX_COLOR_DEFAULT, scope String(name));
 	}
 
 	public override void EndAnnotation()
 	{
-		// todo sed
-	//PIXEndEvent(m_GraphicsCommandList);
+		WinPixEventRuntime.PIXEndEvent(m_GraphicsCommandList.Get());
 	}
 
 	public override void ClearStorageBuffer(ClearStorageBufferDesc clearDesc)

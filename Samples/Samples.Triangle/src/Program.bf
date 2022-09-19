@@ -6,7 +6,7 @@ class Program
 {
 	public static void Main()
 	{
-		const GraphicsAPI graphicsAPI = .VULKAN;
+		const GraphicsAPI graphicsAPI = .D3D12;
 
 		var windowSystem = scope SDLWindowSystem();
 

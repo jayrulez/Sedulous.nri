@@ -48,7 +48,7 @@ class SDLWindow : Window
 		if(graphicsAPI == .VULKAN)
 			flags |= SDL.WindowFlags.Vulkan;
 
-		SDLNativeWindow = SDL.CreateWindow(title.Ptr, .Undefined, .Undefined, (int32)width, (int32)height, flags);
+		SDLNativeWindow = SDL.CreateWindow(title.ToScopeCStr!(), .Undefined, .Undefined, (int32)width, (int32)height, flags);
 
 		if (SDLNativeWindow == null)
 		{

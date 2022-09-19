@@ -27,7 +27,7 @@ class SDLWindowSystem : WindowSystem
 		}
 	}
 
-	public override Result<void> CreateWindow(System.StringView title, uint32 width, uint32 height, bool isVisible, GraphicsAPI graphicsAPI, out Window window)
+	public override Result<void> CreateWindow(StringView title, uint32 width, uint32 height, bool isVisible, GraphicsAPI graphicsAPI, out Window window)
 	{
 		window = new SDLWindow(title, width, height, isVisible, graphicsAPI);
 
