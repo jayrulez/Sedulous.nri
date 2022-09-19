@@ -1,7 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", Bulkan = "*", nri = "*"}
-
-[Project]
-Name = "nri.vulkan"
-TargetType = "BeefLib"
-StartupObject = "nri.vulkan.Program"

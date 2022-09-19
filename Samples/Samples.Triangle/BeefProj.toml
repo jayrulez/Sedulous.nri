@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "NRI.Vulkan" = "*", "NRI.Framework.SDL" = "*", Dxc-Beef = "*", StbImageBeef = "*", Detex = "*", "NRI.D3D12" = "*"}
+
+[Project]
+Name = "Samples.Triangle"
+StartupObject = "Samples.Triangle.Program"

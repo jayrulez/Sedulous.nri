@@ -1,6 +1,6 @@
 FileVersion = 1
-Projects = {nri = {Path = "Engine/nri"}, "nri.vulkan" = {Path = "Engine/nri.vulkan"}, Bulkan = {Path = "Dependencies/Bulkan"}, "nri.sampleFramework" = {Path = "Samples/nri.sampleFramework"}, SDL2 = "*", "nri.sampleTriangle" = {Path = "Samples/nri.sampleTriangle"}, "nri.sampleClear" = {Path = "Samples/nri.sampleClear"}, "nri.sampleFramework.SDL" = {Path = "Samples/nri.sampleFramework.SDL"}, Dxc-Beef = {Path = "Dependencies/Dxc-Beef"}, StbImageBeef = {Path = "Dependencies/StbImageBeef"}, Detex = {Path = "Dependencies/Detex"}, "nri.d3d12" = {Path = "Engine/nri.d3d12"}, Win32 = {Path = "Dependencies/Win32"}, "nri.d3dcommon" = {Path = "Engine/nri.d3dcommon"}}
-WorkspaceFolders = {Samples = ["nri.sampleFramework", "nri.sampleTriangle", "nri.sampleClear", "nri.sampleFramework.SDL"], Dependencies = ["Bulkan", "corlib", "SDL2", "Dxc-Beef", "StbImageBeef", "Detex", "Win32"], Engine = ["nri", "nri.vulkan", "nri.d3d12", "nri.d3dcommon"]}
+Projects = {NRI = {Path = "Core/NRI"}, "NRI.Vulkan" = {Path = "Core/NRI.Vulkan"}, Bulkan = {Path = "Dependencies/Bulkan"}, "NRI.Framework" = {Path = "Framework/NRI.Framework"}, SDL2 = "*", "Samples.Triangle" = {Path = "Samples/Samples.Triangle"}, "Samples.Clear" = {Path = "Samples/Samples.Clear"}, "NRI.Framework.SDL" = {Path = "Framework/NRI.Framework.SDL"}, Dxc-Beef = {Path = "Dependencies/Dxc-Beef"}, StbImageBeef = {Path = "Dependencies/StbImageBeef"}, Detex = {Path = "Dependencies/Detex"}, "NRI.D3D12" = {Path = "Core/NRI.D3D12"}, Win32 = {Path = "Dependencies/Win32"}, "NRI.D3DCommon" = {Path = "Core/NRI.D3DCommon"}}
+WorkspaceFolders = {Samples = ["Samples.Triangle", "Samples.Clear"], Dependencies = ["Bulkan", "corlib", "SDL2", "Dxc-Beef", "StbImageBeef", "Detex", "Win32"], Core = ["NRI", "NRI.Vulkan", "NRI.D3D12", "NRI.D3DCommon"], Framework = ["NRI.Framework", "NRI.Framework.SDL"]}
 
 [Workspace]
-StartupProject = "nri.sampleTriangle"
+StartupProject = "Samples.Clear"

@@ -1,7 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", nri = "*", Detex = "*", StbImageBeef = "*", Dxc-Beef = "*"}
-
-[Project]
-Name = "nri.sampleFramework"
-TargetType = "BeefLib"
-StartupObject = "nri.sampleFramework.Program"

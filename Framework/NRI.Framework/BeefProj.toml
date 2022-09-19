@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", NRI = "*", Detex = "*", StbImageBeef = "*", Dxc-Beef = "*", "NRI.D3D12" = "*", "NRI.Vulkan" = "*"}
+
+[Project]
+Name = "NRI.Framework"
+TargetType = "BeefLib"
+StartupObject = "NRI.Framework.Program"

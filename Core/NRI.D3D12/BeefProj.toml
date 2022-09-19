@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", NRI = "*", Win32 = "*", "NRI.D3DCommon" = "*"}
+
+[Project]
+Name = "NRI.D3D12"
+TargetType = "BeefLib"
+StartupObject = "NRI.D3D12.Program"

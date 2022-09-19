@@ -1,6 +1,0 @@
-FileVersion = 1
-
-[Project]
-Name = "nri"
-TargetType = "BeefLib"
-StartupObject = "nri.Program"
