@@ -625,7 +625,10 @@ class TriangleApplication : NRIApplication
 
 			commandBuffer.PipelineBarrier(&transitionBarriers, null, BarrierDependency.ALL_STAGES);
 		}
-		commandBuffer.End();
+
+		if(commandBuffer.End() != .SUCCESS){
+			Runtime.FatalError("End failed.");
+		}
 
 		readonly CommandBuffer[] commandBuffers = scope .(commandBuffer);
 

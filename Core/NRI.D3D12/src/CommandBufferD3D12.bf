@@ -123,7 +123,7 @@ class CommandBufferD3D12 : CommandBuffer
 		HRESULT hr = m_GraphicsCommandList->Reset(m_CommandAllocator, null);
 		if (FAILED(hr))
 		{
-			REPORT_ERROR(m_Device.GetLogger(), "ID3D12GraphicsCommandList.Reset() failed, return code %d.", hr);
+			REPORT_ERROR(m_Device.GetLogger(), "ID3D12GraphicsCommandList.Reset() failed, return code {}.", hr);
 			return Result.FAILURE;
 		}
 
@@ -141,7 +141,8 @@ class CommandBufferD3D12 : CommandBuffer
 
 	public override Result End()
 	{
-		if (FAILED(m_GraphicsCommandList->Close()))
+		HRESULT hr = m_GraphicsCommandList->Close();
+		if (FAILED(hr))
 			return Result.FAILURE;
 
 		return Result.SUCCESS;
@@ -232,7 +233,7 @@ class CommandBufferD3D12 : CommandBuffer
 			return;
 
 		D3D12_RESOURCE_BARRIER* resourceBarriers = STACK_ALLOC!<D3D12_RESOURCE_BARRIER>(barrierNum);
-		Internal.MemSet(resourceBarriers, 0, sizeof(D3D12_RESOURCE_BARRIER) * barrierNum);
+		//Internal.MemSet(resourceBarriers, 0, sizeof(D3D12_RESOURCE_BARRIER) * barrierNum);
 
 		D3D12_RESOURCE_BARRIER* ptr = resourceBarriers;
 		if (transitionBarriers != null) // UAV and transitions barriers

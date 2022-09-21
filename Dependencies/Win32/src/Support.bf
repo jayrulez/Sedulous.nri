@@ -18,7 +18,6 @@ namespace Win32
 			return hr < 0;
 		}
 	}
-
 }
 
 namespace Win32.UI.Shell.PropertiesSystem

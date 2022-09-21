@@ -3,4 +3,4 @@ Projects = {NRI = {Path = "Core/NRI"}, "NRI.Vulkan" = {Path = "Core/NRI.Vulkan"}
 WorkspaceFolders = {Samples = ["Samples.Triangle", "Samples.Clear"], Dependencies = ["Bulkan", "corlib", "SDL2", "Dxc-Beef", "StbImageBeef", "Detex", "Win32", "Win32.WinPixEventRuntime"], Core = ["NRI", "NRI.Vulkan", "NRI.D3D12", "NRI.D3DCommon"], Framework = ["NRI.Framework", "NRI.Framework.SDL"]}
 
 [Workspace]
-StartupProject = "Samples.Clear"
+StartupProject = "Samples.Triangle"

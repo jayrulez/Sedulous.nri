@@ -438,12 +438,14 @@ class DeviceD3D12 : Device
 			{
 				if (SUCCEEDED(D3D12GetDebugInterface(ID3D12Debug.IID, (void**)(&debugController))))
 					debugController->EnableDebugLayer();
-			}
 
 			// GPU-based validation
-			//ComPtr<ID3D12Debug1> debugController1 = null;
-			//if (SUCCEEDED(debugController.QueryInterface(ID3D12Debug1.IID, (void**)(&debugController1))))
-			//    debugController1.SetEnableGPUBasedValidation(true);
+			/*ComPtr<ID3D12Debug1> debugController1 = default;
+			if (SUCCEEDED(debugController->QueryInterface(ID3D12Debug1.IID, (void**)(&debugController1))))
+			    debugController1->SetEnableGPUBasedValidation(TRUE);
+
+				debugController1.Dispose();*/
+			}
 		}
 
 		HRESULT hr = D3D12CreateDevice(dxgiAdapter, .D3D_FEATURE_LEVEL_12_0, ID3D12Device.IID,  (void**)(&m_Device));

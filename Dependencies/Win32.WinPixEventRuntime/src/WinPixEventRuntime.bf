@@ -52,6 +52,18 @@ struct PIXEventsThreadInfo
 
 public static
 {
+	// These flags are used by both PIXBeginCapture and PIXGetCaptureState
+	public const uint32 PIX_CAPTURE_TIMING                  = (1 << 0);
+	public const uint32 PIX_CAPTURE_GPU                     = (1 << 1);
+	public const uint32 PIX_CAPTURE_FUNCTION_SUMMARY        = (1 << 2);
+	public const uint32 PIX_CAPTURE_FUNCTION_DETAILS        = (1 << 3);
+	public const uint32 PIX_CAPTURE_CALLGRAPH               = (1 << 4);
+	public const uint32 PIX_CAPTURE_INSTRUCTION_TRACE       = (1 << 5);
+	public const uint32 PIX_CAPTURE_SYSTEM_MONITOR_COUNTERS = (1 << 6);
+	public const uint32 PIX_CAPTURE_VIDEO                   = (1 << 7);
+	public const uint32 PIX_CAPTURE_AUDIO                   = (1 << 8);
+	public const uint32 PIX_CAPTURE_RESERVED                = (1 << 15);
+
 	private static int mLibraryHandle = 0;
 
 	typealias PFN_PIXBeginCapture2 = function HRESULT(uint32 captureFlags, PIXCaptureParameters captureParameters);
@@ -147,11 +159,14 @@ public static
 
 	public static void PIXBeginEvent(ID3D12GraphicsCommandList* pCommandList, uint64 color,  StringView format, params Object[] args)
 	{
-		if (PIXBeginEventOnCommandList_ptr == null)
-			return;
-
 		String message = scope .();
 		message.AppendF(scope String(format), params args);
+
+		if (PIXBeginEventOnCommandList_ptr == null)
+		{
+			//pCommandList.BeginEvent((.)color, message.CStr(), (.)message.Length);
+			return;
+		}
 
 		PIXBeginEventOnCommandList_ptr(pCommandList, color, message);
 	}
@@ -168,12 +183,19 @@ public static
 	}
 #endregion CPU and GPU
 
-	/*public static extern void PIXEndEvent();*/
+	/*
+	public static void PIXEndEvent()
+	{
+	}
+	*/
 
 	public static void PIXEndEvent(ID3D12GraphicsCommandList* pCommandList)
 	{
 		if (PIXEndEventOnCommandList_ptr == null)
+		{
+			//pCommandList.EndEvent();
 			return;
+		}
 
 		PIXEndEventOnCommandList_ptr(pCommandList);
 	}
@@ -186,9 +208,11 @@ public static
 		PIXEndEventOnCommandQueue_ptr(pCommandQueue);
 	}
 
-	/*public static extern void PIXSetMarker(uint64 color,  char8* pFormat, ...);
-
-	public static extern void PIXSetMarker(uint64 color,  char16* pFormat, ...);*/
+	/*
+	public static void PIXSetMarker(uint64 color,  StringView format, params Object[] args)
+	{
+	}
+	*/
 
 	public static void PIXSetMarker(ID3D12GraphicsCommandList* pCommandList, uint64 color,  StringView format, params Object[] args)
 	{
@@ -212,15 +236,16 @@ public static
 		PIXSetMarkerOnCommandQueue_ptr(pCommandQueue, color, message);
 	}
 
-	/*public static extern void PIXScopedEvent(uint64 color,  char8* pFormat, ...);
+	/*public static void PIXScopedEvent(uint64 color, StringView format, params Object[] args)
+	{
+	}
 
-	public static extern void PIXScopedEvent(uint64 color,  char16* pFormat, ...);
+	public static void PIXScopedEvent(ID3D12GraphicsCommandList* pCommandList, uint64 color, StringView format, params Object[] args)
+	{
+	}
 
-	public static extern void PIXScopedEvent(ID3D12GraphicsCommandList* pCommandList, uint64 color,  char16* pFormat, ...);
-
-	public static extern void PIXScopedEvent(ID3D12CommandQueue* pCommandQueue, uint64 color,  char16* pFormat, ...);
-
-	public static extern void PIXScopedEvent(ID3D12GraphicsCommandList* pCommandList, uint64 color,  char8* pFormat, ...);
-
-	public static extern void PIXScopedEvent(ID3D12CommandQueue* pCommandQueue, uint64 color,  char8* pFormat, ...);*/
+	public static void PIXScopedEvent(ID3D12CommandQueue* pCommandQueue, uint64 color, StringView format, params Object[] args)
+	{
+	}
+	*/
 }
