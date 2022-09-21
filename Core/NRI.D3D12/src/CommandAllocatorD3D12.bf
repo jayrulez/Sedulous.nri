@@ -64,6 +64,6 @@ class CommandAllocatorD3D12 : CommandAllocator
 
 	public override void Reset()
 	{
-		m_CommandAllocator.Reset();
+		m_CommandAllocator->Reset();
 	}
 }
