@@ -1,13 +1,29 @@
 using SDL2;
 using System;
+using NRI.Framework.Input.Keyboard;
+using NRI.Framework.Input.Mouse;
+using NRI.Framework.Input.Gamepad;
+using NRI.Framework.Input.Touch;
 namespace NRI.Framework.SDL;
 
 class SDLWindow : Window
 {
 	private SDL.Window* SDLNativeWindow;
+
+	private SDLKeyboardEventDispatcher mKeyboardEventDispatcher = new .() ~ delete _;
+	private SDLMouseEventDispatcher mMouseEventDispatcher = new .(this) ~ delete _;
+	private SDLGamepadEventDispatcher mGamepadEventDispatcher = new .() ~ delete _;
+	private SDLTouchEventDispatcher mTouchEventDispatcher = new .(this) ~ delete _;
 	private String mTitle = new String() ~ delete _;
 
-	public void* NativeWindow { get; private set; }
+
+	public override KeyboardEventDispatcher KeyboardEventDispatcher => mKeyboardEventDispatcher;
+
+	public override MouseEventDispatcher MouseEventDispatcher => mMouseEventDispatcher;
+
+	public override GamepadEventDispatcher GamepadEventDispatcher => mGamepadEventDispatcher;
+
+	public override TouchEventDispatcher TouchEventDispatcher => mTouchEventDispatcher;
 
 	public override String Title
 	{
@@ -38,14 +54,16 @@ class SDLWindow : Window
 		}
 	}
 
+	public void* NativeWindow { get; private set; }
+
 	public this(StringView title, uint32 width, uint32 height, bool isVisible = true, GraphicsAPI graphicsAPI = .MAX_NUM)
 		: base(title, width, height)
 	{
 		SDL.WindowFlags flags = SDL.WindowFlags.Resizable;
-		if(isVisible)
+		if (isVisible)
 			flags |=  .Shown;
 
-		if(graphicsAPI == .VULKAN)
+		if (graphicsAPI == .VULKAN)
 			flags |= SDL.WindowFlags.Vulkan;
 
 		SDLNativeWindow = SDL.CreateWindow(title.ToScopeCStr!(), .Undefined, .Undefined, (int32)width, (int32)height, flags);
@@ -108,6 +126,7 @@ class SDLWindow : Window
 					break;
 
 				default:
+					mMouseEventDispatcher.[Friend]HandleWindowEvent(windowEvent.windowEvent);
 					break;
 				}
 			} else
@@ -118,6 +137,16 @@ class SDLWindow : Window
 				Height = (uint32)height;
 
 				OnResized();
+			}
+		} else
+		{
+			bool handled = mKeyboardEventDispatcher.[Friend]HandleEvent(ev)
+				|| mMouseEventDispatcher.[Friend]HandleEvent(ev)
+				|| mGamepadEventDispatcher.[Friend]HandleEvent(ev);
+
+			if (!handled)
+			{
+				mTouchEventDispatcher.[Friend]HandleEvent(ev);
 			}
 		}
 	}

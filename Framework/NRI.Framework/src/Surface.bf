@@ -1,4 +1,8 @@
 using System;
+using NRI.Framework.Input.Keyboard;
+using NRI.Framework.Input.Mouse;
+using NRI.Framework.Input.Gamepad;
+using NRI.Framework.Input.Touch;
 namespace NRI.Framework;
 
 abstract class Surface
@@ -17,6 +21,11 @@ abstract class Surface
 	/// Surface Height.
 	/// </summary>
 	public uint32 Height;
+
+	public abstract KeyboardEventDispatcher KeyboardEventDispatcher { get; }
+	public abstract MouseEventDispatcher MouseEventDispatcher { get; }
+	public abstract GamepadEventDispatcher GamepadEventDispatcher { get; }
+	public abstract TouchEventDispatcher TouchEventDispatcher { get; }
 
 	/// <summary>
 	/// Occurs when surface size is changed.
