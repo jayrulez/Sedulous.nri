@@ -68,6 +68,7 @@ class CommandBufferD3D12 : CommandBuffer
 	public Result Create(D3D12_COMMAND_LIST_TYPE commandListType, ID3D12CommandAllocator* commandAllocator)
 	{
 		ComPtr<ID3D12GraphicsCommandList> graphicsCommandList = null;
+		defer graphicsCommandList.Dispose();
 		HRESULT hr = ((ID3D12Device*)m_Device).CreateCommandList(NRI_TEMP_NODE_MASK, commandListType, commandAllocator, null, ID3D12GraphicsCommandList.IID, (void**)(&graphicsCommandList));
 		if (FAILED(hr))
 		{

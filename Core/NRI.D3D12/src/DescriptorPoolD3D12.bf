@@ -66,6 +66,7 @@ class DescriptorPoolD3D12 : DescriptorPool
 			if (descriptorHeapSize[i] > 0)
 			{
 				ComPtr<ID3D12DescriptorHeap> descriptorHeap = default;
+				defer descriptorHeap.Dispose();
 				D3D12_DESCRIPTOR_HEAP_DESC desc = .() { Type = (D3D12_DESCRIPTOR_HEAP_TYPE)i, NumDescriptors = descriptorHeapSize[i], Flags = .D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, NodeMask = NRI_TEMP_NODE_MASK };
 				HRESULT hr = ((ID3D12Device*)m_Device).CreateDescriptorHeap(&desc, ID3D12DescriptorHeap.IID, (void**)(&descriptorHeap));
 				if (FAILED(hr))

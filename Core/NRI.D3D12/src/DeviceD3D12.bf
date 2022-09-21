@@ -46,6 +46,7 @@ class DeviceD3D12 : Device
 	private Vendor GetVendor(ID3D12Device* device)
 	{
 		ComPtr<IDXGIFactory4> DXGIFactory = null;
+		defer DXGIFactory.Dispose();
 		CreateDXGIFactory(IDXGIFactory4.IID, (void**)(&DXGIFactory));
 
 		DXGI_ADAPTER_DESC desc = .();
@@ -564,6 +565,7 @@ class DeviceD3D12 : Device
 			return Result.OUT_OF_MEMORY;
 
 		ComPtr<ID3D12DescriptorHeap> descriptorHeap = default;
+		defer descriptorHeap.Dispose();
 		D3D12_DESCRIPTOR_HEAP_DESC desc = .() { Type = type, NumDescriptors = DESCRIPTORS_BATCH_SIZE, Flags = .D3D12_DESCRIPTOR_HEAP_FLAG_NONE, NodeMask = NRI_TEMP_NODE_MASK };
 		HRESULT hr = ((ID3D12Device*)m_Device).CreateDescriptorHeap(&desc, ID3D12DescriptorHeap.IID, (void**)(&descriptorHeap));
 		if (FAILED(hr))
