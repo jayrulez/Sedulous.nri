@@ -1111,11 +1111,9 @@ class DeviceD3D12 : Device
 
 public static
 {
-	public static Result CreateDeviceD3D12(DeviceCreationD3D12Desc deviceCreationDesc, out Device device)
+	public static Result CreateDeviceD3D12(DeviceLogger logger, DeviceAllocator<uint8> allocator, DeviceCreationD3D12Desc deviceCreationDesc, out Device device)
 	{
 		device = ?;
-		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
-		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
 
 		DeviceD3D12 implementation = Allocate!<DeviceD3D12>(allocator, logger, allocator);
 		readonly Result res = implementation.Create(deviceCreationDesc);
@@ -1127,16 +1125,12 @@ public static
 		}
 
 		Deallocate!(allocator, implementation);
-		delete allocator;
-		delete logger;
 		return res;
 	}
 
-	public static Result CreateDeviceD3D12(DeviceCreationDesc deviceCreationDesc, out Device device)
+	public static Result CreateDeviceD3D12(DeviceLogger logger, DeviceAllocator<uint8> allocator, DeviceCreationDesc deviceCreationDesc, out Device device)
 	{
 		device = ?;
-		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
-		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
 
 		ComPtr<IDXGIFactory4> factory = default;
 		defer factory.Dispose();
@@ -1177,27 +1171,11 @@ public static
 		if (result != Result.SUCCESS)
 		{
 			Deallocate!(allocator, implementation);
-			delete allocator;
-			delete logger;
 			return result;
 		}
 
 		device = (Device)implementation;
 
 		return Result.SUCCESS;
-	}
-
-	public static void DestroyDeviceD3D12(Device device)
-	{
-		DeviceD3D12 implementation = (DeviceD3D12)device;
-
-
-		DeviceAllocator<uint8> allocator = implementation.GetAllocator();
-		DeviceLogger logger = implementation.GetLogger();
-
-		implementation.Destroy();
-
-		delete allocator;
-		delete logger;
 	}
 }

@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", NRI = "*", Detex = "*", StbImageBeef = "*", Dxc-Beef = "*", "NRI.D3D12" = "*", "NRI.Vulkan" = "*"}
+Dependencies = {corlib = "*", NRI = "*", Detex = "*", StbImageBeef = "*", Dxc-Beef = "*", "NRI.D3D12" = "*", "NRI.Vulkan" = "*", "NRI.Validation" = "*"}
 
 [Project]
 Name = "NRI.Framework"

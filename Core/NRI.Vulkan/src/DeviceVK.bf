@@ -2308,12 +2308,9 @@ class DeviceVK : Device
 
 public static
 {
-	public static Result CreateDeviceVK(DeviceCreationDesc deviceCreationDesc, out Device device)
+	public static Result CreateDeviceVK(DeviceLogger logger, DeviceAllocator<uint8> allocator, DeviceCreationDesc deviceCreationDesc, out Device device)
 	{
 		device = ?;
-
-		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
-		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
 
 		DeviceVK implementation = Allocate!<DeviceVK>(allocator, logger, allocator);
 
@@ -2326,16 +2323,12 @@ public static
 		}
 
 		Deallocate!(allocator, implementation);
-		delete allocator;
-		delete logger;
 		return res;
 	}
 
-	public static Result CreateDeviceVK(DeviceCreationVulkanDesc deviceCreationDesc, out Device device)
+	public static Result CreateDeviceVK(DeviceLogger logger, DeviceAllocator<uint8> allocator, DeviceCreationVulkanDesc deviceCreationDesc, out Device device)
 	{
 		device = ?;
-		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
-		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
 
 		DeviceVK implementation = Allocate!<DeviceVK>(allocator, logger, allocator);
 		readonly Result res = implementation.Create(deviceCreationDesc);
@@ -2347,8 +2340,6 @@ public static
 		}
 
 		Deallocate!(allocator, implementation);
-		delete allocator;
-		delete logger;
 		return res;
 	}
 
@@ -2356,13 +2347,6 @@ public static
 	{
 		DeviceVK implementation = (DeviceVK)device;
 
-
-		DeviceAllocator<uint8> allocator = implementation.GetAllocator();
-		DeviceLogger logger = implementation.GetLogger();
-
 		implementation.Destroy();
-
-		delete allocator;
-		delete logger;
 	}
 }

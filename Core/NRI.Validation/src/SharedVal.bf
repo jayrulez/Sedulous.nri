@@ -26,6 +26,8 @@ public abstract class DeviceObjectVal<T> : DeviceObjectBaseVal
 		m_Name = Allocate!<String>(device.GetAllocator());
 	}
 
+	//public static implicit operator T(Self self) => self.GetImpl();
+
 	public T GetImpl() => m_ImplObject;
 
 	public String GetDebugName() => m_Name;
@@ -53,6 +55,105 @@ public static
 	public static char8* GetDescriptorTypeName(DescriptorType descriptorType)
 	{
 		return DESCRIPTOR_TYPE_NAME[(uint32)descriptorType];
+	}
+
+	public static bool IsAccessMaskSupported(BufferUsageBits usageMask, AccessBits accessMask)
+	{
+		BufferUsageBits requiredUsageMask = BufferUsageBits.NONE;
+
+		if (accessMask.HasFlag(AccessBits.VERTEX_BUFFER))
+			requiredUsageMask |= BufferUsageBits.VERTEX_BUFFER;
+
+		if (accessMask.HasFlag(AccessBits.INDEX_BUFFER))
+			requiredUsageMask |= BufferUsageBits.INDEX_BUFFER;
+
+		if (accessMask.HasFlag(AccessBits.CONSTANT_BUFFER))
+			requiredUsageMask |= BufferUsageBits.CONSTANT_BUFFER;
+
+		if (accessMask.HasFlag(AccessBits.ARGUMENT_BUFFER))
+			requiredUsageMask |= BufferUsageBits.ARGUMENT_BUFFER;
+
+		if (accessMask.HasFlag(AccessBits.SHADER_RESOURCE))
+			requiredUsageMask |= BufferUsageBits.SHADER_RESOURCE;
+
+		if (accessMask.HasFlag(AccessBits.SHADER_RESOURCE_STORAGE))
+			requiredUsageMask |= BufferUsageBits.SHADER_RESOURCE_STORAGE;
+
+		if (accessMask.HasFlag(AccessBits.COLOR_ATTACHMENT))
+			return false;
+
+		if (accessMask.HasFlag(AccessBits.DEPTH_STENCIL_WRITE))
+			return false;
+
+		if (accessMask.HasFlag(AccessBits.DEPTH_STENCIL_READ))
+			return false;
+
+		if (accessMask.HasFlag(AccessBits.ACCELERATION_STRUCTURE_READ))
+			return false;
+
+		if (accessMask.HasFlag(AccessBits.ACCELERATION_STRUCTURE_WRITE))
+			return false;
+
+		return (uint32)(requiredUsageMask & usageMask) == (uint32)requiredUsageMask;
+	}
+
+	public static bool IsAccessMaskSupported(TextureUsageBits usageMask, AccessBits accessMask)
+	{
+		TextureUsageBits requiredUsageMask = TextureUsageBits.NONE;
+
+		if (accessMask.HasFlag(AccessBits.VERTEX_BUFFER))
+			return false;
+
+		if (accessMask.HasFlag(AccessBits.INDEX_BUFFER))
+			return false;
+
+		if (accessMask.HasFlag(AccessBits.CONSTANT_BUFFER))
+			return false;
+
+		if (accessMask.HasFlag(AccessBits.ARGUMENT_BUFFER))
+			return false;
+
+		if (accessMask.HasFlag(AccessBits.SHADER_RESOURCE))
+			requiredUsageMask |= TextureUsageBits.SHADER_RESOURCE;
+
+		if (accessMask.HasFlag(AccessBits.SHADER_RESOURCE_STORAGE))
+			requiredUsageMask |= TextureUsageBits.SHADER_RESOURCE_STORAGE;
+
+		if (accessMask.HasFlag(AccessBits.COLOR_ATTACHMENT))
+			requiredUsageMask |= TextureUsageBits.COLOR_ATTACHMENT;
+
+		if (accessMask.HasFlag(AccessBits.DEPTH_STENCIL_WRITE))
+			requiredUsageMask |= TextureUsageBits.DEPTH_STENCIL_ATTACHMENT;
+
+		if (accessMask.HasFlag(AccessBits.DEPTH_STENCIL_READ))
+			requiredUsageMask |= TextureUsageBits.DEPTH_STENCIL_ATTACHMENT;
+
+		if (accessMask.HasFlag(AccessBits.ACCELERATION_STRUCTURE_READ))
+			return false;
+
+		if (accessMask.HasFlag(AccessBits.ACCELERATION_STRUCTURE_WRITE))
+			return false;
+
+		return (uint32)(requiredUsageMask & usageMask) == (uint32)requiredUsageMask;
+	}
+
+	public const TextureUsageBits[(int)TextureLayout.MAX_NUM] TEXTURE_USAGE_FOR_TEXTURE_LAYOUT_TABLE = .(
+		TextureUsageBits.NONE, // GENERAL
+		TextureUsageBits.COLOR_ATTACHMENT, // COLOR_ATTACHMENT
+		TextureUsageBits.DEPTH_STENCIL_ATTACHMENT, // DEPTH_STENCIL
+		TextureUsageBits.DEPTH_STENCIL_ATTACHMENT, // DEPTH_STENCIL_READONLY
+		TextureUsageBits.DEPTH_STENCIL_ATTACHMENT, // DEPTH_READONLY
+		TextureUsageBits.DEPTH_STENCIL_ATTACHMENT, // STENCIL_READONLY
+		TextureUsageBits.SHADER_RESOURCE, // SHADER_RESOURCE
+		TextureUsageBits.NONE, // PRESENT
+		TextureUsageBits.NONE // UNKNOWN
+		);
+
+	public static bool IsTextureLayoutSupported(TextureUsageBits usageMask, TextureLayout textureLayout)
+	{
+		readonly TextureUsageBits requiredMask = TEXTURE_USAGE_FOR_TEXTURE_LAYOUT_TABLE[(int)textureLayout];
+
+		return (uint32)(requiredMask & usageMask) == (uint32)requiredMask;
 	}
 
 	public static DeviceVal GetDeviceVal<T>(T object) where T : var

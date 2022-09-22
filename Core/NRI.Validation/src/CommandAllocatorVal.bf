@@ -1,3 +1,4 @@
+using System;
 namespace NRI.Validation;
 
 class CommandAllocatorVal : DeviceObjectVal<CommandAllocator>
@@ -11,6 +12,7 @@ class CommandAllocatorVal : DeviceObjectVal<CommandAllocator>
 		m_Name.Set(scope .(name));
 		m_ImplObject.SetDebugName(name);
 	}
+
 	public Result CreateCommandBuffer(out CommandBuffer commandBuffer)
 	{
 		commandBuffer = ?;
@@ -20,11 +22,12 @@ class CommandAllocatorVal : DeviceObjectVal<CommandAllocator>
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), commandBufferImpl != null, Result.FAILURE, "Implementation failure: 'commandBufferImpl' is NULL!");
-			commandBuffer = (CommandBuffer)Allocate!<CommandBufferVal>(m_Device.GetAllocator(), m_Device, commandBufferImpl, false);
+			commandBuffer = (CommandBuffer)(Object)Allocate!<CommandBufferVal>(m_Device.GetAllocator(), m_Device, commandBufferImpl, false);
 		}
 
 		return result;
 	}
+
 	public void Reset()
 	{
 		m_ImplObject.Reset();
