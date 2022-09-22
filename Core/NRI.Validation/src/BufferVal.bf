@@ -1,6 +1,6 @@
 namespace NRI.Validation;
 
-class BufferVal : DeviceObjectVal<Buffer>
+class BufferVal : Buffer,  DeviceObjectVal<Buffer>
 {
 	private MemoryVal m_Memory = null;
 	private BufferDesc m_BufferDesc = .();
@@ -20,7 +20,7 @@ class BufferVal : DeviceObjectVal<Buffer>
 
 	public readonly ref BufferDesc GetDesc() => ref m_BufferDesc;
 
-	public uint64 GetNativeObject(uint32 physicalDeviceIndex)
+	public uint64 GetBufferNativeObject(uint32 physicalDeviceIndex)
 		{ return m_ImplObject.GetBufferNativeObject(physicalDeviceIndex); }
 
 	public bool IsBoundToMemory()

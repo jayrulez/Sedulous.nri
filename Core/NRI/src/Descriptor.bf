@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class Descriptor
+interface Descriptor
 {
 	public abstract void SetDebugName(char8* name);
 

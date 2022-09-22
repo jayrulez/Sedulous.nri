@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class Texture
+interface Texture
 {
 	public abstract void SetDebugName(char8* name);
 	

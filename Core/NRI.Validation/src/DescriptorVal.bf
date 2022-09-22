@@ -19,7 +19,7 @@ enum ResourceViewType
 	CONSTANT_BUFFER_VIEW
 }
 
-class DescriptorVal : DeviceObjectVal<Descriptor>
+class DescriptorVal :Descriptor, DeviceObjectVal<Descriptor>
 {
 	private ResourceType m_ResourceType = ResourceType.NONE;
 	private ResourceViewType m_ResourceViewType = ResourceViewType.NONE;

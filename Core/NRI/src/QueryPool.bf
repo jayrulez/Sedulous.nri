@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class QueryPool
+interface QueryPool
 {
 	public abstract void SetDebugName(char8* name);
 	

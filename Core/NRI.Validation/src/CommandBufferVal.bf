@@ -73,7 +73,7 @@ public static
 	}
 }
 
-class CommandBufferVal : DeviceObjectVal<CommandBuffer>
+class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 {
 	private mut Command AllocateValidationCommand<Command>()
 	{

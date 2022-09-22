@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class CommandBuffer
+interface CommandBuffer
 {
 	public abstract void SetDebugName(char8* name);
 

@@ -119,11 +119,11 @@ class DescriptorPoolD3D12 : DescriptorPool
 		return descriptorPointer;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 	}
 
-	public override Result AllocateDescriptorSets(PipelineLayout pipelineLayout, uint32 setIndex, DescriptorSet* descriptorSets, uint32 instanceNum, uint32 physicalDeviceMask, uint32 variableDescriptorNum)
+	public Result AllocateDescriptorSets(PipelineLayout pipelineLayout, uint32 setIndex, DescriptorSet* descriptorSets, uint32 instanceNum, uint32 physicalDeviceMask, uint32 variableDescriptorNum)
 	{
 		//MaybeUnused(variableDescriptorNum);
 
@@ -146,7 +146,7 @@ class DescriptorPoolD3D12 : DescriptorPool
 		return Result.SUCCESS;
 	}
 
-	public override void Reset()
+	public void Reset()
 	{
 		for (uint32 i = 0; i < (.)DescriptorHeapType.MAX_NUM; i++)
 			m_DescriptorNum[i] = 0;

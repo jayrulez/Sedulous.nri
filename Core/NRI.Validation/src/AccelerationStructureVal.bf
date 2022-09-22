@@ -1,7 +1,7 @@
 using System;
 namespace NRI.Validation;
 
-class AccelerationStructureVal : DeviceObjectVal<AccelerationStructure>
+class AccelerationStructureVal : AccelerationStructure,  DeviceObjectVal<AccelerationStructure>
 {
 	MemoryVal m_Memory = null;
 
@@ -59,7 +59,7 @@ class AccelerationStructureVal : DeviceObjectVal<AccelerationStructure>
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), descriptorImpl != null, Result.FAILURE, "Unexpected error: 'descriptorImpl' is nullptr.");
-			descriptor = (Descriptor)(Object)Allocate!<DescriptorVal>(m_Device.GetAllocator(), m_Device, descriptorImpl, ResourceType.ACCELERATION_STRUCTURE);
+			descriptor = (Descriptor)Allocate!<DescriptorVal>(m_Device.GetAllocator(), m_Device, descriptorImpl, ResourceType.ACCELERATION_STRUCTURE);
 		}
 
 		return result;

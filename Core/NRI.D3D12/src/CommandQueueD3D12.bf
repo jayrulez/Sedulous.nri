@@ -62,12 +62,12 @@ class CommandQueueD3D12 : CommandQueue
 		return m_CommandListType;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_CommandQueue, scope String(name));
 	}
 
-	public override void SubmitWork(WorkSubmissionDesc workSubmissionDesc, DeviceSemaphore deviceSemaphore)
+	public void SubmitWork(WorkSubmissionDesc workSubmissionDesc, DeviceSemaphore deviceSemaphore)
 	{
 		for (uint32 i = 0; i < workSubmissionDesc.waitNum; i++)
 			((QueueSemaphoreD3D12)workSubmissionDesc.wait[i]).Wait(m_CommandQueue);
@@ -89,26 +89,26 @@ class CommandQueueD3D12 : CommandQueue
 			((DeviceSemaphoreD3D12)deviceSemaphore).Signal(m_CommandQueue);
 	}
 
-	public override void WaitForSemaphore(DeviceSemaphore deviceSemaphore)
+	public void WaitForSemaphore(DeviceSemaphore deviceSemaphore)
 	{
 		((DeviceSemaphoreD3D12)deviceSemaphore).Wait();
 	}
 
-	public override Result ChangeResourceStates(TransitionBarrierDesc transitionBarriers)
+	public Result ChangeResourceStates(TransitionBarrierDesc transitionBarriers)
 	{
 		ResourceStateChangeHelper resourceStateChange = scope .(m_Device, (CommandQueue)this);
 
 		return resourceStateChange.ChangeStates(transitionBarriers);
 	}
 
-	public override Result UploadData(NRI.Helpers.TextureUploadDesc* textureUploadDescs, uint32 textureUploadDescNum, NRI.Helpers.BufferUploadDesc* bufferUploadDescs, uint32 bufferUploadDescNum)
+	public Result UploadData(NRI.Helpers.TextureUploadDesc* textureUploadDescs, uint32 textureUploadDescNum, NRI.Helpers.BufferUploadDesc* bufferUploadDescs, uint32 bufferUploadDescNum)
 	{
 		DataUploadHelper helperDataUpload = scope .(m_Device, m_Device.GetAllocator(), (CommandQueue)this);
 
 		return helperDataUpload.UploadData(textureUploadDescs, textureUploadDescNum, bufferUploadDescs, bufferUploadDescNum);
 	}
 
-	public override Result WaitForIdle()
+	public Result WaitForIdle()
 	{
 		WaitIdleHelper helperWaitIdle = scope .(m_Device, (CommandQueue)this);
 

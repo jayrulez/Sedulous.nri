@@ -2,12 +2,13 @@ using System.Collections;
 using System;
 namespace NRI.Validation;
 
-class SwapChainVal : DeviceObjectVal<SwapChain>
+class SwapChainVal : SwapChain, DeviceObjectVal<SwapChain>
 {
 	private List<TextureVal> m_Textures;
 	private SwapChainDesc m_SwapChainDesc = .();
 
-	public this(DeviceVal device, SwapChain swapchain, SwapChainDesc swapChainDesc) : base(device, swapchain)
+	public this(DeviceVal device, SwapChain swapchain, SwapChainDesc swapChainDesc)
+		: base(device, swapchain)
 	{
 		m_Textures = Allocate!<List<TextureVal>>(m_Device.GetAllocator());
 		m_SwapChainDesc = swapChainDesc;

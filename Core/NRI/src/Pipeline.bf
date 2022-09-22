@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class Pipeline
+interface Pipeline
 {
 	public abstract void SetDebugName(char8* name);
 	

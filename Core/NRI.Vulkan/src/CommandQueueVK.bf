@@ -37,12 +37,12 @@ class CommandQueueVK : CommandQueue
 	public uint32 GetFamilyIndex() => m_FamilyIndex;
 	public CommandQueueType GetCommandQueueType() => m_Type;
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_QUEUE, (uint64)m_Handle, name);
 	}
 
-	public override void SubmitWork(WorkSubmissionDesc workSubmissionDesc, DeviceSemaphore deviceSemaphore)
+	public void SubmitWork(WorkSubmissionDesc workSubmissionDesc, DeviceSemaphore deviceSemaphore)
 	{
 		VkCommandBuffer* commandBuffers = STACK_ALLOC!<VkCommandBuffer>(workSubmissionDesc.commandBufferNum);
 		VkSemaphore* waitSemaphores = STACK_ALLOC!<VkSemaphore>(workSubmissionDesc.waitNum);
@@ -115,7 +115,7 @@ class CommandQueueVK : CommandQueue
 			"Can't submit work to a command queue: vkQueueSubmit returned {0}.", (int32)result);
 	}
 
-	public override void WaitForSemaphore(DeviceSemaphore deviceSemaphore)
+	public void WaitForSemaphore(DeviceSemaphore deviceSemaphore)
 	{
 		/*readonly*/ VkFence fence = (DeviceSemaphoreVK)deviceSemaphore;
 
@@ -132,21 +132,21 @@ class CommandQueueVK : CommandQueue
 			"Can't reset a device semaphore: vkResetFences returned {0}.", (int32)result);
 	}
 
-	public override Result ChangeResourceStates(TransitionBarrierDesc transitionBarriers)
+	public Result ChangeResourceStates(TransitionBarrierDesc transitionBarriers)
 	{
 		ResourceStateChangeHelper resourceStateChange = scope .(m_Device, this);
 
 		return resourceStateChange.ChangeStates(transitionBarriers);
 	}
 
-	public override Result UploadData(NRI.Helpers.TextureUploadDesc* textureUploadDescs, uint32 textureUploadDescNum, NRI.Helpers.BufferUploadDesc* bufferUploadDescs, uint32 bufferUploadDescNum)
+	public Result UploadData(NRI.Helpers.TextureUploadDesc* textureUploadDescs, uint32 textureUploadDescNum, NRI.Helpers.BufferUploadDesc* bufferUploadDescs, uint32 bufferUploadDescNum)
 	{
 		DataUploadHelper helperDataUpload = scope .(m_Device, m_Device.GetAllocator(), this);
 
 		return helperDataUpload.UploadData(textureUploadDescs, textureUploadDescNum, bufferUploadDescs, bufferUploadDescNum);
 	}
 
-	public override Result WaitForIdle()
+	public Result WaitForIdle()
 	{
 		VkResult result = VulkanNative.vkQueueWaitIdle(m_Handle);
 

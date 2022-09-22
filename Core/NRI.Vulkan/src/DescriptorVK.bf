@@ -337,7 +337,7 @@ class DescriptorVK : Descriptor
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		uint64[PHYSICAL_DEVICE_GROUP_MAX_SIZE] handles = .();
 
@@ -371,7 +371,7 @@ class DescriptorVK : Descriptor
 		}
 	}
 
-	public override uint64 GetDescriptorNativeObject(uint32 physicalDeviceIndex)
+	public uint64 GetDescriptorNativeObject(uint32 physicalDeviceIndex)
 	{
 		readonly DescriptorVK d = ((DescriptorVK)this);
 

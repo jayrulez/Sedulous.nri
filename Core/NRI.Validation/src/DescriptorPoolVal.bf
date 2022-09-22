@@ -2,7 +2,7 @@ using System.Collections;
 using System;
 namespace NRI.Validation;
 
-class DescriptorPoolVal : DeviceObjectVal<DescriptorPool>
+class DescriptorPoolVal :DescriptorPool, DeviceObjectVal<DescriptorPool>
 {
 	private bool CheckDescriptorRange(DescriptorRangeDesc rangeDesc, uint32 variableDescriptorNum)
 	{
@@ -101,14 +101,14 @@ class DescriptorPoolVal : DeviceObjectVal<DescriptorPool>
 	{
 		m_SkipValidation = true;
 
-		Allocate!<List<DescriptorSetVal>>(m_Device.GetAllocator());
+		m_DescriptorSets = Allocate!<List<DescriptorSetVal>>(m_Device.GetAllocator());
 	}
 
 	public this(DeviceVal device, DescriptorPool descriptorPool, DescriptorPoolDesc descriptorPoolDesc) : base(device, descriptorPool)
 	{
 		m_Desc = descriptorPoolDesc;
 
-		Allocate!<List<DescriptorSetVal>>(m_Device.GetAllocator());
+		m_DescriptorSets = Allocate!<List<DescriptorSetVal>>(m_Device.GetAllocator());
 	}
 
 	public ~this()

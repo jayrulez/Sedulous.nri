@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class Buffer
+interface Buffer
 {
 	public abstract void SetDebugName(char8* name);
 	

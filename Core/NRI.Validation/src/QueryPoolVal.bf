@@ -2,7 +2,7 @@ using System.Collections;
 using System;
 namespace NRI.Validation;
 
-class QueryPoolVal : DeviceObjectVal<QueryPool>
+class QueryPoolVal :QueryPool, DeviceObjectVal<QueryPool>
 {
 	private List<uint64> m_DeviceState;
 	private uint32 m_QueryNum;

@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class Memory
+interface Memory
 {
 	public abstract void SetDebugName(char8* name);
 }

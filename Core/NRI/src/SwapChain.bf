@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class SwapChain
+interface SwapChain
 {
 	public abstract void SetDebugName(char8* name);
 

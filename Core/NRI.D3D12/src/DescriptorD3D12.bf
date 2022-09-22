@@ -508,11 +508,11 @@ class DescriptorD3D12 : Descriptor
 	public D3D12_GPU_VIRTUAL_ADDRESS GetBufferLocation() => m_BufferLocation;
 	public bool IsFloatingPointUAV() => m_IsFloatingPointFormatUAV;
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 	}
 
-	public override uint64 GetDescriptorNativeObject(uint32 physicalDeviceIndex)
+	public uint64 GetDescriptorNativeObject(uint32 physicalDeviceIndex)
 	{
 	    //MaybeUnused(physicalDeviceIndex);
 	

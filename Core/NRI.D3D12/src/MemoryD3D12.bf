@@ -67,7 +67,7 @@ class MemoryD3D12 : Memory
 
 	public readonly ref D3D12_HEAP_DESC GetHeapDesc() => ref m_HeapDesc;
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
     	SET_D3D_DEBUG_OBJECT_NAME!(m_Heap, scope String(name));
 	}

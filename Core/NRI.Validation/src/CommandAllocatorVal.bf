@@ -1,7 +1,7 @@
 using System;
 namespace NRI.Validation;
 
-class CommandAllocatorVal : DeviceObjectVal<CommandAllocator>
+class CommandAllocatorVal : CommandAllocator,  DeviceObjectVal<CommandAllocator>
 {
 	public this(DeviceVal device, CommandAllocator commandAllocator) : base(device, commandAllocator)
 	{

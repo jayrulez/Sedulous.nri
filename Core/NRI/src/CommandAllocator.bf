@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class CommandAllocator
+interface CommandAllocator
 {
 	public abstract void SetDebugName(char8* name);
 

@@ -83,7 +83,7 @@ class QueryPoolVK : QueryPool
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		uint64[PHYSICAL_DEVICE_GROUP_MAX_SIZE] handles = .();
 		for (uint i = 0; i < handles.Count; i++)
@@ -92,7 +92,7 @@ class QueryPoolVK : QueryPool
 		m_Device.SetDebugNameToDeviceGroupObject(.VK_OBJECT_TYPE_QUERY_POOL, &handles, name);
 	}
 
-	public override uint32 GetQuerySize()
+	public uint32 GetQuerySize()
 	{
 		const uint32 highestBitInPipelineStatsBits = 11;
 

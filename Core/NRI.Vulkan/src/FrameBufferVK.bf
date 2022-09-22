@@ -237,7 +237,7 @@ class FrameBufferVK : FrameBuffer
 		Internal.MemCpy(values, &m_ClearValues, m_AttachmentNum * sizeof(VkClearValue));
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		uint64[PHYSICAL_DEVICE_GROUP_MAX_SIZE] handles = .();
 		for (uint i = 0; i < handles.Count; i++)

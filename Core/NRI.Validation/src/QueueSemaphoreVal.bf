@@ -1,6 +1,6 @@
 namespace NRI.Validation;
 
-class QueueSemaphoreVal : DeviceObjectVal<QueueSemaphore>
+class QueueSemaphoreVal : QueueSemaphore, DeviceObjectVal<QueueSemaphore>
 {
 	private bool m_isSignaled = false;
 

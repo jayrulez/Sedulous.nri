@@ -156,12 +156,12 @@ class AccelerationStructureVK : AccelerationStructure
 		return Result.SUCCESS;
 	}
 
-	public override uint64 GetHandle(uint32 physicalDeviceIndex) => m_Handles[physicalDeviceIndex]; // todo sed: switch with GetNativeHandle?
+	public uint64 GetHandle(uint32 physicalDeviceIndex) => m_Handles[physicalDeviceIndex]; // todo sed: switch with GetNativeHandle?
 
 	public BufferVK GetBuffer() => m_Buffer;
 
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		uint64[PHYSICAL_DEVICE_GROUP_MAX_SIZE] handles = .();
 		for (uint i = 0; i < handles.Count; i++)
@@ -171,7 +171,7 @@ class AccelerationStructureVK : AccelerationStructure
 		m_Buffer.SetDebugName(name);
 	}
 
-	public override Result CreateDescriptor(uint32 physicalDeviceMask, out Descriptor descriptor)
+	public Result CreateDescriptor(uint32 physicalDeviceMask, out Descriptor descriptor)
 	{
 		DescriptorVK descriptorImpl = Allocate!<DescriptorVK>(m_Device.GetAllocator(), m_Device);
 		descriptorImpl.Create(&m_Handles, physicalDeviceMask);
@@ -180,14 +180,14 @@ class AccelerationStructureVK : AccelerationStructure
 		return Result.SUCCESS;
 	}
 
-	public override void GetMemoryInfo(ref MemoryDesc memoryDesc)
+	public void GetMemoryInfo(ref MemoryDesc memoryDesc)
 	{
 		m_Buffer.GetMemoryInfo(MemoryLocation.DEVICE, ref memoryDesc);
 	}
 
-	public override uint64 GetUpdateScratchBufferSize() => m_UpdateScratchSize;
+	public uint64 GetUpdateScratchBufferSize() => m_UpdateScratchSize;
 
-	public override uint64 GetBuildScratchBufferSize()  => m_BuildScratchSize;
+	public uint64 GetBuildScratchBufferSize()  => m_BuildScratchSize;
 
 	public uint64 GetNativeHandle(uint32 physicalDeviceIndex)
 	{

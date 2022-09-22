@@ -2,7 +2,7 @@ using System.Collections;
 using System;
 namespace NRI.Validation;
 
-class PipelineLayoutVal : DeviceObjectVal<PipelineLayout>
+class PipelineLayoutVal : PipelineLayout, DeviceObjectVal<PipelineLayout>
 {
 	private PipelineLayoutDesc m_PipelineLayoutDesc;
 	private List<DescriptorSetDesc> m_DescriptorSets;

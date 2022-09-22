@@ -7,7 +7,7 @@ public abstract class DeviceObjectBaseVal
 
 	public this(DeviceVal device)
 	{
-		m_Device = m_Device;
+		m_Device = device;
 	}
 
 	public DeviceVal GetDevice() => m_Device;

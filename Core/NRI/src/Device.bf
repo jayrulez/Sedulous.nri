@@ -1,7 +1,7 @@
 using NRI.Helpers;
 namespace NRI;
 
-abstract class Device
+interface Device
 {
 	public abstract DeviceLogger GetLogger();
 	public abstract DeviceAllocator<uint8> GetAllocator();

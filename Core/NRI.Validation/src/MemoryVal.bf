@@ -2,7 +2,7 @@ using System.Collections;
 using System.Threading;
 namespace NRI.Validation;
 
-class MemoryVal : DeviceObjectVal<Memory>
+class MemoryVal : Memory, DeviceObjectVal<Memory>
 {
 	private List<BufferVal> m_Buffers;
 	private List<TextureVal> m_Textures;

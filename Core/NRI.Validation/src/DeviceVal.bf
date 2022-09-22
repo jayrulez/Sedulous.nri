@@ -65,28 +65,28 @@ class DeviceVal : Device
 
 	public Monitor GetLock()
 		{ return m_Lock; }
-	public override DeviceLogger GetLogger()
+	public DeviceLogger GetLogger()
 	{
 		return m_Device.GetLogger();
 	}
 
-	public override DeviceAllocator<uint8> GetAllocator()
+	public DeviceAllocator<uint8> GetAllocator()
 	{
 		return m_Device.GetAllocator();
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Name.Set(scope .(name));
 		m_Device.SetDebugName(name);
 	}
 
-	public override readonly ref DeviceDesc GetDesc()
+	public readonly ref DeviceDesc GetDesc()
 	{
 		return ref m_Device.GetDesc();
 	}
 
-	public override Result GetCommandQueue(CommandQueueType commandQueueType, out CommandQueue commandQueue)
+	public Result GetCommandQueue(CommandQueueType commandQueueType, out CommandQueue commandQueue)
 	{
 		commandQueue = ?;
 		RETURN_ON_FAILURE!(GetLogger(), commandQueueType < CommandQueueType.MAX_NUM, Result.INVALID_ARGUMENT,
@@ -106,7 +106,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateCommandAllocator(CommandQueue commandQueue, uint32 physicalDeviceMask, out CommandAllocator commandAllocator)
+	public Result CreateCommandAllocator(CommandQueue commandQueue, uint32 physicalDeviceMask, out CommandAllocator commandAllocator)
 	{
 		commandAllocator = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -126,7 +126,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateDescriptorPool(DescriptorPoolDesc descriptorPoolDesc, out DescriptorPool descriptorPool)
+	public Result CreateDescriptorPool(DescriptorPoolDesc descriptorPoolDesc, out DescriptorPool descriptorPool)
 	{
 		descriptorPool = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(descriptorPoolDesc.physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -144,7 +144,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateBuffer(BufferDesc bufferDesc, out Buffer buffer)
+	public Result CreateBuffer(BufferDesc bufferDesc, out Buffer buffer)
 	{
 		buffer = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(bufferDesc.physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -165,7 +165,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateTexture(TextureDesc textureDesc, out Texture texture)
+	public Result CreateTexture(TextureDesc textureDesc, out Texture texture)
 	{
 		texture = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(textureDesc.physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -189,7 +189,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateBufferView(BufferViewDesc bufferViewDesc, out Descriptor bufferView)
+	public Result CreateBufferView(BufferViewDesc bufferViewDesc, out Descriptor bufferView)
 	{
 		bufferView = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(bufferViewDesc.physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -229,7 +229,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateTexture1DView(Texture1DViewDesc textureViewDesc, out Descriptor textureView)
+	public Result CreateTexture1DView(Texture1DViewDesc textureViewDesc, out Descriptor textureView)
 	{
 		textureView = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(textureViewDesc.physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -277,7 +277,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateTexture2DView(Texture2DViewDesc textureViewDesc, out Descriptor textureView)
+	public Result CreateTexture2DView(Texture2DViewDesc textureViewDesc, out Descriptor textureView)
 	{
 		textureView = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(textureViewDesc.physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -325,7 +325,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateTexture3DView(Texture3DViewDesc textureViewDesc, out Descriptor textureView)
+	public Result CreateTexture3DView(Texture3DViewDesc textureViewDesc, out Descriptor textureView)
 	{
 		textureView = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(textureViewDesc.physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -373,7 +373,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateSampler(SamplerDesc samplerDesc, out Descriptor sampler)
+	public Result CreateSampler(SamplerDesc samplerDesc, out Descriptor sampler)
 	{
 		sampler = ?;
 		RETURN_ON_FAILURE!(GetLogger(), samplerDesc.magnification < Filter.MAX_NUM, Result.INVALID_ARGUMENT,
@@ -415,7 +415,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreatePipelineLayout(PipelineLayoutDesc pipelineLayoutDesc, out PipelineLayout pipelineLayout)
+	public Result CreatePipelineLayout(PipelineLayoutDesc pipelineLayoutDesc, out PipelineLayout pipelineLayout)
 	{
 		pipelineLayout = ?;
 		readonly bool isGraphics = pipelineLayoutDesc.stageMask.HasFlag(PipelineLayoutShaderStageBits.ALL_GRAPHICS);
@@ -475,7 +475,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateGraphicsPipeline(GraphicsPipelineDesc graphicsPipelineDesc, out Pipeline pipeline)
+	public Result CreateGraphicsPipeline(GraphicsPipelineDesc graphicsPipelineDesc, out Pipeline pipeline)
 	{
 		pipeline = ?;
 		RETURN_ON_FAILURE!(GetLogger(), graphicsPipelineDesc.pipelineLayout != null, Result.INVALID_ARGUMENT,
@@ -538,7 +538,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateComputePipeline(ComputePipelineDesc computePipelineDesc, out Pipeline pipeline)
+	public Result CreateComputePipeline(ComputePipelineDesc computePipelineDesc, out Pipeline pipeline)
 	{
 		pipeline = ?;
 		RETURN_ON_FAILURE!(GetLogger(), computePipelineDesc.pipelineLayout != null, Result.INVALID_ARGUMENT,
@@ -568,7 +568,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateFrameBuffer(FrameBufferDesc frameBufferDesc, out FrameBuffer frameBuffer)
+	public Result CreateFrameBuffer(FrameBufferDesc frameBufferDesc, out FrameBuffer frameBuffer)
 	{
 		frameBuffer = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(frameBufferDesc.physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -617,7 +617,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateQueryPool(QueryPoolDesc queryPoolDesc, out QueryPool queryPool)
+	public Result CreateQueryPool(QueryPoolDesc queryPoolDesc, out QueryPool queryPool)
 	{
 		queryPool = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(queryPoolDesc.physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -642,7 +642,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateQueueSemaphore(out QueueSemaphore queueSemaphore)
+	public Result CreateQueueSemaphore(out QueueSemaphore queueSemaphore)
 	{
 		queueSemaphore = ?;
 		QueueSemaphore queueSemaphoreImpl = null;
@@ -657,7 +657,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateDeviceSemaphore(bool signaled, out DeviceSemaphore deviceSemaphore)
+	public Result CreateDeviceSemaphore(bool signaled, out DeviceSemaphore deviceSemaphore)
 	{
 		deviceSemaphore = ?;
 		DeviceSemaphore deviceSemaphoreImpl;
@@ -674,13 +674,13 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateCommandBuffer(CommandAllocator commandAllocator, out CommandBuffer commandBuffer)
+	public Result CreateCommandBuffer(CommandAllocator commandAllocator, out CommandBuffer commandBuffer)
 	{
 		commandBuffer = ?;
 		return commandAllocator.CreateCommandBuffer(out commandBuffer);
 	}
 
-	public override Result CreateSwapChain(SwapChainDesc swapChainDesc, out SwapChain swapChain)
+	public Result CreateSwapChain(SwapChainDesc swapChainDesc, out SwapChain swapChain)
 	{
 		swapChain = ?;
 		RETURN_ON_FAILURE!(GetLogger(), swapChainDesc.commandQueue != null, Result.INVALID_ARGUMENT,
@@ -739,7 +739,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateRayTracingPipeline(RayTracingPipelineDesc pipelineDesc, out Pipeline pipeline)
+	public Result CreateRayTracingPipeline(RayTracingPipelineDesc pipelineDesc, out Pipeline pipeline)
 	{
 		pipeline = ?;
 		RETURN_ON_FAILURE!(GetLogger(), pipelineDesc.pipelineLayout != null, Result.INVALID_ARGUMENT,
@@ -786,7 +786,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result CreateAccelerationStructure(AccelerationStructureDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure)
+	public Result CreateAccelerationStructure(AccelerationStructureDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure)
 	{
 		accelerationStructure = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(accelerationStructureDesc.physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -819,95 +819,95 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override void DestroyCommandAllocator(CommandAllocator commandAllocator)
+	public void DestroyCommandAllocator(CommandAllocator commandAllocator)
 	{
 		m_Device.DestroyCommandAllocator(NRI_GET_IMPL_REF!<CommandAllocator...>((CommandAllocatorVal)(Object)commandAllocator));
 		Deallocate!(GetAllocator(), (CommandAllocatorVal)(Object)commandAllocator);
 	}
 
-	public override void DestroyDescriptorPool(DescriptorPool descriptorPool)
+	public void DestroyDescriptorPool(DescriptorPool descriptorPool)
 	{
 		m_Device.DestroyDescriptorPool(NRI_GET_IMPL_REF!<DescriptorPool...>((DescriptorPoolVal)(Object)descriptorPool));
 		Deallocate!(GetAllocator(), (DescriptorPoolVal)(Object)descriptorPool);
 	}
 
-	public override void DestroyBuffer(Buffer buffer)
+	public void DestroyBuffer(Buffer buffer)
 	{
 		m_Device.DestroyBuffer(NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)buffer));
 		Deallocate!(GetAllocator(), (BufferVal)(Object)buffer);
 	}
 
-	public override void DestroyTexture(Texture texture)
+	public void DestroyTexture(Texture texture)
 	{
 		m_Device.DestroyTexture(NRI_GET_IMPL_REF!<Texture...>((TextureVal)(Object)texture));
 		Deallocate!(GetAllocator(), (TextureVal)(Object)texture);
 	}
 
-	public override void DestroyDescriptor(Descriptor descriptor)
+	public void DestroyDescriptor(Descriptor descriptor)
 	{
 		m_Device.DestroyDescriptor(NRI_GET_IMPL_REF!<Descriptor...>((DescriptorVal)(Object)descriptor));
 		Deallocate!(GetAllocator(), (DescriptorVal)(Object)descriptor);
 	}
 
-	public override void DestroyPipelineLayout(PipelineLayout pipelineLayout)
+	public void DestroyPipelineLayout(PipelineLayout pipelineLayout)
 	{
 		m_Device.DestroyPipelineLayout(NRI_GET_IMPL_REF!<PipelineLayout...>((PipelineLayoutVal)(Object)pipelineLayout));
 		Deallocate!(GetAllocator(), (PipelineLayoutVal)(Object)pipelineLayout);
 	}
 
-	public override void DestroyPipeline(Pipeline pipeline)
+	public void DestroyPipeline(Pipeline pipeline)
 	{
 		m_Device.DestroyPipeline(NRI_GET_IMPL_REF!<Pipeline...>((PipelineVal)(Object)pipeline));
 		Deallocate!(GetAllocator(), (PipelineVal)(Object)pipeline);
 	}
 
-	public override void DestroyFrameBuffer(FrameBuffer frameBuffer)
+	public void DestroyFrameBuffer(FrameBuffer frameBuffer)
 	{
 		m_Device.DestroyFrameBuffer(NRI_GET_IMPL_REF!<FrameBuffer...>((FrameBufferVal)(Object)frameBuffer));
 		Deallocate!(GetAllocator(), (FrameBufferVal)(Object)frameBuffer);
 	}
 
-	public override void DestroyQueryPool(QueryPool queryPool)
+	public void DestroyQueryPool(QueryPool queryPool)
 	{
 		m_Device.DestroyQueryPool(NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)(Object)queryPool));
 		Deallocate!(GetAllocator(), (QueryPoolVal)(Object)queryPool);
 	}
 
-	public override void DestroyQueueSemaphore(QueueSemaphore queueSemaphore)
+	public void DestroyQueueSemaphore(QueueSemaphore queueSemaphore)
 	{
 		m_Device.DestroyQueueSemaphore(NRI_GET_IMPL_REF!<QueueSemaphore...>((QueueSemaphoreVal)(Object)queueSemaphore));
 		Deallocate!(GetAllocator(), (QueueSemaphoreVal)(Object)queueSemaphore);
 	}
 
-	public override void DestroyDeviceSemaphore(DeviceSemaphore deviceSemaphore)
+	public void DestroyDeviceSemaphore(DeviceSemaphore deviceSemaphore)
 	{
 		m_Device.DestroyDeviceSemaphore(NRI_GET_IMPL_REF!<DeviceSemaphore...>((DeviceSemaphoreVal)(Object)deviceSemaphore));
 		Deallocate!(GetAllocator(), (DeviceSemaphoreVal)(Object)deviceSemaphore);
 	}
 
-	public override void DestroyCommandBuffer(CommandBuffer commandBuffer)
+	public void DestroyCommandBuffer(CommandBuffer commandBuffer)
 	{
 		CommandBufferVal commandBufferVal = (CommandBufferVal)(Object)commandBuffer;
 		commandBufferVal.Destroy();
 	}
 
-	public override void DestroySwapChain(SwapChain swapChain)
+	public void DestroySwapChain(SwapChain swapChain)
 	{
 		m_Device.DestroySwapChain(NRI_GET_IMPL_REF!<SwapChain...>((SwapChainVal)(Object)swapChain));
 		Deallocate!(GetAllocator(), (SwapChainVal)(Object)swapChain);
 	}
 
-	public override void DestroyAccelerationStructure(AccelerationStructure accelerationStructure)
+	public void DestroyAccelerationStructure(AccelerationStructure accelerationStructure)
 	{
 		Deallocate!(GetAllocator(), (AccelerationStructureVal)(Object)accelerationStructure);
 	}
 
-	public override void Destroy()
+	public void Destroy()
 	{
 		Deallocate!(GetAllocator(), this);
 	}
 
-	public override Result GetDisplays(Display** displays, ref uint32 displayNum)
+	public Result GetDisplays(Display** displays, ref uint32 displayNum)
 	{
 		RETURN_ON_FAILURE!(GetLogger(), displayNum == 0 || displays != null, Result.INVALID_ARGUMENT,
 			"Can't get displays: 'displays' is invalid.");
@@ -915,12 +915,12 @@ class DeviceVal : Device
 		return m_Device.GetDisplays(displays, ref displayNum);
 	}
 
-	public override Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height)
+	public Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height)
 	{
 		return m_Device.GetDisplaySize(ref display, ref width, ref height);
 	}
 
-	public override Result AllocateMemory(uint32 physicalDeviceMask, uint32 memoryType, uint64 size, out Memory memory)
+	public Result AllocateMemory(uint32 physicalDeviceMask, uint32 memoryType, uint64 size, out Memory memory)
 	{
 		memory = ?;
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(physicalDeviceMask), Result.INVALID_ARGUMENT,
@@ -956,7 +956,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result BindBufferMemory(BufferMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	public Result BindBufferMemory(BufferMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
 	{
 		if (memoryBindingDescNum == 0)
 			return Result.SUCCESS;
@@ -1023,7 +1023,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result BindTextureMemory(TextureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	public Result BindTextureMemory(TextureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
 	{
 		RETURN_ON_FAILURE!(GetLogger(), memoryBindingDescs != null || memoryBindingDescNum == 0, Result.INVALID_ARGUMENT,
 			"Can't bind memory to textures: 'memoryBindingDescs' is a NULL.");
@@ -1087,7 +1087,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override Result BindAccelerationStructureMemory(AccelerationStructureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	public Result BindAccelerationStructureMemory(AccelerationStructureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
 	{
 		if (memoryBindingDescNum == 0)
 			return Result.SUCCESS;
@@ -1144,7 +1144,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override void FreeMemory(Memory memory)
+	public void FreeMemory(Memory memory)
 	{
 		MemoryVal memoryVal = (MemoryVal)(Object)memory;
 
@@ -1159,12 +1159,12 @@ class DeviceVal : Device
 		Deallocate!(GetAllocator(), (MemoryVal)(Object)memory);
 	}
 
-	public override FormatSupportBits GetFormatSupport(Format format)
+	public FormatSupportBits GetFormatSupport(Format format)
 	{
 		return m_Device.GetFormatSupport(format);
 	}
 
-	public override uint32 CalculateAllocationNumber(NRI.Helpers.ResourceGroupDesc resourceGroupDesc)
+	public uint32 CalculateAllocationNumber(NRI.Helpers.ResourceGroupDesc resourceGroupDesc)
 	{
 		RETURN_ON_FAILURE!(GetLogger(), resourceGroupDesc.memoryLocation < MemoryLocation.MAX_NUM, 0,
 			"Can't calculate the number of allocations: 'resourceGroupDesc.memoryLocation' is invalid.");
@@ -1204,7 +1204,7 @@ class DeviceVal : Device
 		return m_Device.CalculateAllocationNumber(resourceGroupDescImpl);
 	}
 
-	public override Result AllocateAndBindMemory(NRI.Helpers.ResourceGroupDesc resourceGroupDesc, Memory* allocations)
+	public Result AllocateAndBindMemory(NRI.Helpers.ResourceGroupDesc resourceGroupDesc, Memory* allocations)
 	{
 		RETURN_ON_FAILURE!(GetLogger(), allocations != null, Result.INVALID_ARGUMENT,
 			"Can't allocate and bind memory: 'allocations' is invalid.");
@@ -1272,7 +1272,7 @@ class DeviceVal : Device
 		return result;
 	}
 
-	public override void* GetDeviceNativeObject()
+	public void* GetDeviceNativeObject()
 	{
 		return GetNativeObject();
 	}

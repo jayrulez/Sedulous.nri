@@ -702,32 +702,32 @@ class DeviceD3D12 : Device
 		return SUCCEEDED(result);
 	}
 
-	public override DeviceLogger GetLogger()
+	public DeviceLogger GetLogger()
 	{
 		return m_Logger;
 	}
 
-	public override DeviceAllocator<uint8> GetAllocator()
+	public DeviceAllocator<uint8> GetAllocator()
 	{
 		return m_Allocator;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_Device, scope String(name));
 	}
 
-	public override void* GetDeviceNativeObject()
+	public void* GetDeviceNativeObject()
 	{
 	    return (DeviceD3D12)this;
 	}
 
-	public override ref DeviceDesc GetDesc()
+	public ref DeviceDesc GetDesc()
 	{
 		return ref m_DeviceDesc;
 	}
 
-	public override Result GetCommandQueue(CommandQueueType commandQueueType, out CommandQueue commandQueue)
+	public Result GetCommandQueue(CommandQueueType commandQueueType, out CommandQueue commandQueue)
 	{
 		m_QueueLock.Enter();
 		defer m_QueueLock.Exit();
@@ -762,47 +762,47 @@ class DeviceD3D12 : Device
 		return CreateImplementation<CommandQueueD3D12...>(out commandQueue, (ID3D12CommandQueue*)d3d12commandQueue);
 	}
 
-	public override Result CreateCommandAllocator(CommandQueue commandQueue, uint32 physicalDeviceMask, out CommandAllocator commandAllocator)
+	public Result CreateCommandAllocator(CommandQueue commandQueue, uint32 physicalDeviceMask, out CommandAllocator commandAllocator)
 	{
 		return CreateImplementation<CommandAllocatorD3D12...>(out commandAllocator, commandQueue);
 	}
 
-	public override Result CreateDescriptorPool(DescriptorPoolDesc descriptorPoolDesc, out DescriptorPool descriptorPool)
+	public Result CreateDescriptorPool(DescriptorPoolDesc descriptorPoolDesc, out DescriptorPool descriptorPool)
 	{
 		return CreateImplementation<DescriptorPoolD3D12...>(out descriptorPool, descriptorPoolDesc);
 	}
 
-	public override Result CreateBuffer(BufferDesc bufferDesc, out Buffer buffer)
+	public Result CreateBuffer(BufferDesc bufferDesc, out Buffer buffer)
 	{
 		return CreateImplementation<BufferD3D12...>(out buffer, bufferDesc);
 	}
 
-	public override Result CreateTexture(TextureDesc textureDesc, out Texture texture)
+	public Result CreateTexture(TextureDesc textureDesc, out Texture texture)
 	{
 		return CreateImplementation<TextureD3D12...>(out texture, textureDesc);
 	}
 
-	public override Result CreateBufferView(BufferViewDesc bufferViewDesc, out Descriptor bufferView)
+	public Result CreateBufferView(BufferViewDesc bufferViewDesc, out Descriptor bufferView)
 	{
 		return CreateImplementation<DescriptorD3D12...>(out bufferView, bufferViewDesc);
 	}
 
-	public override Result CreateTexture1DView(Texture1DViewDesc textureViewDesc, out Descriptor textureView)
+	public Result CreateTexture1DView(Texture1DViewDesc textureViewDesc, out Descriptor textureView)
 	{
 		return CreateImplementation<DescriptorD3D12...>(out textureView, textureViewDesc);
 	}
 
-	public override Result CreateTexture2DView(Texture2DViewDesc textureViewDesc, out Descriptor textureView)
+	public Result CreateTexture2DView(Texture2DViewDesc textureViewDesc, out Descriptor textureView)
 	{
 		return CreateImplementation<DescriptorD3D12...>(out textureView, textureViewDesc);
 	}
 
-	public override Result CreateTexture3DView(Texture3DViewDesc textureViewDesc, out Descriptor textureView)
+	public Result CreateTexture3DView(Texture3DViewDesc textureViewDesc, out Descriptor textureView)
 	{
 		return CreateImplementation<DescriptorD3D12...>(out textureView, textureViewDesc);
 	}
 
-	public override Result CreateSampler(SamplerDesc samplerDesc, out Descriptor sampler)
+	public Result CreateSampler(SamplerDesc samplerDesc, out Descriptor sampler)
 	{
 		return CreateImplementation<DescriptorD3D12...>(out sampler, samplerDesc);
 	}
@@ -812,57 +812,57 @@ class DeviceD3D12 : Device
 		return CreateImplementation<DescriptorD3D12...>(out accelerationStructureView, accelerationStructure);
 	}
 
-	public override Result CreatePipelineLayout(PipelineLayoutDesc pipelineLayoutDesc, out PipelineLayout pipelineLayout)
+	public Result CreatePipelineLayout(PipelineLayoutDesc pipelineLayoutDesc, out PipelineLayout pipelineLayout)
 	{
 		return CreateImplementation<PipelineLayoutD3D12...>(out pipelineLayout, pipelineLayoutDesc);
 	}
 
-	public override Result CreateGraphicsPipeline(GraphicsPipelineDesc graphicsPipelineDesc, out Pipeline pipeline)
+	public Result CreateGraphicsPipeline(GraphicsPipelineDesc graphicsPipelineDesc, out Pipeline pipeline)
 	{
 		return CreateImplementation<PipelineD3D12...>(out pipeline, graphicsPipelineDesc);
 	}
 
-	public override Result CreateComputePipeline(ComputePipelineDesc computePipelineDesc, out Pipeline pipeline)
+	public Result CreateComputePipeline(ComputePipelineDesc computePipelineDesc, out Pipeline pipeline)
 	{
 		return CreateImplementation<PipelineD3D12...>(out pipeline, computePipelineDesc);
 	}
 
-	public override Result CreateFrameBuffer(FrameBufferDesc frameBufferDesc, out FrameBuffer frameBuffer)
+	public Result CreateFrameBuffer(FrameBufferDesc frameBufferDesc, out FrameBuffer frameBuffer)
 	{
 		return CreateImplementation<FrameBufferD3D12...>(out frameBuffer, frameBufferDesc);
 	}
 
-	public override Result CreateQueryPool(QueryPoolDesc queryPoolDesc, out QueryPool queryPool)
+	public Result CreateQueryPool(QueryPoolDesc queryPoolDesc, out QueryPool queryPool)
 	{
 		return CreateImplementation<QueryPoolD3D12...>(out queryPool, queryPoolDesc);
 	}
 
-	public override Result CreateQueueSemaphore(out QueueSemaphore queueSemaphore)
+	public Result CreateQueueSemaphore(out QueueSemaphore queueSemaphore)
 	{
 		return CreateImplementation<QueueSemaphoreD3D12...>(out queueSemaphore);
 	}
 
-	public override Result CreateDeviceSemaphore(bool signaled, out DeviceSemaphore deviceSemaphore)
+	public Result CreateDeviceSemaphore(bool signaled, out DeviceSemaphore deviceSemaphore)
 	{
 		return CreateImplementation<DeviceSemaphoreD3D12...>(out deviceSemaphore, signaled);
 	}
 
-	public override Result CreateCommandBuffer(CommandAllocator commandAllocator, out CommandBuffer commandBuffer)
+	public Result CreateCommandBuffer(CommandAllocator commandAllocator, out CommandBuffer commandBuffer)
 	{
 		return commandAllocator.CreateCommandBuffer(out commandBuffer);
 	}
 
-	public override Result CreateSwapChain(SwapChainDesc swapChainDesc, out SwapChain swapChain)
+	public Result CreateSwapChain(SwapChainDesc swapChainDesc, out SwapChain swapChain)
 	{
 		return CreateImplementation<SwapChainD3D12...>(out swapChain, swapChainDesc);
 	}
 
-	public override Result CreateRayTracingPipeline(RayTracingPipelineDesc rayTracingPipelineDesc, out Pipeline pipeline)
+	public Result CreateRayTracingPipeline(RayTracingPipelineDesc rayTracingPipelineDesc, out Pipeline pipeline)
 	{
 		return CreateImplementation<PipelineD3D12...>(out pipeline, rayTracingPipelineDesc);
 	}
 
-	public override Result CreateAccelerationStructure(AccelerationStructureDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure)
+	public Result CreateAccelerationStructure(AccelerationStructureDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure)
 	{
 		return CreateImplementation<AccelerationStructureD3D12...>(out accelerationStructure, accelerationStructureDesc);
 	}
@@ -888,77 +888,77 @@ class DeviceD3D12 : Device
 		return CreateImplementation<MemoryD3D12...>(out memory, memoryDesc);
 	}
 
-	public override void DestroyCommandAllocator(CommandAllocator commandAllocator)
+	public void DestroyCommandAllocator(CommandAllocator commandAllocator)
 	{
 		Deallocate!(GetAllocator(), (CommandAllocatorD3D12)commandAllocator);
 	}
 
-	public override void DestroyDescriptorPool(DescriptorPool descriptorPool)
+	public void DestroyDescriptorPool(DescriptorPool descriptorPool)
 	{
 		Deallocate!(GetAllocator(), (DescriptorPoolD3D12)descriptorPool);
 	}
 
-	public override void DestroyBuffer(Buffer buffer)
+	public void DestroyBuffer(Buffer buffer)
 	{
 		Deallocate!(GetAllocator(), (BufferD3D12)buffer);
 	}
 
-	public override void DestroyTexture(Texture texture)
+	public void DestroyTexture(Texture texture)
 	{
 		Deallocate!(GetAllocator(), (TextureD3D12)texture);
 	}
 
-	public override void DestroyDescriptor(Descriptor descriptor)
+	public void DestroyDescriptor(Descriptor descriptor)
 	{
 		Deallocate!(GetAllocator(), (DescriptorD3D12)descriptor);
 	}
 
-	public override void DestroyPipelineLayout(PipelineLayout pipelineLayout)
+	public void DestroyPipelineLayout(PipelineLayout pipelineLayout)
 	{
 		Deallocate!(GetAllocator(), (PipelineLayoutD3D12)pipelineLayout);
 	}
 
-	public override void DestroyPipeline(Pipeline pipeline)
+	public void DestroyPipeline(Pipeline pipeline)
 	{
 		Deallocate!(GetAllocator(), (PipelineD3D12)pipeline);
 	}
 
-	public override void DestroyFrameBuffer(FrameBuffer frameBuffer)
+	public void DestroyFrameBuffer(FrameBuffer frameBuffer)
 	{
 		Deallocate!(GetAllocator(), (FrameBufferD3D12)frameBuffer);
 	}
 
-	public override void DestroyQueryPool(QueryPool queryPool)
+	public void DestroyQueryPool(QueryPool queryPool)
 	{
 		Deallocate!(GetAllocator(), (QueryPoolD3D12)queryPool);
 	}
 
-	public override void DestroyQueueSemaphore(QueueSemaphore queueSemaphore)
+	public void DestroyQueueSemaphore(QueueSemaphore queueSemaphore)
 	{
 		Deallocate!(GetAllocator(), (QueueSemaphoreD3D12)queueSemaphore);
 	}
 
-	public override void DestroyDeviceSemaphore(DeviceSemaphore deviceSemaphore)
+	public void DestroyDeviceSemaphore(DeviceSemaphore deviceSemaphore)
 	{
 		Deallocate!(GetAllocator(), (DeviceSemaphoreD3D12)deviceSemaphore);
 	}
 
-	public override void DestroyCommandBuffer(CommandBuffer commandBuffer)
+	public void DestroyCommandBuffer(CommandBuffer commandBuffer)
 	{
 		Deallocate!(GetAllocator(), (CommandBufferD3D12)commandBuffer);
 	}
 
-	public override void DestroySwapChain(SwapChain swapChain)
+	public void DestroySwapChain(SwapChain swapChain)
 	{
 		Deallocate!(GetAllocator(), (SwapChainD3D12)swapChain);
 	}
 
-	public override void DestroyAccelerationStructure(AccelerationStructure accelerationStructure)
+	public void DestroyAccelerationStructure(AccelerationStructure accelerationStructure)
 	{
 		Deallocate!(GetAllocator(), (AccelerationStructureD3D12)accelerationStructure);
 	}
 
-	public override Result GetDisplays(Display** displays, ref uint32 displayNum)
+	public Result GetDisplays(Display** displays, ref uint32 displayNum)
 	{
 		HRESULT result = S_OK;
 
@@ -990,7 +990,7 @@ class DeviceD3D12 : Device
 		return Result.SUCCESS;
 	}
 
-	public override Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height)
+	public Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height)
 	{
 		Display* address = &display;
 
@@ -1025,12 +1025,12 @@ class DeviceD3D12 : Device
 		return Result.SUCCESS;
 	}
 
-	public override Result AllocateMemory(uint32 physicalDeviceMask, uint32 memoryType, uint64 size, out Memory memory)
+	public Result AllocateMemory(uint32 physicalDeviceMask, uint32 memoryType, uint64 size, out Memory memory)
 	{
 		return CreateImplementation<MemoryD3D12...>(out memory, memoryType, size);
 	}
 
-	public override Result BindBufferMemory(BufferMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	public Result BindBufferMemory(BufferMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
 	{
 		for (uint32 i = 0; i < memoryBindingDescNum; i++)
 		{
@@ -1042,7 +1042,7 @@ class DeviceD3D12 : Device
 		return Result.SUCCESS;
 	}
 
-	public override Result BindTextureMemory(TextureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	public Result BindTextureMemory(TextureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
 	{
 		for (uint32 i = 0; i < memoryBindingDescNum; i++)
 		{
@@ -1054,7 +1054,7 @@ class DeviceD3D12 : Device
 		return Result.SUCCESS;
 	}
 
-	public override Result BindAccelerationStructureMemory(AccelerationStructureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	public Result BindAccelerationStructureMemory(AccelerationStructureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
 	{
 		for (uint32 i = 0; i < memoryBindingDescNum; i++)
 		{
@@ -1066,33 +1066,33 @@ class DeviceD3D12 : Device
 		return Result.SUCCESS;
 	}
 
-	public override void FreeMemory(Memory memory)
+	public void FreeMemory(Memory memory)
 	{
 		Deallocate!(GetAllocator(), (MemoryD3D12)memory);
 	}
 
-	public override FormatSupportBits GetFormatSupport(Format format)
+	public FormatSupportBits GetFormatSupport(Format format)
 	{
 		readonly uint32 offset = Math.Min((uint32)format, (uint32)D3D_FORMAT_SUPPORT_TABLE.Count - 1);
 
 		return D3D_FORMAT_SUPPORT_TABLE[offset];
 	}
 
-	public override uint32 CalculateAllocationNumber(NRI.Helpers.ResourceGroupDesc resourceGroupDesc)
+	public uint32 CalculateAllocationNumber(NRI.Helpers.ResourceGroupDesc resourceGroupDesc)
 	{
 		DeviceMemoryAllocatorHelper allocator = scope .(this, m_Allocator);
 
 		return allocator.CalculateAllocationNumber(resourceGroupDesc);
 	}
 
-	public override Result AllocateAndBindMemory(NRI.Helpers.ResourceGroupDesc resourceGroupDesc, Memory* allocations)
+	public Result AllocateAndBindMemory(NRI.Helpers.ResourceGroupDesc resourceGroupDesc, Memory* allocations)
 	{
 		DeviceMemoryAllocatorHelper allocator = scope .(this, m_Allocator);
 
 		return allocator.AllocateAndBindMemory(resourceGroupDesc, allocations);
 	}
 
-	public override void Destroy()
+	public void Destroy()
 	{
 		bool skipLiveObjectsReporting = m_SkipLiveObjectsReporting;
 		Deallocate!(GetAllocator(), this);

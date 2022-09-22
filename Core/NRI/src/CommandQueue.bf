@@ -2,7 +2,7 @@ using System;
 using NRI.Helpers;
 namespace NRI;
 
-abstract class CommandQueue
+interface CommandQueue
 {
 	public abstract void SetDebugName(char8* name);
 

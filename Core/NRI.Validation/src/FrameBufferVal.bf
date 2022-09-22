@@ -1,6 +1,6 @@
 namespace NRI.Validation;
 
-class FrameBufferVal : DeviceObjectVal<FrameBuffer>
+class FrameBufferVal : FrameBuffer, DeviceObjectVal<FrameBuffer>
 {
 	public this(DeviceVal device, FrameBuffer frameBuffer) : base(device, frameBuffer)
 	{

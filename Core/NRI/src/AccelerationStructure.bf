@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class AccelerationStructure
+interface AccelerationStructure
 {
 	public abstract void SetDebugName(char8* name);
 

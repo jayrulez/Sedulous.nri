@@ -1,7 +1,7 @@
 using System;
 namespace NRI.Validation;
 
-class DescriptorSetVal : DeviceObjectVal<DescriptorSet>
+class DescriptorSetVal : DescriptorSet, DeviceObjectVal<DescriptorSet>
 {
 	private DescriptorSetDesc m_Desc;
 

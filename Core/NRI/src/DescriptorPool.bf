@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class DescriptorPool
+interface DescriptorPool
 {
 	public abstract void SetDebugName(char8* name);
 

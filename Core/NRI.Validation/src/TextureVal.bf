@@ -1,6 +1,6 @@
 namespace NRI.Validation;
 
-class TextureVal : DeviceObjectVal<Texture>
+class TextureVal : Texture, DeviceObjectVal<Texture>
 {
 	private MemoryVal m_Memory = null;
 	bool m_IsBoundToMemory = false;

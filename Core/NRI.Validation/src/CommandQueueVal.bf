@@ -136,7 +136,7 @@ public static
 
 typealias ProcessValidationCommandMethod = function void(CommandQueueVal this, ref uint8* begin, uint8* end);
 
-class CommandQueueVal : DeviceObjectVal<CommandQueue>
+class CommandQueueVal : CommandQueue, DeviceObjectVal<CommandQueue>
 {
 	private static Command* ReadCommand<Command>(ref uint8* begin, uint8* end)
 	{

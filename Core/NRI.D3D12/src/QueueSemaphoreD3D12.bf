@@ -49,7 +49,7 @@ class QueueSemaphoreD3D12 : QueueSemaphore
 		m_SignalValue++;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_Fence, scope String(name));
 	}

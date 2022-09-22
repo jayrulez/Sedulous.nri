@@ -1,6 +1,6 @@
 namespace NRI.Validation;
 
-class PipelineVal : DeviceObjectVal<Pipeline>
+class PipelineVal : Pipeline, DeviceObjectVal<Pipeline>
 {
 	private PipelineLayout m_PipelineLayout = null;
 

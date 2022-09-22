@@ -1,6 +1,6 @@
 namespace NRI.Validation;
 
-class DeviceSemaphoreVal : DeviceObjectVal<DeviceSemaphore>
+class DeviceSemaphoreVal : DeviceSemaphore, DeviceObjectVal<DeviceSemaphore>
 {
 	private uint64 m_Value = 0;
 
