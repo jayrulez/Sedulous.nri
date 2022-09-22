@@ -109,7 +109,7 @@ class DescriptorD3D12 : Descriptor
 	public Result Create(BufferViewDesc bufferViewDesc)
 	{
 		readonly BufferD3D12 buffer = ((BufferD3D12)bufferViewDesc.buffer);
-		DXGI_FORMAT format = GetFormat(bufferViewDesc.format);
+		DXGI_FORMAT format = ConvertNRIFormatToDXGI(bufferViewDesc.format);
 		uint64 size = bufferViewDesc.size == WHOLE_SIZE ? buffer.GetByteSize() : bufferViewDesc.size;
 		uint32 elementSize = GetTexelBlockSize(bufferViewDesc.format);
 		uint64 elementOffset;
@@ -174,7 +174,7 @@ class DescriptorD3D12 : Descriptor
 	public Result Create(Texture1DViewDesc textureViewDesc)
 	{
 		readonly TextureD3D12 texture = (TextureD3D12)textureViewDesc.texture;
-		DXGI_FORMAT format = GetFormat(textureViewDesc.format);
+		DXGI_FORMAT format = ConvertNRIFormatToDXGI(textureViewDesc.format);
 
 		readonly ref D3D12_RESOURCE_DESC textureDesc = ref texture.GetTextureDesc();
 		uint32 remainingMipLevels = textureViewDesc.mipNum == REMAINING_MIP_LEVELS ? (textureDesc.MipLevels - textureViewDesc.mipOffset) : textureViewDesc.mipNum;
@@ -266,7 +266,7 @@ class DescriptorD3D12 : Descriptor
 	public Result Create(Texture2DViewDesc textureViewDesc)
 	{
 		readonly TextureD3D12 texture = (TextureD3D12)textureViewDesc.texture;
-		DXGI_FORMAT format = GetFormat(textureViewDesc.format);
+		DXGI_FORMAT format = ConvertNRIFormatToDXGI(textureViewDesc.format);
 		bool isMultisampled = texture.GetTextureDesc().SampleDesc.Count > 1 ? true : false;
 
 		readonly ref D3D12_RESOURCE_DESC textureDesc = ref texture.GetTextureDesc();
@@ -404,7 +404,7 @@ class DescriptorD3D12 : Descriptor
 	public Result Create(Texture3DViewDesc textureViewDesc)
 	{
 		readonly TextureD3D12 texture = (TextureD3D12)textureViewDesc.texture;
-		DXGI_FORMAT format = GetFormat(textureViewDesc.format);
+		DXGI_FORMAT format = ConvertNRIFormatToDXGI(textureViewDesc.format);
 
 		readonly ref D3D12_RESOURCE_DESC textureDesc = ref texture.GetTextureDesc();
 		uint32 remainingMipLevels = textureViewDesc.mipNum == REMAINING_MIP_LEVELS ? (textureDesc.MipLevels - textureViewDesc.mipOffset) : textureViewDesc.mipNum;
@@ -510,5 +510,12 @@ class DescriptorD3D12 : Descriptor
 
 	public override void SetDebugName(char8* name)
 	{
+	}
+
+	public override uint64 GetDescriptorNativeObject(uint32 physicalDeviceIndex)
+	{
+	    //MaybeUnused(physicalDeviceIndex);
+	
+	    return uint64(((DescriptorD3D12)this).GetPointerCPU() );
 	}
 }

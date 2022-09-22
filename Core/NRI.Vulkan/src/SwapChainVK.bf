@@ -159,7 +159,7 @@ class SwapChainVK : SwapChain
 		VkSurfaceFormatKHR surfaceFormat = .();
 
 		surfaceFormat = surfaceFormats[0];
-		m_Format = GetNRIFormat(surfaceFormat.format);
+		m_Format = ConvertVKFormatToNRI(surfaceFormat.format);
 
 		uint32 presentModeNum = 0;
 		result = VulkanNative.vkGetPhysicalDeviceSurfacePresentModesKHR(m_Device, m_Surface, &presentModeNum, null);

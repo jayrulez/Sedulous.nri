@@ -120,6 +120,13 @@ class BufferD3D12 : Buffer
 		SET_D3D_DEBUG_OBJECT_NAME!(m_Buffer, scope String(name));
 	}
 
+	public override uint64 GetBufferNativeObject(uint32 physicalDeviceIndex)
+	{
+	    //MaybeUnused(physicalDeviceIndex);
+
+	    return (uint64)(int)(void*)((ID3D12Resource*)((BufferD3D12)this));
+	}
+
 	public override void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
 	{
 		m_Device.GetMemoryInfo(memoryLocation, m_BufferDesc, ref memoryDesc);

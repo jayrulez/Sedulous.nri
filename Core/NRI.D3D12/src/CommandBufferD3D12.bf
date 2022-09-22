@@ -119,6 +119,10 @@ class CommandBufferD3D12 : CommandBuffer
 		SET_D3D_DEBUG_OBJECT_NAME!(m_GraphicsCommandList, scope String(name));
 	}
 
+	public override void* GetCommandBufferNativeObject(){
+		return (CommandBufferD3D12)this;
+	}
+
 	public override Result Begin(DescriptorPool descriptorPool, uint32 physicalDeviceIndex)
 	{
 		HRESULT hr = m_GraphicsCommandList->Reset(m_CommandAllocator, null);

@@ -97,7 +97,7 @@ class DescriptorPoolVK : DescriptorPool
 		return Result.SUCCESS;
 	}
 
-	public Result Create(void* vkDescriptorPool)
+	public Result Create(NRIVkDescriptorPool vkDescriptorPool)
 	{
 		m_OwnsNativeObjects = false;
 		m_Handle = (VkDescriptorPool)vkDescriptorPool;

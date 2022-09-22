@@ -201,6 +201,10 @@ class CommandBufferVK : CommandBuffer
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_COMMAND_BUFFER, (uint64)m_Handle, name);
 	}
 
+	public override void* GetCommandBufferNativeObject(){
+		return (VkCommandBuffer)((CommandBufferVK)this);
+	}
+
 	public override Result Begin(DescriptorPool descriptorPool, uint32 physicalDeviceIndex)
 	{
 	//MaybeUnused(descriptorPool);

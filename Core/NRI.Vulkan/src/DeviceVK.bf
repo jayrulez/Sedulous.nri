@@ -1518,6 +1518,8 @@ class DeviceVK : Device
 		if (deviceCreationVulkanDesc.enableAPIValidation)
 			ReportDeviceGroupInfo();
 
+		m_SPIRVBindingOffsets = deviceCreationVulkanDesc.spirvBindingOffsets;
+
 		m_IsConcurrentSharingModeEnabledForBuffers = m_IsConcurrentSharingModeEnabledForBuffers && m_ConcurrentSharingModeQueueIndices.Count > 1;
 		m_IsConcurrentSharingModeEnabledForImages = m_IsConcurrentSharingModeEnabledForImages && m_ConcurrentSharingModeQueueIndices.Count > 1;
 
@@ -1602,6 +1604,7 @@ class DeviceVK : Device
 		return res;
 	}
 
+
 	public bool GetMemoryType(MemoryLocation memoryLocation, uint32 memoryTypeMask, ref MemoryTypeInfo memoryTypeInfo)
 	{
 		readonly VkMemoryPropertyFlags host = .VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | .VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
@@ -1673,6 +1676,16 @@ class DeviceVK : Device
 	public bool IsBufferDeviceAddressSupported() => m_IsBufferDeviceAddressSupported;
 	public readonly ref List<uint32> GetConcurrentSharingModeQueueIndices() => ref m_ConcurrentSharingModeQueueIndices;
 
+	public NRIVkPhysicalDevice GetVkPhysicalDevice()
+	{
+	    return (VkPhysicalDevice)((DeviceVK)this);
+	}
+
+	public NRIVkInstance GetVkInstance()
+	{
+	    return (VkInstance)((DeviceVK)this);
+	}
+
 	public void SetDebugNameToTrivialObject(VkObjectType objectType, uint64 handle, char8* name)
 	{
 		if (VulkanNative.[Friend]vkSetDebugUtilsObjectNameEXT_ptr == null)
@@ -1734,6 +1747,11 @@ class DeviceVK : Device
 	public override void SetDebugName(char8* name)
 	{
 		SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_DEVICE, (uint64)m_Device, name);
+	}
+
+	public override void* GetDeviceNativeObject()
+	{
+	    return (VkDevice)((DeviceVK)this);
 	}
 
 	public override ref DeviceDesc GetDesc()
@@ -2221,7 +2239,7 @@ class DeviceVK : Device
 
 	public override FormatSupportBits GetFormatSupport(Format format)
 	{
-		readonly VkFormat vulkanFormat = GetVkFormat(format);
+		readonly VkFormat vulkanFormat = ConvertNRIFormatToVK(format);
 		readonly VkPhysicalDevice physicalDevice = m_PhysicalDevices.Front;
 
 		VkFormatProperties formatProperties = .();

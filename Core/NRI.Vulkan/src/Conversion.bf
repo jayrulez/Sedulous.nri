@@ -434,7 +434,7 @@ public static
 	    return IMAGE_CREATE_FLAGS[(uint)format];
 	}
 
-	public static VkFormat GetVkFormat(Format format)
+	public static VkFormat ConvertNRIFormatToVK(Format format)
 	{
 	    return VK_FORMAT[(uint32)format];
 	}
@@ -709,7 +709,7 @@ public static
 	    Format.UNKNOWN  // VK_FORMAT_G16_B16_R16_3PLANE_444_UNORM_KHR = VK_FORMAT_G16_B16_R16_3PLANE_444_UNORM,
 	);
 
-	public static Format GetNRIFormat(VkFormat format)
+	public static Format ConvertVKFormatToNRI(VkFormat format)
 	{
 	    if ((uint32)format < FORMAT.Count)
 	        return FORMAT[(uint32)format];
@@ -1187,7 +1187,7 @@ public static
 		    geometryDst.geometry.triangles.sType = .VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR;
 		    geometryDst.geometry.triangles.maxVertex = geometrySrc.triangles.vertexNum;
 		    geometryDst.geometry.triangles.indexType = GetIndexType(geometrySrc.triangles.indexType);
-		    geometryDst.geometry.triangles.vertexFormat = GetVkFormat(geometrySrc.triangles.vertexFormat);
+		    geometryDst.geometry.triangles.vertexFormat = ConvertNRIFormatToVK(geometrySrc.triangles.vertexFormat);
 		    geometryDst.geometry.triangles.transformData.deviceAddress = transform;
 		}
 	}
@@ -1230,7 +1230,7 @@ public static
 		    geometryDst.geometry.triangles.maxVertex = geometrySrc.triangles.vertexNum;
 		    geometryDst.geometry.triangles.vertexData.deviceAddress = vertices;
 		    geometryDst.geometry.triangles.vertexStride = geometrySrc.triangles.vertexStride;
-		    geometryDst.geometry.triangles.vertexFormat = GetVkFormat(geometrySrc.triangles.vertexFormat);
+		    geometryDst.geometry.triangles.vertexFormat = ConvertNRIFormatToVK(geometrySrc.triangles.vertexFormat);
 		    geometryDst.geometry.triangles.indexData.deviceAddress = indices;
 		    geometryDst.geometry.triangles.indexType = GetIndexType(geometrySrc.triangles.indexType);
 		    geometryDst.geometry.triangles.transformData.deviceAddress = transform;

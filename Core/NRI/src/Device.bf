@@ -63,4 +63,6 @@ abstract class Device
 	
 	public abstract uint32 CalculateAllocationNumber(ResourceGroupDesc resourceGroupDesc);
 	public abstract Result AllocateAndBindMemory(ResourceGroupDesc resourceGroupDesc, Memory* allocations);
+
+	public abstract void* GetDeviceNativeObject();
 }

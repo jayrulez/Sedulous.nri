@@ -60,4 +60,6 @@ abstract class CommandBuffer
 	public abstract void  DispatchRays(DispatchRaysDesc dispatchRaysDesc);
 
 	public abstract void  DispatchMeshTasks(uint32 taskNum);
+
+	public abstract void* GetCommandBufferNativeObject();
 }

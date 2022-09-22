@@ -151,6 +151,11 @@ class BufferVK : Buffer
 		m_Device.SetDebugNameToDeviceGroupObject(.VK_OBJECT_TYPE_BUFFER, &handles, name);
 	}
 
+	public override uint64 GetBufferNativeObject(uint32 physicalDeviceIndex)
+	{
+	    return (uint64)(((BufferVK)this).GetHandle(physicalDeviceIndex) );
+	}
+
 	public override void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
 	{
 		VkBuffer handle = .Null;

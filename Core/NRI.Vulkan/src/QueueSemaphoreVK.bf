@@ -39,7 +39,7 @@ class QueueSemaphoreVK : QueueSemaphore
 		return Result.SUCCESS;
 	}
 
-	public Result Create(void* vkSemaphore)
+	public Result Create(NRIVkSemaphore vkSemaphore)
 	{
 		m_OwnsNativeObjects = false;
 		m_Handle = (VkSemaphore)vkSemaphore;

@@ -717,6 +717,11 @@ class DeviceD3D12 : Device
 		SET_D3D_DEBUG_OBJECT_NAME!(m_Device, scope String(name));
 	}
 
+	public override void* GetDeviceNativeObject()
+	{
+	    return (DeviceD3D12)this;
+	}
+
 	public override ref DeviceDesc GetDesc()
 	{
 		return ref m_DeviceDesc;
