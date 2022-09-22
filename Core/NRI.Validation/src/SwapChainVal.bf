@@ -18,6 +18,8 @@ class SwapChainVal : SwapChain, DeviceObjectVal<SwapChain>
 	{
 		for (int i = 0; i < m_Textures.Count; i++)
 			Deallocate!(m_Device.GetAllocator(), m_Textures[i]);
+
+		Deallocate!(m_Device.GetAllocator(), m_Textures);
 	}
 
 	public void SetDebugName(char8* name)
@@ -49,18 +51,18 @@ class SwapChainVal : SwapChain, DeviceObjectVal<SwapChain>
 		return (Texture*)m_Textures.Ptr;
 	}
 
-	public uint32 AcquireNextTexture(QueueSemaphore textureReadyForRender)
+	public uint32 AcquireNextTexture(ref QueueSemaphore textureReadyForRender)
 	{
-		((QueueSemaphoreVal)(Object)textureReadyForRender).Signal();
-		QueueSemaphore queueSemaphoreImpl = NRI_GET_IMPL_REF!<QueueSemaphore...>((QueueSemaphoreVal)(Object)textureReadyForRender);
+		((QueueSemaphoreVal)textureReadyForRender).Signal();
+		QueueSemaphore queueSemaphoreImpl = NRI_GET_IMPL_REF!<QueueSemaphore...>((QueueSemaphoreVal)textureReadyForRender);
 
 		return m_ImplObject.AcquireNextTexture(ref queueSemaphoreImpl);
 	}
 
 	public Result Present(QueueSemaphore textureReadyForPresent)
 	{
-		((QueueSemaphoreVal)(Object)textureReadyForPresent).Wait();
-		QueueSemaphore queueSemaphoreImpl = NRI_GET_IMPL_REF!<QueueSemaphore...>((QueueSemaphoreVal)(Object)textureReadyForPresent);
+		((QueueSemaphoreVal)textureReadyForPresent).Wait();
+		QueueSemaphore queueSemaphoreImpl = NRI_GET_IMPL_REF!<QueueSemaphore...>((QueueSemaphoreVal)textureReadyForPresent);
 
 		return m_ImplObject.Present(queueSemaphoreImpl);
 	}

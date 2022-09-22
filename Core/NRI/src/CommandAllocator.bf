@@ -2,8 +2,8 @@ namespace NRI;
 
 interface CommandAllocator
 {
-	public abstract void SetDebugName(char8* name);
+	public void SetDebugName(char8* name);
 
-	public abstract Result CreateCommandBuffer(out CommandBuffer commandBuffer);
-	public abstract void Reset();
+	public Result CreateCommandBuffer(out CommandBuffer commandBuffer);
+	public void Reset();
 }

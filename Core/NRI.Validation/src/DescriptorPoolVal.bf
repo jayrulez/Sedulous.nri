@@ -150,7 +150,7 @@ class DescriptorPoolVal :DescriptorPool, DeviceObjectVal<DescriptorPool>
 	public Result AllocateDescriptorSets(PipelineLayout pipelineLayout, uint32 setIndex, DescriptorSet* descriptorSets,
 		uint32 instanceNum, uint32 physicalDeviceMask, uint32 variableDescriptorNum)
 	{
-		readonly PipelineLayoutVal pipelineLayoutVal = (PipelineLayoutVal)(Object)pipelineLayout;
+		readonly PipelineLayoutVal pipelineLayoutVal = (PipelineLayoutVal)pipelineLayout;
 		readonly ref PipelineLayoutDesc pipelineLayoutDesc = ref pipelineLayoutVal.GetPipelineLayoutDesc();
 
 		if (!m_SkipValidation)
@@ -189,7 +189,7 @@ class DescriptorPoolVal :DescriptorPool, DeviceObjectVal<DescriptorPool>
 				"Can't allocate DescriptorSet: the maximum number of descriptors exceeded ('STATIC_SAMPLER').");
 		}
 
-		PipelineLayout pipelineLayoutImpl = NRI_GET_IMPL_REF!<PipelineLayout...>((PipelineLayoutVal)(Object)pipelineLayout);
+		PipelineLayout pipelineLayoutImpl = NRI_GET_IMPL_REF!<PipelineLayout...>((PipelineLayoutVal)pipelineLayout);
 
 		Result result = m_ImplObject.AllocateDescriptorSets(pipelineLayoutImpl, setIndex, descriptorSets, instanceNum,
 			physicalDeviceMask, variableDescriptorNum);
@@ -211,7 +211,7 @@ class DescriptorPoolVal :DescriptorPool, DeviceObjectVal<DescriptorPool>
 		for (uint32 i = 0; i < instanceNum; i++)
 		{
 			DescriptorSetVal descriptorSetVal = Allocate!<DescriptorSetVal>(m_Device.GetAllocator(), m_Device, descriptorSets[i], descriptorSetDesc);
-			descriptorSets[i] = (DescriptorSet)(Object)descriptorSetVal;
+			descriptorSets[i] = (DescriptorSet)descriptorSetVal;
 			m_DescriptorSets.Add(descriptorSetVal);
 		}
 

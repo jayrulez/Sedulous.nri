@@ -2,7 +2,7 @@ namespace NRI;
 
 interface QueryPool
 {
-	public abstract void SetDebugName(char8* name);
+	public void SetDebugName(char8* name);
 	
-	public abstract uint32 GetQuerySize();
+	public uint32 GetQuerySize();
 }

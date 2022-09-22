@@ -2,5 +2,5 @@ namespace NRI;
 
 interface PipelineLayout
 {
-	public abstract void SetDebugName(char8* name);
+	public void SetDebugName(char8* name);
 }

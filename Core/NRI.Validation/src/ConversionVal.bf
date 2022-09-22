@@ -14,13 +14,13 @@ public static
 
 			if (geometrySrc.type == GeometryType.TRIANGLES)
 			{
-				geometryDst.triangles.vertexBuffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)geometrySrc.triangles.vertexBuffer);
-				geometryDst.triangles.indexBuffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)geometrySrc.triangles.indexBuffer);
-				geometryDst.triangles.transformBuffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)geometrySrc.triangles.transformBuffer);
+				geometryDst.triangles.vertexBuffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)geometrySrc.triangles.vertexBuffer);
+				geometryDst.triangles.indexBuffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)geometrySrc.triangles.indexBuffer);
+				geometryDst.triangles.transformBuffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)geometrySrc.triangles.transformBuffer);
 			}
 			else
 			{
-				geometryDst.boxes.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)geometrySrc.boxes.buffer);
+				geometryDst.boxes.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)geometrySrc.boxes.buffer);
 			}
 		}
 	}

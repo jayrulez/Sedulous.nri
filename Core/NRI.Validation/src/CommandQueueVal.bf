@@ -10,7 +10,7 @@ public static
 		RETURN_ON_FAILURE!(device.GetLogger(), bufferTransitionBarrierDesc.buffer != null, false,
 			"Can't change resource state: 'transitionBarriers.buffers[{}].buffer' is invalid.", i);
 
-		readonly BufferVal bufferVal = (BufferVal)(Object)bufferTransitionBarrierDesc.buffer;
+		readonly BufferVal bufferVal = (BufferVal)bufferTransitionBarrierDesc.buffer;
 
 		RETURN_ON_FAILURE!(device.GetLogger(), bufferVal.IsBoundToMemory(), false,
 			"Can't change resource state: 'transitionBarriers.buffers[{}].buffer' is not bound to memory.", i);
@@ -31,7 +31,7 @@ public static
 		RETURN_ON_FAILURE!(device.GetLogger(), textureTransitionBarrierDesc.texture != null, false,
 			"Can't change resource state: 'transitionBarriers.textures[{}].texture' is invalid.", i);
 
-		readonly TextureVal textureVal = (TextureVal)(Object)textureTransitionBarrierDesc.texture;
+		readonly TextureVal textureVal = (TextureVal)textureTransitionBarrierDesc.texture;
 
 		RETURN_ON_FAILURE!(device.GetLogger(), textureVal.IsBoundToMemory(), false,
 			"Can't change resource state: 'transitionBarriers.textures[{}].texture' is not bound to memory.", i);
@@ -69,7 +69,7 @@ public static
 		if (textureUploadDesc.subresources == null)
 			return true;
 
-		readonly TextureVal textureVal = (TextureVal)(Object)textureUploadDesc.texture;
+		readonly TextureVal textureVal = (TextureVal)textureUploadDesc.texture;
 
 		RETURN_ON_FAILURE!(device.GetLogger(), textureUploadDesc.mipNum <= textureVal.GetDesc().mipNum, false,
 			"Can't upload data: 'textureUploadDescs[{}].mipNum' is invalid.", i);
@@ -120,7 +120,7 @@ public static
 		RETURN_ON_FAILURE!(device.GetLogger(), bufferUploadDesc.data != null, false,
 			"Can't upload data: 'bufferUploadDescs[{}].data' is invalid.", i);
 
-		readonly BufferVal bufferVal = (BufferVal)(Object)bufferUploadDesc.buffer;
+		readonly BufferVal bufferVal = (BufferVal)bufferUploadDesc.buffer;
 
 		readonly uint64 rangeEnd = bufferUploadDesc.bufferOffset + bufferUploadDesc.dataSize;
 
@@ -190,7 +190,7 @@ class CommandQueueVal : CommandQueue, DeviceObjectVal<CommandQueue>
 		CHECK(m_Device.GetLogger(), command != null, "ProcessValidationCommandBeginQuery() failed: can't parse command.");
 		CHECK(m_Device.GetLogger(), command.queryPool != null, "ProcessValidationCommandBeginQuery() failed: query pool is invalid.");
 
-		QueryPoolVal queryPool = (QueryPoolVal)(Object)command.queryPool;
+		QueryPoolVal queryPool = (QueryPoolVal)command.queryPool;
 		readonly bool used = queryPool.SetQueryState(command.queryPoolOffset, true);
 
 		if (used)
@@ -206,7 +206,7 @@ class CommandQueueVal : CommandQueue, DeviceObjectVal<CommandQueue>
 		CHECK(m_Device.GetLogger(), command != null, "ProcessValidationCommandEndQuery() failed: can't parse command.");
 		CHECK(m_Device.GetLogger(), command.queryPool != null, "ProcessValidationCommandEndQuery() failed: query pool is invalid.");
 
-		QueryPoolVal queryPool = (QueryPoolVal)(Object)command.queryPool;
+		QueryPoolVal queryPool = (QueryPoolVal)command.queryPool;
 		readonly bool used = queryPool.SetQueryState(command.queryPoolOffset, true);
 
 		if (queryPool.GetQueryType() == QueryType.TIMESTAMP)
@@ -233,7 +233,7 @@ class CommandQueueVal : CommandQueue, DeviceObjectVal<CommandQueue>
 		CHECK(m_Device.GetLogger(), command != null, "ProcessValidationCommandResetQuery() failed: can't parse command.");
 		CHECK(m_Device.GetLogger(), command.queryPool != null, "ProcessValidationCommandResetQuery() failed: query pool is invalid.");
 
-		QueryPoolVal queryPool = (QueryPoolVal)(Object)command.queryPool;
+		QueryPoolVal queryPool = (QueryPoolVal)command.queryPool;
 		queryPool.ResetQueries(command.queryPoolOffset, command.queryNum);
 	}
 
@@ -247,28 +247,28 @@ class CommandQueueVal : CommandQueue, DeviceObjectVal<CommandQueue>
 		m_ImplObject.SetDebugName(name);
 	}
 
-	public void Submit(WorkSubmissionDesc workSubmissionDesc, DeviceSemaphore deviceSemaphore)
+	public void SubmitWork(WorkSubmissionDesc workSubmissionDesc, DeviceSemaphore deviceSemaphore)
 	{
 		ProcessValidationCommands((CommandBufferVal*)workSubmissionDesc.commandBuffers, workSubmissionDesc.commandBufferNum);
 
 		var workSubmissionDescImpl = workSubmissionDesc;
 		workSubmissionDescImpl.commandBuffers = STACK_ALLOC!<CommandBuffer>(workSubmissionDesc.commandBufferNum);
 		for (uint32 i = 0; i < workSubmissionDesc.commandBufferNum; i++)
-			((CommandBuffer*)workSubmissionDescImpl.commandBuffers)[i] = NRI_GET_IMPL_PTR!<CommandBuffer...>((CommandBufferVal)(Object)workSubmissionDesc.commandBuffers[i]);
+			((CommandBuffer*)workSubmissionDescImpl.commandBuffers)[i] = NRI_GET_IMPL_PTR!<CommandBuffer...>((CommandBufferVal)workSubmissionDesc.commandBuffers[i]);
 		workSubmissionDescImpl.wait = STACK_ALLOC!<QueueSemaphore>(workSubmissionDesc.waitNum);
 		for (uint32 i = 0; i < workSubmissionDesc.waitNum; i++)
-			((QueueSemaphore*)workSubmissionDescImpl.wait)[i] = NRI_GET_IMPL_PTR!<QueueSemaphore...>((QueueSemaphoreVal)(Object)workSubmissionDesc.wait[i]);
+			((QueueSemaphore*)workSubmissionDescImpl.wait)[i] = NRI_GET_IMPL_PTR!<QueueSemaphore...>((QueueSemaphoreVal)workSubmissionDesc.wait[i]);
 		workSubmissionDescImpl.signal = STACK_ALLOC!<QueueSemaphore>(workSubmissionDesc.signalNum);
 		for (uint32 i = 0; i < workSubmissionDesc.signalNum; i++)
-			((QueueSemaphore*)workSubmissionDescImpl.signal)[i] = NRI_GET_IMPL_PTR!<QueueSemaphore...>((QueueSemaphoreVal)(Object)workSubmissionDesc.signal[i]);
+			((QueueSemaphore*)workSubmissionDescImpl.signal)[i] = NRI_GET_IMPL_PTR!<QueueSemaphore...>((QueueSemaphoreVal)workSubmissionDesc.signal[i]);
 
 		DeviceSemaphore deviceSemaphoreImpl = null;
 		if (deviceSemaphore != null)
-			deviceSemaphoreImpl = NRI_GET_IMPL_PTR!<DeviceSemaphore...>((DeviceSemaphoreVal)(Object)deviceSemaphore);
+			deviceSemaphoreImpl = NRI_GET_IMPL_PTR!<DeviceSemaphore...>((DeviceSemaphoreVal)deviceSemaphore);
 
 		for (uint32 i = 0; i < workSubmissionDesc.waitNum; i++)
 		{
-			QueueSemaphoreVal semaphore = (QueueSemaphoreVal)(Object)workSubmissionDesc.wait[i];
+			QueueSemaphoreVal semaphore = (QueueSemaphoreVal)workSubmissionDesc.wait[i];
 			semaphore.Wait();
 		}
 
@@ -276,18 +276,18 @@ class CommandQueueVal : CommandQueue, DeviceObjectVal<CommandQueue>
 
 		for (uint32 i = 0; i < workSubmissionDesc.signalNum; i++)
 		{
-			QueueSemaphoreVal semaphore = (QueueSemaphoreVal)(Object)workSubmissionDesc.signal[i];
+			QueueSemaphoreVal semaphore = (QueueSemaphoreVal)workSubmissionDesc.signal[i];
 			semaphore.Signal();
 		}
 
 		if (deviceSemaphore != null)
-			((DeviceSemaphoreVal)(Object)deviceSemaphore).Signal();
+			((DeviceSemaphoreVal)deviceSemaphore).Signal();
 	}
 
-	public void Wait(DeviceSemaphore deviceSemaphore)
+	public void WaitForSemaphore(DeviceSemaphore deviceSemaphore)
 	{
-		((DeviceSemaphoreVal)(Object)deviceSemaphore).Wait();
-		DeviceSemaphore deviceSemaphoreImpl = NRI_GET_IMPL_REF!<DeviceSemaphore...>((DeviceSemaphoreVal)(Object)deviceSemaphore);
+		((DeviceSemaphoreVal)deviceSemaphore).Wait();
+		DeviceSemaphore deviceSemaphoreImpl = NRI_GET_IMPL_REF!<DeviceSemaphore...>((DeviceSemaphoreVal)deviceSemaphore);
 
 		m_ImplObject.WaitForSemaphore(deviceSemaphoreImpl);
 	}
@@ -308,7 +308,7 @@ class CommandQueueVal : CommandQueue, DeviceObjectVal<CommandQueue>
 			if (!ValidateTransitionBarrierDesc(m_Device, i, transitionBarriers.buffers[i]))
 				return Result.INVALID_ARGUMENT;
 
-			readonly BufferVal bufferVal = (BufferVal)(Object)transitionBarriers.buffers[i].buffer;
+			readonly BufferVal bufferVal = (BufferVal)transitionBarriers.buffers[i].buffer;
 
 			bufferTransitionBarriers[i] = transitionBarriers.buffers[i];
 			bufferTransitionBarriers[i].buffer = bufferVal.GetImpl();
@@ -319,7 +319,7 @@ class CommandQueueVal : CommandQueue, DeviceObjectVal<CommandQueue>
 			if (!ValidateTransitionBarrierDesc(m_Device, i, transitionBarriers.textures[i]))
 				return Result.INVALID_ARGUMENT;
 
-			readonly TextureVal textureVal = (TextureVal)(Object)transitionBarriers.textures[i].texture;
+			readonly TextureVal textureVal = (TextureVal)transitionBarriers.textures[i].texture;
 
 			textureTransitionBarriers[i] = transitionBarriers.textures[i];
 			textureTransitionBarriers[i].texture = textureVal.GetImpl();
@@ -348,7 +348,7 @@ class CommandQueueVal : CommandQueue, DeviceObjectVal<CommandQueue>
 			if (!ValidateTextureUploadDesc(m_Device, i, textureUploadDescs[i]))
 				return Result.INVALID_ARGUMENT;
 
-			readonly TextureVal textureVal = (TextureVal)(Object)textureUploadDescs[i].texture;
+			readonly TextureVal textureVal = (TextureVal)textureUploadDescs[i].texture;
 
 			textureUploadDescsImpl[i] = textureUploadDescs[i];
 			textureUploadDescsImpl[i].texture = textureVal.GetImpl();
@@ -361,7 +361,7 @@ class CommandQueueVal : CommandQueue, DeviceObjectVal<CommandQueue>
 			if (!ValidateBufferUploadDesc(m_Device, i, bufferUploadDescs[i]))
 				return Result.INVALID_ARGUMENT;
 
-			readonly BufferVal bufferVal = (BufferVal)(Object)bufferUploadDescs[i].buffer;
+			readonly BufferVal bufferVal = (BufferVal)bufferUploadDescs[i].buffer;
 
 			bufferUploadDescsImpl[i] = bufferUploadDescs[i];
 			bufferUploadDescsImpl[i].buffer = bufferVal.GetImpl();

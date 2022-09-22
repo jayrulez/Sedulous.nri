@@ -101,7 +101,7 @@ class DeviceVal : Device
 			if (m_CommandQueues[index] == null)
 				m_CommandQueues[index] = Allocate!<CommandQueueVal>(GetAllocator(), this, commandQueueImpl);
 
-			commandQueue = (CommandQueue)(Object)m_CommandQueues[index];
+			commandQueue = (CommandQueue)m_CommandQueues[index];
 		}
 		return result;
 	}
@@ -112,7 +112,7 @@ class DeviceVal : Device
 		RETURN_ON_FAILURE!(GetLogger(), IsPhysicalDeviceMaskValid(physicalDeviceMask), Result.INVALID_ARGUMENT,
 			"Can't create CommandAllocator: 'physicalDeviceMask' is invalid.");
 
-		var commandQueueImpl = NRI_GET_IMPL_REF!<CommandQueue...>((CommandQueueVal)(Object)commandQueue);
+		var commandQueueImpl = NRI_GET_IMPL_REF!<CommandQueue...>((CommandQueueVal)commandQueue);
 
 		CommandAllocator commandAllocatorImpl = null;
 		readonly Result result = m_Device.CreateCommandAllocator(commandQueueImpl, physicalDeviceMask, out commandAllocatorImpl);
@@ -120,7 +120,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), commandAllocatorImpl != null, Result.FAILURE, "Unexpected error: 'commandAllocatorImpl' is NULL.");
-			commandAllocator = (CommandAllocator)(Object)Allocate!<CommandAllocatorVal>(GetAllocator(), this, commandAllocatorImpl);
+			commandAllocator = (CommandAllocator)Allocate!<CommandAllocatorVal>(GetAllocator(), this, commandAllocatorImpl);
 		}
 
 		return result;
@@ -138,7 +138,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), descriptorPoolImpl != null, Result.FAILURE, "Unexpected error: 'descriptorPoolImpl' is NULL.");
-			descriptorPool = (DescriptorPool)(Object)Allocate!<DescriptorPoolVal>(GetAllocator(), this, descriptorPoolImpl, descriptorPoolDesc);
+			descriptorPool = (DescriptorPool)Allocate!<DescriptorPoolVal>(GetAllocator(), this, descriptorPoolImpl, descriptorPoolDesc);
 		}
 
 		return result;
@@ -159,7 +159,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), bufferImpl != null, Result.FAILURE, "Unexpected error: 'bufferImpl' is NULL.");
-			buffer = (Buffer)(Object)Allocate!<BufferVal>(GetAllocator(), this, bufferImpl, bufferDesc);
+			buffer = (Buffer)Allocate!<BufferVal>(GetAllocator(), this, bufferImpl, bufferDesc);
 		}
 
 		return result;
@@ -183,7 +183,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), textureImpl != null, Result.FAILURE, "Unexpected error: 'textureImpl' is NULL.");
-			texture = (Texture)(Object)Allocate!<TextureVal>(GetAllocator(), this, textureImpl, textureDesc);
+			texture = (Texture)Allocate!<TextureVal>(GetAllocator(), this, textureImpl, textureDesc);
 		}
 
 		return result;
@@ -204,7 +204,7 @@ class DeviceVal : Device
 		RETURN_ON_FAILURE!(GetLogger(), bufferViewDesc.viewType < BufferViewType.MAX_NUM, Result.INVALID_ARGUMENT,
 			"Can't create Descriptor: 'bufferViewDesc.viewType' is invalid");
 
-		readonly ref BufferDesc bufferDesc = ref ((BufferVal)(Object)bufferViewDesc.buffer).GetDesc();
+		readonly ref BufferDesc bufferDesc = ref ((BufferVal)bufferViewDesc.buffer).GetDesc();
 
 		RETURN_ON_FAILURE!(GetLogger(), bufferViewDesc.offset < bufferDesc.size, Result.INVALID_ARGUMENT,
 			"Can't create Descriptor: 'bufferViewDesc.offset' is invalid. (bufferViewDesc.offset=%llu, bufferDesc.size=%llu)",
@@ -215,7 +215,7 @@ class DeviceVal : Device
 			bufferViewDesc.offset, bufferViewDesc.size, bufferDesc.size);
 
 		var bufferViewDescImpl = bufferViewDesc;
-		bufferViewDescImpl.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)bufferViewDesc.buffer);
+		bufferViewDescImpl.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)bufferViewDesc.buffer);
 
 		Descriptor descriptorImpl = null;
 		readonly Result result = m_Device.CreateBufferView(bufferViewDescImpl, out descriptorImpl);
@@ -223,7 +223,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), descriptorImpl != null, Result.FAILURE, "Unexpected error: 'descriptorImpl' is NULL.");
-			bufferView = (Descriptor)(Object)Allocate!<DescriptorVal>(GetAllocator(), this, descriptorImpl, bufferViewDesc);
+			bufferView = (Descriptor)Allocate!<DescriptorVal>(GetAllocator(), this, descriptorImpl, bufferViewDesc);
 		}
 
 		return result;
@@ -244,7 +244,7 @@ class DeviceVal : Device
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.viewType < Texture1DViewType.MAX_NUM, Result.INVALID_ARGUMENT,
 			"Can't create Descriptor: 'textureViewDesc.viewType' is invalid.");
 
-		readonly ref TextureDesc textureDesc = ref ((TextureVal)(Object)textureViewDesc.texture).GetDesc();
+		readonly ref TextureDesc textureDesc = ref ((TextureVal)textureViewDesc.texture).GetDesc();
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.mipOffset < textureDesc.mipNum, Result.INVALID_ARGUMENT,
 			"Can't create Descriptor: 'textureViewDesc.mipOffset' is invalid. (textureViewDesc.mipOffset={}, textureDesc.mipNum={})",
@@ -263,7 +263,7 @@ class DeviceVal : Device
 			textureViewDesc.arrayOffset, textureViewDesc.arraySize, textureDesc.arraySize);
 
 		var textureViewDescImpl = textureViewDesc;
-		textureViewDescImpl.texture = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)(Object)textureViewDesc.texture);
+		textureViewDescImpl.texture = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)textureViewDesc.texture);
 
 		Descriptor descriptorImpl = null;
 		readonly Result result = m_Device.CreateTexture1DView(textureViewDescImpl, out descriptorImpl);
@@ -271,7 +271,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), descriptorImpl != null, Result.FAILURE, "Unexpected error: 'descriptorImpl' is NULL.");
-			textureView = (Descriptor)(Object)Allocate!<DescriptorVal>(GetAllocator(), this, descriptorImpl, textureViewDesc);
+			textureView = (Descriptor)Allocate!<DescriptorVal>(GetAllocator(), this, descriptorImpl, textureViewDesc);
 		}
 
 		return result;
@@ -292,7 +292,7 @@ class DeviceVal : Device
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.viewType < Texture2DViewType.MAX_NUM, Result.INVALID_ARGUMENT,
 			"Can't create Descriptor: 'textureViewDesc.viewType' is invalid.");
 
-		readonly ref TextureDesc textureDesc = ref ((TextureVal)(Object)textureViewDesc.texture).GetDesc();
+		readonly ref TextureDesc textureDesc = ref ((TextureVal)textureViewDesc.texture).GetDesc();
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.mipOffset < textureDesc.mipNum, Result.INVALID_ARGUMENT,
 			"Can't create Descriptor: 'textureViewDesc.mipOffset' is invalid. (textureViewDesc.mipOffset={}, textureDesc.mipNum={})",
@@ -311,7 +311,7 @@ class DeviceVal : Device
 			textureViewDesc.arrayOffset, textureViewDesc.arraySize, textureDesc.arraySize);
 
 		var textureViewDescImpl = textureViewDesc;
-		textureViewDescImpl.texture = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)(Object)textureViewDesc.texture);
+		textureViewDescImpl.texture = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)textureViewDesc.texture);
 
 		Descriptor descriptorImpl = null;
 		readonly Result result = m_Device.CreateTexture2DView(textureViewDescImpl, out descriptorImpl);
@@ -319,7 +319,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), descriptorImpl != null, Result.FAILURE, "Unexpected error: 'descriptorImpl' is NULL.");
-			textureView = (Descriptor)(Object)Allocate!<DescriptorVal>(GetAllocator(), this, descriptorImpl, textureViewDesc);
+			textureView = (Descriptor)Allocate!<DescriptorVal>(GetAllocator(), this, descriptorImpl, textureViewDesc);
 		}
 
 		return result;
@@ -340,7 +340,7 @@ class DeviceVal : Device
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.viewType < Texture3DViewType.MAX_NUM, Result.INVALID_ARGUMENT,
 			"Can't create Descriptor: 'textureViewDesc.viewType' is invalid.");
 
-		readonly ref TextureDesc textureDesc = ref ((TextureVal)(Object)textureViewDesc.texture).GetDesc();
+		readonly ref TextureDesc textureDesc = ref ((TextureVal)textureViewDesc.texture).GetDesc();
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.mipOffset < textureDesc.mipNum, Result.INVALID_ARGUMENT,
 			"Can't create Descriptor: 'textureViewDesc.mipOffset' is invalid. (textureViewDesc.mipOffset={}, textureViewDesc.mipOffset={})",
@@ -359,7 +359,7 @@ class DeviceVal : Device
 			textureViewDesc.sliceOffset, textureViewDesc.sliceNum, textureDesc.size[2]);
 
 		var textureViewDescImpl = textureViewDesc;
-		textureViewDescImpl.texture = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)(Object)textureViewDesc.texture);
+		textureViewDescImpl.texture = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)textureViewDesc.texture);
 
 		Descriptor descriptorImpl = null;
 		readonly Result result = m_Device.CreateTexture3DView(textureViewDescImpl, out descriptorImpl);
@@ -367,7 +367,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), descriptorImpl != null, Result.FAILURE, "Unexpected error: 'descriptorImpl' is NULL.");
-			textureView = (Descriptor)(Object)Allocate!<DescriptorVal>(GetAllocator(), this, descriptorImpl, textureViewDesc);
+			textureView = (Descriptor)Allocate!<DescriptorVal>(GetAllocator(), this, descriptorImpl, textureViewDesc);
 		}
 
 		return result;
@@ -409,7 +409,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), samplerImpl != null, Result.FAILURE, "Unexpected error: 'samplerImpl' is NULL.");
-			sampler = (Descriptor)(Object)Allocate!<DescriptorVal>(GetAllocator(), this, samplerImpl);
+			sampler = (Descriptor)Allocate!<DescriptorVal>(GetAllocator(), this, samplerImpl);
 		}
 
 		return result;
@@ -469,7 +469,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), pipelineLayoutImpl != null, Result.FAILURE, "Unexpected error: 'pipelineLayoutImpl' is NULL.");
-			pipelineLayout = (PipelineLayout)(Object)Allocate!<PipelineLayoutVal>(GetAllocator(), this, pipelineLayoutImpl, pipelineLayoutDesc);
+			pipelineLayout = (PipelineLayout)Allocate!<PipelineLayoutVal>(GetAllocator(), this, pipelineLayoutImpl, pipelineLayoutDesc);
 		}
 
 		return result;
@@ -516,7 +516,7 @@ class DeviceVal : Device
 			RETURN_ON_FAILURE!(GetLogger(), graphicsPipelineDesc.inputAssembly.attributes == null || vertexShader != null, Result.INVALID_ARGUMENT,
 				"Can't create Pipeline: vertex shader is not specified, but input assembly attributes provided.");
 
-			readonly PipelineLayoutVal pipelineLayout = (PipelineLayoutVal)(Object)graphicsPipelineDesc.pipelineLayout;
+			readonly PipelineLayoutVal pipelineLayout = (PipelineLayoutVal)graphicsPipelineDesc.pipelineLayout;
 			readonly PipelineLayoutShaderStageBits stageMask = pipelineLayout.GetPipelineLayoutDesc().stageMask;
 
 			RETURN_ON_FAILURE!(GetLogger(), (stageMask & PipelineLayoutShaderStageBits.VERTEX) != 0, Result.INVALID_ARGUMENT,
@@ -524,7 +524,7 @@ class DeviceVal : Device
 		}
 
 		var graphicsPipelineDescImpl = graphicsPipelineDesc;
-		graphicsPipelineDescImpl.pipelineLayout = NRI_GET_IMPL_PTR!<PipelineLayout...>((PipelineLayoutVal)(Object)graphicsPipelineDesc.pipelineLayout);
+		graphicsPipelineDescImpl.pipelineLayout = NRI_GET_IMPL_PTR!<PipelineLayout...>((PipelineLayoutVal)graphicsPipelineDesc.pipelineLayout);
 
 		Pipeline pipelineImpl = null;
 		readonly Result result = m_Device.CreateGraphicsPipeline(graphicsPipelineDescImpl, out pipelineImpl);
@@ -532,7 +532,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), pipelineImpl != null, Result.FAILURE, "Unexpected error: 'pipelineImpl' is NULL.");
-			pipeline = (Pipeline)(Object)Allocate!<PipelineVal>(GetAllocator(), this, pipelineImpl, graphicsPipelineDesc);
+			pipeline = (Pipeline)Allocate!<PipelineVal>(GetAllocator(), this, pipelineImpl, graphicsPipelineDesc);
 		}
 
 		return result;
@@ -554,7 +554,7 @@ class DeviceVal : Device
 			"Can't create Pipeline: 'computePipelineDesc.computeShader.stage' must be ShaderStage.COMPUTE.");
 
 		var computePipelineDescImpl = computePipelineDesc;
-		computePipelineDescImpl.pipelineLayout = NRI_GET_IMPL_PTR!<PipelineLayout...>((PipelineLayoutVal)(Object)computePipelineDesc.pipelineLayout);
+		computePipelineDescImpl.pipelineLayout = NRI_GET_IMPL_PTR!<PipelineLayout...>((PipelineLayoutVal)computePipelineDesc.pipelineLayout);
 
 		Pipeline pipelineImpl = null;
 		readonly Result result = m_Device.CreateComputePipeline(computePipelineDescImpl, out pipelineImpl);
@@ -562,7 +562,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), pipelineImpl != null, Result.FAILURE, "Unexpected error: 'pipelineImpl' is NULL.");
-			pipeline = (Pipeline)(Object)Allocate!<PipelineVal>(GetAllocator(), this, pipelineImpl, computePipelineDesc);
+			pipeline = (Pipeline)Allocate!<PipelineVal>(GetAllocator(), this, pipelineImpl, computePipelineDesc);
 		}
 
 		return result;
@@ -581,7 +581,7 @@ class DeviceVal : Device
 
 			for (uint32 i = 0; i < frameBufferDesc.colorAttachmentNum; i++)
 			{
-				DescriptorVal descriptorVal = (DescriptorVal)(Object)frameBufferDesc.colorAttachments[i];
+				DescriptorVal descriptorVal = (DescriptorVal)frameBufferDesc.colorAttachments[i];
 
 				RETURN_ON_FAILURE!(GetLogger(), descriptorVal.IsColorAttachment(), Result.INVALID_ARGUMENT,
 					"Can't create FrameBuffer: 'frameBufferDesc.colorAttachments[{}]' is not a color attachment descriptor.", i);
@@ -590,19 +590,19 @@ class DeviceVal : Device
 
 		if (frameBufferDesc.depthStencilAttachment != null)
 		{
-			DescriptorVal descriptorVal = (DescriptorVal)(Object)frameBufferDesc.depthStencilAttachment;
+			DescriptorVal descriptorVal = (DescriptorVal)frameBufferDesc.depthStencilAttachment;
 			RETURN_ON_FAILURE!(GetLogger(), descriptorVal.IsDepthStencilAttachment(), Result.INVALID_ARGUMENT,
 				"Can't create FrameBuffer: 'frameBufferDesc.depthStencilAttachment' is not a depth stencil attachment descriptor.");
 		}
 
 		var frameBufferDescImpl = frameBufferDesc;
 		if (frameBufferDesc.depthStencilAttachment != null)
-			frameBufferDescImpl.depthStencilAttachment = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)(Object)frameBufferDesc.depthStencilAttachment);
+			frameBufferDescImpl.depthStencilAttachment = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)frameBufferDesc.depthStencilAttachment);
 		if (frameBufferDesc.colorAttachmentNum > 0)
 		{
 			frameBufferDescImpl.colorAttachments = STACK_ALLOC!<Descriptor>(frameBufferDesc.colorAttachmentNum);
 			for (uint32 i = 0; i < frameBufferDesc.colorAttachmentNum; i++)
-				((Descriptor*)frameBufferDescImpl.colorAttachments)[i] = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)(Object)frameBufferDesc.colorAttachments[i]);
+				((Descriptor*)frameBufferDescImpl.colorAttachments)[i] = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)frameBufferDesc.colorAttachments[i]);
 		}
 
 		FrameBuffer frameBufferImpl = null;
@@ -611,7 +611,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), frameBufferImpl != null, Result.FAILURE, "Unexpected error: 'frameBufferImpl' is NULL!");
-			frameBuffer = (FrameBuffer)(Object)Allocate!<FrameBufferVal>(GetAllocator(), this, frameBufferImpl);
+			frameBuffer = (FrameBuffer)Allocate!<FrameBufferVal>(GetAllocator(), this, frameBufferImpl);
 		}
 
 		return result;
@@ -635,7 +635,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), queryPoolImpl != null, Result.FAILURE, "Unexpected error: 'queryPoolImpl' is NULL!");
-			queryPool = (QueryPool)(Object)Allocate!<QueryPoolVal>(GetAllocator(), this, queryPoolImpl, queryPoolDesc.queryType,
+			queryPool = (QueryPool)Allocate!<QueryPoolVal>(GetAllocator(), this, queryPoolImpl, queryPoolDesc.queryType,
 				queryPoolDesc.capacity);
 		}
 
@@ -651,7 +651,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), queueSemaphoreImpl != null, Result.FAILURE, "Unexpected error: 'queueSemaphoreImpl' is NULL!");
-			queueSemaphore = (QueueSemaphore)(Object)Allocate!<QueueSemaphoreVal>(GetAllocator(), this, queueSemaphoreImpl);
+			queueSemaphore = (QueueSemaphore)Allocate!<QueueSemaphoreVal>(GetAllocator(), this, queueSemaphoreImpl);
 		}
 
 		return result;
@@ -668,7 +668,7 @@ class DeviceVal : Device
 			RETURN_ON_FAILURE!(GetLogger(), deviceSemaphoreImpl != null, Result.FAILURE, "Unexpected error: 'queueSemaphoreImpl' is NULL!");
 			DeviceSemaphoreVal deviceSemaphoreVal = Allocate!<DeviceSemaphoreVal>(GetAllocator(), this, deviceSemaphoreImpl);
 			deviceSemaphoreVal.Create(signaled);
-			deviceSemaphore = (DeviceSemaphore)(Object)deviceSemaphoreVal;
+			deviceSemaphore = (DeviceSemaphore)deviceSemaphoreVal;
 		}
 
 		return result;
@@ -725,7 +725,7 @@ class DeviceVal : Device
 			"Can't create SwapChain: 'swapChainDesc.physicalDeviceIndex' is invalid.");
 
 		var swapChainDescImpl = swapChainDesc;
-		swapChainDescImpl.commandQueue = NRI_GET_IMPL_PTR!<CommandQueue...>((CommandQueueVal)(Object)swapChainDesc.commandQueue);
+		swapChainDescImpl.commandQueue = NRI_GET_IMPL_PTR!<CommandQueue...>((CommandQueueVal)swapChainDesc.commandQueue);
 
 		SwapChain swapChainImpl = null;
 		readonly Result result = m_Device.CreateSwapChain(swapChainDescImpl, out swapChainImpl);
@@ -733,7 +733,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), swapChainImpl != null, Result.FAILURE, "Unexpected error: 'swapChainImpl' is NULL.");
-			swapChain = (SwapChain)(Object)Allocate!<SwapChainVal>(GetAllocator(), this, swapChainImpl, swapChainDesc);
+			swapChain = (SwapChain)Allocate!<SwapChainVal>(GetAllocator(), this, swapChainImpl, swapChainDesc);
 		}
 
 		return result;
@@ -772,7 +772,7 @@ class DeviceVal : Device
 		}
 
 		var pipelineDescImpl = pipelineDesc;
-		pipelineDescImpl.pipelineLayout = NRI_GET_IMPL_PTR!<PipelineLayout...>((PipelineLayoutVal)(Object)pipelineDesc.pipelineLayout);
+		pipelineDescImpl.pipelineLayout = NRI_GET_IMPL_PTR!<PipelineLayout...>((PipelineLayoutVal)pipelineDesc.pipelineLayout);
 
 		Pipeline pipelineImpl = null;
 		readonly Result result = m_Device.CreateRayTracingPipeline(pipelineDescImpl, out pipelineImpl);
@@ -780,7 +780,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), pipelineImpl != null, Result.FAILURE, "Unexpected error: 'pipelineImpl' is NULL.");
-			pipeline = (Pipeline)(Object)Allocate!<PipelineVal>(GetAllocator(), this, pipelineImpl);
+			pipeline = (Pipeline)Allocate!<PipelineVal>(GetAllocator(), this, pipelineImpl);
 		}
 
 		return result;
@@ -813,7 +813,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), accelerationStructureImpl != null, Result.FAILURE, "Unexpected error: 'accelerationStructureImpl' is NULL.");
-			accelerationStructure = (AccelerationStructure)(Object)Allocate!<AccelerationStructureVal>(GetAllocator(), this, accelerationStructureImpl);
+			accelerationStructure = (AccelerationStructure)Allocate!<AccelerationStructureVal>(GetAllocator(), this, accelerationStructureImpl);
 		}
 
 		return result;
@@ -821,85 +821,85 @@ class DeviceVal : Device
 
 	public void DestroyCommandAllocator(CommandAllocator commandAllocator)
 	{
-		m_Device.DestroyCommandAllocator(NRI_GET_IMPL_REF!<CommandAllocator...>((CommandAllocatorVal)(Object)commandAllocator));
-		Deallocate!(GetAllocator(), (CommandAllocatorVal)(Object)commandAllocator);
+		m_Device.DestroyCommandAllocator(NRI_GET_IMPL_REF!<CommandAllocator...>((CommandAllocatorVal)commandAllocator));
+		Deallocate!(GetAllocator(), (CommandAllocatorVal)commandAllocator);
 	}
 
 	public void DestroyDescriptorPool(DescriptorPool descriptorPool)
 	{
-		m_Device.DestroyDescriptorPool(NRI_GET_IMPL_REF!<DescriptorPool...>((DescriptorPoolVal)(Object)descriptorPool));
-		Deallocate!(GetAllocator(), (DescriptorPoolVal)(Object)descriptorPool);
+		m_Device.DestroyDescriptorPool(NRI_GET_IMPL_REF!<DescriptorPool...>((DescriptorPoolVal)descriptorPool));
+		Deallocate!(GetAllocator(), (DescriptorPoolVal)descriptorPool);
 	}
 
 	public void DestroyBuffer(Buffer buffer)
 	{
-		m_Device.DestroyBuffer(NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)buffer));
-		Deallocate!(GetAllocator(), (BufferVal)(Object)buffer);
+		m_Device.DestroyBuffer(NRI_GET_IMPL_REF!<Buffer...>((BufferVal)buffer));
+		Deallocate!(GetAllocator(), (BufferVal)buffer);
 	}
 
 	public void DestroyTexture(Texture texture)
 	{
-		m_Device.DestroyTexture(NRI_GET_IMPL_REF!<Texture...>((TextureVal)(Object)texture));
-		Deallocate!(GetAllocator(), (TextureVal)(Object)texture);
+		m_Device.DestroyTexture(NRI_GET_IMPL_REF!<Texture...>((TextureVal)texture));
+		Deallocate!(GetAllocator(), (TextureVal)texture);
 	}
 
 	public void DestroyDescriptor(Descriptor descriptor)
 	{
-		m_Device.DestroyDescriptor(NRI_GET_IMPL_REF!<Descriptor...>((DescriptorVal)(Object)descriptor));
-		Deallocate!(GetAllocator(), (DescriptorVal)(Object)descriptor);
+		m_Device.DestroyDescriptor(NRI_GET_IMPL_REF!<Descriptor...>((DescriptorVal)descriptor));
+		Deallocate!(GetAllocator(), (DescriptorVal)descriptor);
 	}
 
 	public void DestroyPipelineLayout(PipelineLayout pipelineLayout)
 	{
-		m_Device.DestroyPipelineLayout(NRI_GET_IMPL_REF!<PipelineLayout...>((PipelineLayoutVal)(Object)pipelineLayout));
-		Deallocate!(GetAllocator(), (PipelineLayoutVal)(Object)pipelineLayout);
+		m_Device.DestroyPipelineLayout(NRI_GET_IMPL_REF!<PipelineLayout...>((PipelineLayoutVal)pipelineLayout));
+		Deallocate!(GetAllocator(), (PipelineLayoutVal)pipelineLayout);
 	}
 
 	public void DestroyPipeline(Pipeline pipeline)
 	{
-		m_Device.DestroyPipeline(NRI_GET_IMPL_REF!<Pipeline...>((PipelineVal)(Object)pipeline));
-		Deallocate!(GetAllocator(), (PipelineVal)(Object)pipeline);
+		m_Device.DestroyPipeline(NRI_GET_IMPL_REF!<Pipeline...>((PipelineVal)pipeline));
+		Deallocate!(GetAllocator(), (PipelineVal)pipeline);
 	}
 
 	public void DestroyFrameBuffer(FrameBuffer frameBuffer)
 	{
-		m_Device.DestroyFrameBuffer(NRI_GET_IMPL_REF!<FrameBuffer...>((FrameBufferVal)(Object)frameBuffer));
-		Deallocate!(GetAllocator(), (FrameBufferVal)(Object)frameBuffer);
+		m_Device.DestroyFrameBuffer(NRI_GET_IMPL_REF!<FrameBuffer...>((FrameBufferVal)frameBuffer));
+		Deallocate!(GetAllocator(), (FrameBufferVal)frameBuffer);
 	}
 
 	public void DestroyQueryPool(QueryPool queryPool)
 	{
-		m_Device.DestroyQueryPool(NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)(Object)queryPool));
-		Deallocate!(GetAllocator(), (QueryPoolVal)(Object)queryPool);
+		m_Device.DestroyQueryPool(NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)queryPool));
+		Deallocate!(GetAllocator(), (QueryPoolVal)queryPool);
 	}
 
 	public void DestroyQueueSemaphore(QueueSemaphore queueSemaphore)
 	{
-		m_Device.DestroyQueueSemaphore(NRI_GET_IMPL_REF!<QueueSemaphore...>((QueueSemaphoreVal)(Object)queueSemaphore));
-		Deallocate!(GetAllocator(), (QueueSemaphoreVal)(Object)queueSemaphore);
+		m_Device.DestroyQueueSemaphore(NRI_GET_IMPL_REF!<QueueSemaphore...>((QueueSemaphoreVal)queueSemaphore));
+		Deallocate!(GetAllocator(), (QueueSemaphoreVal)queueSemaphore);
 	}
 
 	public void DestroyDeviceSemaphore(DeviceSemaphore deviceSemaphore)
 	{
-		m_Device.DestroyDeviceSemaphore(NRI_GET_IMPL_REF!<DeviceSemaphore...>((DeviceSemaphoreVal)(Object)deviceSemaphore));
-		Deallocate!(GetAllocator(), (DeviceSemaphoreVal)(Object)deviceSemaphore);
+		m_Device.DestroyDeviceSemaphore(NRI_GET_IMPL_REF!<DeviceSemaphore...>((DeviceSemaphoreVal)deviceSemaphore));
+		Deallocate!(GetAllocator(), (DeviceSemaphoreVal)deviceSemaphore);
 	}
 
 	public void DestroyCommandBuffer(CommandBuffer commandBuffer)
 	{
-		CommandBufferVal commandBufferVal = (CommandBufferVal)(Object)commandBuffer;
-		commandBufferVal.Destroy();
+		m_Device.DestroyCommandBuffer(NRI_GET_IMPL_REF!<CommandBuffer...>((CommandBufferVal)commandBuffer));
+		Deallocate!(GetAllocator(), (CommandBufferVal)commandBuffer);
 	}
 
 	public void DestroySwapChain(SwapChain swapChain)
 	{
-		m_Device.DestroySwapChain(NRI_GET_IMPL_REF!<SwapChain...>((SwapChainVal)(Object)swapChain));
-		Deallocate!(GetAllocator(), (SwapChainVal)(Object)swapChain);
+		m_Device.DestroySwapChain(NRI_GET_IMPL_REF!<SwapChain...>((SwapChainVal)swapChain));
+		Deallocate!(GetAllocator(), (SwapChainVal)swapChain);
 	}
 
 	public void DestroyAccelerationStructure(AccelerationStructure accelerationStructure)
 	{
-		Deallocate!(GetAllocator(), (AccelerationStructureVal)(Object)accelerationStructure);
+		Deallocate!(GetAllocator(), (AccelerationStructureVal)accelerationStructure);
 	}
 
 	public void Destroy()
@@ -950,7 +950,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), memoryImpl != null, Result.FAILURE, "Unexpected error: 'memoryImpl' is NULL!");
-			memory = (Memory)(Object)Allocate!<MemoryVal>(GetAllocator(), this, memoryImpl, size, memoryLocation);
+			memory = (Memory)Allocate!<MemoryVal>(GetAllocator(), this, memoryImpl, size, memoryLocation);
 		}
 
 		return result;
@@ -976,8 +976,8 @@ class DeviceVal : Device
 			RETURN_ON_FAILURE!(GetLogger(), srcDesc.memory != null, Result.INVALID_ARGUMENT,
 				"Can't bind memory to buffers: 'memoryBindingDescs[{}].memory' is invalid.", i);
 
-			MemoryVal memory = (MemoryVal)(Object)srcDesc.memory;
-			BufferVal buffer = (BufferVal)(Object)srcDesc.buffer;
+			MemoryVal memory = (MemoryVal)srcDesc.memory;
+			BufferVal buffer = (BufferVal)srcDesc.buffer;
 
 			RETURN_ON_FAILURE!(GetLogger(), !buffer.IsBoundToMemory(), Result.INVALID_ARGUMENT,
 				"Can't bind memory to buffers: 'memoryBindingDescs[{}].buffer' is already bound to memory.", i);
@@ -1015,8 +1015,8 @@ class DeviceVal : Device
 		{
 			for (uint32 i = 0; i < memoryBindingDescNum; i++)
 			{
-				MemoryVal memory = (MemoryVal)(Object)memoryBindingDescs[i].memory;
-				memory.BindBuffer((BufferVal)(Object)memoryBindingDescs[i].buffer);
+				MemoryVal memory = (MemoryVal)memoryBindingDescs[i].memory;
+				memory.BindBuffer((BufferVal)memoryBindingDescs[i].buffer);
 			}
 		}
 
@@ -1040,8 +1040,8 @@ class DeviceVal : Device
 			RETURN_ON_FAILURE!(GetLogger(), srcDesc.memory != null, Result.INVALID_ARGUMENT,
 				"Can't bind memory to textures: 'memoryBindingDescs[{}].memory' is invalid.", i);
 
-			MemoryVal memory = (MemoryVal)(Object)srcDesc.memory;
-			TextureVal texture = (TextureVal)(Object)srcDesc.texture;
+			MemoryVal memory = (MemoryVal)srcDesc.memory;
+			TextureVal texture = (TextureVal)srcDesc.texture;
 
 			RETURN_ON_FAILURE!(GetLogger(), !texture.IsBoundToMemory(), Result.INVALID_ARGUMENT,
 				"Can't bind memory to textures: 'memoryBindingDescs[{}].texture' is already bound to memory.", i);
@@ -1079,8 +1079,8 @@ class DeviceVal : Device
 		{
 			for (uint32 i = 0; i < memoryBindingDescNum; i++)
 			{
-				MemoryVal memory = (MemoryVal)(Object)memoryBindingDescs[i].memory;
-				memory.BindTexture((TextureVal)(Object)memoryBindingDescs[i].texture);
+				MemoryVal memory = (MemoryVal)memoryBindingDescs[i].memory;
+				memory.BindTexture((TextureVal)memoryBindingDescs[i].texture);
 			}
 		}
 
@@ -1101,8 +1101,8 @@ class DeviceVal : Device
 			ref AccelerationStructureMemoryBindingDesc destDesc = ref memoryBindingDescsImpl[i];
 			readonly ref AccelerationStructureMemoryBindingDesc srcDesc = ref memoryBindingDescs[i];
 
-			MemoryVal memory = (MemoryVal)(Object)srcDesc.memory;
-			AccelerationStructureVal accelerationStructure = (AccelerationStructureVal)(Object)srcDesc.accelerationStructure;
+			MemoryVal memory = (MemoryVal)srcDesc.memory;
+			AccelerationStructureVal accelerationStructure = (AccelerationStructureVal)srcDesc.accelerationStructure;
 
 			RETURN_ON_FAILURE!(GetLogger(), !accelerationStructure.IsBoundToMemory(), Result.INVALID_ARGUMENT,
 				"Can't bind memory to acceleration structures: 'memoryBindingDescs[{}].accelerationStructure' is already bound to memory.", i);
@@ -1136,8 +1136,8 @@ class DeviceVal : Device
 		{
 			for (uint32 i = 0; i < memoryBindingDescNum; i++)
 			{
-				MemoryVal memory = (MemoryVal)(Object)memoryBindingDescs[i].memory;
-				memory.BindAccelerationStructure((AccelerationStructureVal)(Object)memoryBindingDescs[i].accelerationStructure);
+				MemoryVal memory = (MemoryVal)memoryBindingDescs[i].memory;
+				memory.BindAccelerationStructure((AccelerationStructureVal)memoryBindingDescs[i].accelerationStructure);
 			}
 		}
 
@@ -1146,7 +1146,7 @@ class DeviceVal : Device
 
 	public void FreeMemory(Memory memory)
 	{
-		MemoryVal memoryVal = (MemoryVal)(Object)memory;
+		MemoryVal memoryVal = (MemoryVal)memory;
 
 		if (memoryVal.HasBoundResources())
 		{
@@ -1155,8 +1155,8 @@ class DeviceVal : Device
 			return;
 		}
 
-		m_Device.FreeMemory(NRI_GET_IMPL_REF!<Memory...>((MemoryVal)(Object)memory));
-		Deallocate!(GetAllocator(), (MemoryVal)(Object)memory);
+		m_Device.FreeMemory(NRI_GET_IMPL_REF!<Memory...>((MemoryVal)memory));
+		Deallocate!(GetAllocator(), (MemoryVal)memory);
 	}
 
 	public FormatSupportBits GetFormatSupport(Format format)
@@ -1182,7 +1182,7 @@ class DeviceVal : Device
 			RETURN_ON_FAILURE!(GetLogger(), resourceGroupDesc.buffers[i] != null, 0,
 				"Can't calculate the number of allocations: 'resourceGroupDesc.buffers[{}]' is invalid.", i);
 
-			BufferVal bufferVal = (BufferVal)(Object)resourceGroupDesc.buffers[i];
+			BufferVal bufferVal = (BufferVal)resourceGroupDesc.buffers[i];
 			buffersImpl[i] = (bufferVal.GetImpl());
 		}
 
@@ -1193,7 +1193,7 @@ class DeviceVal : Device
 			RETURN_ON_FAILURE!(GetLogger(), resourceGroupDesc.textures[i] != null, 0,
 				"Can't calculate the number of allocations: 'resourceGroupDesc.textures[{}]' is invalid.", i);
 
-			TextureVal textureVal = (TextureVal)(Object)resourceGroupDesc.textures[i];
+			TextureVal textureVal = (TextureVal)resourceGroupDesc.textures[i];
 			texturesImpl[i] = (textureVal.GetImpl());
 		}
 
@@ -1225,7 +1225,7 @@ class DeviceVal : Device
 			RETURN_ON_FAILURE!(GetLogger(), resourceGroupDesc.buffers[i] != null, Result.INVALID_ARGUMENT,
 				"Can't allocate and bind memory: 'resourceGroupDesc.buffers[{}]' is invalid.", i);
 
-			BufferVal bufferVal = (BufferVal)(Object)resourceGroupDesc.buffers[i];
+			BufferVal bufferVal = (BufferVal)resourceGroupDesc.buffers[i];
 			buffersImpl[i] = (bufferVal.GetImpl());
 		}
 
@@ -1236,7 +1236,7 @@ class DeviceVal : Device
 			RETURN_ON_FAILURE!(GetLogger(), resourceGroupDesc.textures[i] != null, Result.INVALID_ARGUMENT,
 				"Can't allocate and bind memory: 'resourceGroupDesc.textures[{}]' is invalid.", i);
 
-			TextureVal textureVal = (TextureVal)(Object)resourceGroupDesc.textures[i];
+			TextureVal textureVal = (TextureVal)resourceGroupDesc.textures[i];
 			texturesImpl[i] = (textureVal.GetImpl());
 		}
 
@@ -1252,20 +1252,20 @@ class DeviceVal : Device
 		{
 			for (uint32 i = 0; i < resourceGroupDesc.bufferNum; i++)
 			{
-				BufferVal bufferVal = (BufferVal)(Object)resourceGroupDesc.buffers[i];
+				BufferVal bufferVal = (BufferVal)resourceGroupDesc.buffers[i];
 				bufferVal.SetBoundToMemory();
 			}
 
 			for (uint32 i = 0; i < resourceGroupDesc.textureNum; i++)
 			{
-				TextureVal textureVal = (TextureVal)(Object)resourceGroupDesc.textures[i];
+				TextureVal textureVal = (TextureVal)resourceGroupDesc.textures[i];
 				textureVal.SetBoundToMemory();
 			}
 
 			for (uint32 i = 0; i < allocationNum; i++)
 			{
 				RETURN_ON_FAILURE!(GetLogger(), allocations[i] != null, Result.FAILURE, "Unexpected error: 'memoryImpl' is invalid");
-				allocations[i] = (Memory)(Object)Allocate!<MemoryVal>(GetAllocator(), this, allocations[i], 0, resourceGroupDesc.memoryLocation);
+				allocations[i] = (Memory)Allocate!<MemoryVal>(GetAllocator(), this, allocations[i], 0, resourceGroupDesc.memoryLocation);
 			}
 		}
 

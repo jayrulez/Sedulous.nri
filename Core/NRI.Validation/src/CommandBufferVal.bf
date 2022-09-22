@@ -33,7 +33,7 @@ public static
 		RETURN_ON_FAILURE!(device.GetLogger(), bufferTransitionBarrierDesc.buffer != null, false,
 			"Can't record pipeline barrier: 'transitionBarriers.buffers[{}].buffer' is invalid.", i);
 
-		readonly BufferVal bufferVal = (BufferVal)(Object)bufferTransitionBarrierDesc.buffer;
+		readonly BufferVal bufferVal = (BufferVal)bufferTransitionBarrierDesc.buffer;
 
 		RETURN_ON_FAILURE!(device.GetLogger(), IsAccessMaskSupported(bufferVal.GetDesc().usageMask, bufferTransitionBarrierDesc.prevAccess), false,
 			"Can't record pipeline barrier: 'transitionBarriers.buffers[{}].prevAccess' is not supported by the usage mask of the buffer ('{}').",
@@ -51,7 +51,7 @@ public static
 		RETURN_ON_FAILURE!(device.GetLogger(), textureTransitionBarrierDesc.texture != null, false,
 			"Can't record pipeline barrier: 'transitionBarriers.textures[{}].texture' is invalid.", i);
 
-		readonly TextureVal textureVal = (TextureVal)(Object)textureTransitionBarrierDesc.texture;
+		readonly TextureVal textureVal = (TextureVal)textureTransitionBarrierDesc.texture;
 
 		RETURN_ON_FAILURE!(device.GetLogger(), IsAccessMaskSupported(textureVal.GetDesc().usageMask, textureTransitionBarrierDesc.prevAccess), false,
 			"Can't record pipeline barrier: 'transitionBarriers.textures[{}].prevAccess' is not supported by the usage mask of the texture ('{}').",
@@ -112,7 +112,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 	public List<uint8> GetValidationCommands()
 		{ return m_ValidationCommands; }
 
-	public void* GetNativeObject()
+	public void* GetCommandBufferNativeObject()
 		{ return m_ImplObject.GetCommandBufferNativeObject(); }
 
 	public void SetDebugName(char8* name)
@@ -131,7 +131,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 
 		DescriptorPool descriptorPoolImpl = null;
 		if (descriptorPool != null)
-			descriptorPoolImpl = NRI_GET_IMPL_PTR!<DescriptorPool...>((DescriptorPoolVal)(Object)descriptorPool);
+			descriptorPoolImpl = NRI_GET_IMPL_PTR!<DescriptorPool...>((DescriptorPoolVal)descriptorPool);
 
 		Result result = m_ImplObject.Begin(descriptorPoolImpl, physicalDeviceIndex);
 		if (result == Result.SUCCESS)
@@ -168,7 +168,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_IsRecordingStarted, void(),
 			"Can't set pipeline: the command buffer must be in the recording state.");
 
-		Pipeline pipelineImpl = NRI_GET_IMPL_REF!<Pipeline...>((PipelineVal)(Object)pipeline);
+		Pipeline pipelineImpl = NRI_GET_IMPL_REF!<Pipeline...>((PipelineVal)pipeline);
 
 		m_ImplObject.SetPipeline(pipelineImpl);
 	}
@@ -178,7 +178,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_IsRecordingStarted, void(),
 			"Can't set pipeline layout: the command buffer must be in the recording state.");
 
-		PipelineLayout pipelineLayoutImpl = NRI_GET_IMPL_REF!<PipelineLayout...>((PipelineLayoutVal)(Object)pipelineLayout);
+		PipelineLayout pipelineLayoutImpl = NRI_GET_IMPL_REF!<PipelineLayout...>((PipelineLayoutVal)pipelineLayout);
 
 		m_ImplObject.SetPipelineLayout(pipelineLayoutImpl);
 	}
@@ -190,7 +190,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 
 		DescriptorSet* descriptorSetsImpl = STACK_ALLOC!<DescriptorSet>(descriptorSetNum);
 		for (uint32 i = 0; i < descriptorSetNum; i++)
-			descriptorSetsImpl[i] = NRI_GET_IMPL_PTR!<DescriptorSet...>((DescriptorSetVal)(Object)descriptorSets[i]);
+			descriptorSetsImpl[i] = NRI_GET_IMPL_PTR!<DescriptorSet...>((DescriptorSetVal)descriptorSets[i]);
 
 		m_ImplObject.SetDescriptorSets(baseIndex, descriptorSetNum, descriptorSetsImpl, dynamicConstantBufferOffsets);
 	}
@@ -207,7 +207,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_IsRecordingStarted, void(),
 			"Can't set descriptor pool: the command buffer must be in the recording state.");
 
-		DescriptorPool descriptorPoolImpl = NRI_GET_IMPL_REF!<DescriptorPool...>((DescriptorPoolVal)(Object)descriptorPool);
+		DescriptorPool descriptorPoolImpl = NRI_GET_IMPL_REF!<DescriptorPool...>((DescriptorPoolVal)descriptorPool);
 
 		m_ImplObject.SetDescriptorPool(descriptorPoolImpl);
 	}
@@ -242,12 +242,12 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 			transitionBarrierImpl.buffers = STACK_ALLOC!<BufferTransitionBarrierDesc>(transitionBarriers.bufferNum);
 			Internal.MemCpy((void*)transitionBarrierImpl.buffers, transitionBarriers.buffers, sizeof(BufferTransitionBarrierDesc) * transitionBarriers.bufferNum);
 			for (uint32 i = 0; i < transitionBarrierImpl.bufferNum; i++)
-				((BufferTransitionBarrierDesc*)transitionBarrierImpl.buffers)[i].buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)transitionBarriers.buffers[i].buffer);
+				((BufferTransitionBarrierDesc*)transitionBarrierImpl.buffers)[i].buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)transitionBarriers.buffers[i].buffer);
 
 			transitionBarrierImpl.textures = STACK_ALLOC!<TextureTransitionBarrierDesc>(transitionBarriers.textureNum);
 			Internal.MemCpy((void*)transitionBarrierImpl.textures, transitionBarriers.textures, sizeof(TextureTransitionBarrierDesc) * transitionBarriers.textureNum);
 			for (uint32 i = 0; i < transitionBarrierImpl.textureNum; i++)
-				((TextureTransitionBarrierDesc*)transitionBarrierImpl.textures)[i].texture = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)(Object)transitionBarriers.textures[i].texture);
+				((TextureTransitionBarrierDesc*)transitionBarrierImpl.textures)[i].texture = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)transitionBarriers.textures[i].texture);
 
 			transitionBarriers = &transitionBarrierImpl;
 		}
@@ -261,16 +261,16 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 			Internal.MemCpy((void*)aliasingBarriersImpl.buffers, aliasingBarriers.buffers, sizeof(BufferAliasingBarrierDesc) * aliasingBarriers.bufferNum);
 			for (uint32 i = 0; i < aliasingBarriersImpl.bufferNum; i++)
 			{
-				((BufferAliasingBarrierDesc*)aliasingBarriersImpl.buffers)[i].before = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)aliasingBarriers.buffers[i].before);
-				((BufferAliasingBarrierDesc*)aliasingBarriersImpl.buffers)[i].after = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)aliasingBarriers.buffers[i].after);
+				((BufferAliasingBarrierDesc*)aliasingBarriersImpl.buffers)[i].before = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)aliasingBarriers.buffers[i].before);
+				((BufferAliasingBarrierDesc*)aliasingBarriersImpl.buffers)[i].after = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)aliasingBarriers.buffers[i].after);
 			}
 
 			aliasingBarriersImpl.textures = STACK_ALLOC!<TextureAliasingBarrierDesc>(aliasingBarriers.textureNum);
 			Internal.MemCpy((void*)aliasingBarriersImpl.textures, aliasingBarriers.textures, sizeof(TextureAliasingBarrierDesc) * aliasingBarriers.textureNum);
 			for (uint32 i = 0; i < aliasingBarriersImpl.textureNum; i++)
 			{
-				((TextureAliasingBarrierDesc*)aliasingBarriersImpl.textures)[i].before = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)(Object)aliasingBarriers.textures[i].before);
-				((TextureAliasingBarrierDesc*)aliasingBarriersImpl.textures)[i].after = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)(Object)aliasingBarriers.textures[i].after);
+				((TextureAliasingBarrierDesc*)aliasingBarriersImpl.textures)[i].before = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)aliasingBarriers.textures[i].before);
+				((TextureAliasingBarrierDesc*)aliasingBarriersImpl.textures)[i].after = NRI_GET_IMPL_PTR!<Texture...>((TextureVal)aliasingBarriers.textures[i].after);
 			}
 
 			aliasingBarriers = &aliasingBarriersImpl;
@@ -292,7 +292,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 
 		m_FrameBuffer = frameBuffer;
 
-		FrameBuffer frameBufferImpl = NRI_GET_IMPL_REF!<FrameBuffer...>((FrameBufferVal)(Object)frameBuffer);
+		FrameBuffer frameBufferImpl = NRI_GET_IMPL_REF!<FrameBuffer...>((FrameBufferVal)frameBuffer);
 
 		m_ImplObject.BeginRenderPass(frameBufferImpl, renderPassBeginFlag);
 	}
@@ -378,7 +378,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_IsRecordingStarted, void(),
 			"Can't set index buffers: the command buffer must be in the recording state.");
 
-		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)buffer);
+		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)buffer);
 
 		m_ImplObject.SetIndexBuffer(bufferImpl, offset, indexType);
 	}
@@ -390,7 +390,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 
 		Buffer* buffersImpl = STACK_ALLOC!<Buffer>(bufferNum);
 		for (uint32 i = 0; i < bufferNum; i++)
-			buffersImpl[i] = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)buffers[i]);
+			buffersImpl[i] = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)buffers[i]);
 
 		m_ImplObject.SetVertexBuffers(baseSlot, bufferNum, buffersImpl, offsets);
 	}
@@ -425,7 +425,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_FrameBuffer != null, void(),
 			"Can't record draw call: this operation is allowed only inside render pass.");
 
-		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)buffer);
+		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)buffer);
 
 		m_ImplObject.DrawIndirect(bufferImpl, offset, drawNum, stride);
 	}
@@ -438,7 +438,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_FrameBuffer != null, void(),
 			"Can't record draw call: this operation is allowed only inside render pass.");
 
-		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)buffer);
+		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)buffer);
 
 		m_ImplObject.DrawIndexedIndirect(bufferImpl, offset, drawNum, stride);
 	}
@@ -462,7 +462,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_FrameBuffer == null, void(),
 			"Can't record dispatch call: this operation is allowed only outside render pass.");
 
-		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)buffer);
+		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)buffer);
 
 		m_ImplObject.DispatchIndirect(bufferImpl, offset);
 	}
@@ -472,7 +472,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_IsRecordingStarted, void(),
 			"Can't begin query: the command buffer must be in the recording state.");
 
-		readonly QueryPoolVal queryPoolVal = (QueryPoolVal)(Object)queryPool;
+		readonly QueryPoolVal queryPoolVal = (QueryPoolVal)queryPool;
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), queryPoolVal.GetQueryType() != QueryType.TIMESTAMP, void(),
 			"Can't begin query: BeginQuery() is not supported for timestamp queries.");
@@ -488,7 +488,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 			validationCommand.queryPoolOffset = offset;
 		}
 
-		QueryPool queryPoolImpl = NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)(Object)queryPool);
+		QueryPool queryPoolImpl = NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)queryPool);
 
 		m_ImplObject.BeginQuery(queryPoolImpl, offset);
 	}
@@ -498,7 +498,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_IsRecordingStarted, void(),
 			"Can't end query: the command buffer must be in the recording state.");
 
-		readonly QueryPoolVal queryPoolVal = (QueryPoolVal)(Object)queryPool;
+		readonly QueryPoolVal queryPoolVal = (QueryPoolVal)queryPool;
 
 		if (!queryPoolVal.IsImported())
 		{
@@ -511,7 +511,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 			validationCommand.queryPoolOffset = offset;
 		}
 
-		QueryPool queryPoolImpl = NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)(Object)queryPool);
+		QueryPool queryPoolImpl = NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)queryPool);
 
 		m_ImplObject.EndQuery(queryPoolImpl, offset);
 	}
@@ -546,7 +546,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 			"Can't clear storage buffer: 'clearDesc.storageBuffer' is invalid.");
 
 		var clearDescImpl = clearDesc;
-		clearDescImpl.storageBuffer = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)(Object)clearDesc.storageBuffer);
+		clearDescImpl.storageBuffer = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)clearDesc.storageBuffer);
 
 		m_ImplObject.ClearStorageBuffer(clearDescImpl);
 	}
@@ -563,7 +563,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 			"Can't clear storage texture: 'clearDesc.storageTexture' is invalid.");
 
 		var clearDescImpl = clearDesc;
-		clearDescImpl.storageTexture = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)(Object)clearDesc.storageTexture);
+		clearDescImpl.storageTexture = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)clearDesc.storageTexture);
 
 		m_ImplObject.ClearStorageTexture(clearDescImpl);
 	}
@@ -578,8 +578,8 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 
 		if (size == WHOLE_SIZE)
 		{
-			readonly ref BufferDesc dstDesc = ref ((BufferVal)(Object)dstBuffer).GetDesc();
-			readonly ref BufferDesc srcDesc = ref ((BufferVal)(Object)srcBuffer).GetDesc();
+			readonly ref BufferDesc dstDesc = ref ((BufferVal)dstBuffer).GetDesc();
+			readonly ref BufferDesc srcDesc = ref ((BufferVal)srcBuffer).GetDesc();
 
 			if (dstDesc.size != srcDesc.size)
 			{
@@ -588,8 +588,8 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 			}
 		}
 
-		Buffer dstBufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)dstBuffer);
-		Buffer srcBufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)srcBuffer);
+		Buffer dstBufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)dstBuffer);
+		Buffer srcBufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)srcBuffer);
 
 		m_ImplObject.CopyBuffer(dstBufferImpl, dstPhysicalDeviceIndex, dstOffset, srcBufferImpl, srcPhysicalDeviceIndex,
 			srcOffset, size);
@@ -606,8 +606,8 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), (dstRegionDesc == null && srcRegionDesc == null) || (dstRegionDesc != null && srcRegionDesc != null), void(),
 			"Can't copy texture: 'dstRegionDesc' and 'srcRegionDesc' must be valid pointers or be both NULL.");
 
-		Texture dstTextureImpl = NRI_GET_IMPL_REF!<Texture...>((TextureVal)(Object)dstTexture);
-		Texture srcTextureImpl = NRI_GET_IMPL_REF!<Texture...>((TextureVal)(Object)srcTexture);
+		Texture dstTextureImpl = NRI_GET_IMPL_REF!<Texture...>((TextureVal)dstTexture);
+		Texture srcTextureImpl = NRI_GET_IMPL_REF!<Texture...>((TextureVal)srcTexture);
 
 		m_ImplObject.CopyTexture(dstTextureImpl, dstPhysicalDeviceIndex, dstRegionDesc, srcTextureImpl, srcPhysicalDeviceIndex,
 			srcRegionDesc);
@@ -621,8 +621,8 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_FrameBuffer == null, void(),
 			"Can't upload buffer to texture: this operation is allowed only outside render pass.");
 
-		Texture dstTextureImpl = NRI_GET_IMPL_REF!<Texture...>((TextureVal)(Object)dstTexture);
-		Buffer srcBufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)srcBuffer);
+		Texture dstTextureImpl = NRI_GET_IMPL_REF!<Texture...>((TextureVal)dstTexture);
+		Buffer srcBufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)srcBuffer);
 
 		m_ImplObject.UploadBufferToTexture(dstTextureImpl, dstRegionDesc, srcBufferImpl, srcDataLayoutDesc);
 	}
@@ -635,8 +635,8 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_FrameBuffer == null, void(),
 			"Can't readback texture to buffer: this operation is allowed only outside render pass.");
 
-		Buffer dstBufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)dstBuffer);
-		Texture srcTextureImpl = NRI_GET_IMPL_REF!<Texture...>((TextureVal)(Object)srcTexture);
+		Buffer dstBufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)dstBuffer);
+		Texture srcTextureImpl = NRI_GET_IMPL_REF!<Texture...>((TextureVal)srcTexture);
 
 		m_ImplObject.ReadbackTextureToBuffer(dstBufferImpl, ref dstDataLayoutDesc, srcTextureImpl, srcRegionDesc);
 	}
@@ -649,7 +649,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_FrameBuffer == null, void(),
 			"Can't copy queries: this operation is allowed only outside render pass.");
 
-		readonly QueryPoolVal queryPoolVal = (QueryPoolVal)(Object)queryPool;
+		readonly QueryPoolVal queryPoolVal = (QueryPoolVal)queryPool;
 
 		if (!queryPoolVal.IsImported())
 		{
@@ -657,8 +657,8 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 				"Can't copy queries: offset + num ('{}') is out of range.", offset + num);
 		}
 
-		QueryPool queryPoolImpl = NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)(Object)queryPool);
-		Buffer dstBufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)dstBuffer);
+		QueryPool queryPoolImpl = NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)queryPool);
+		Buffer dstBufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)dstBuffer);
 
 		m_ImplObject.CopyQueries(queryPoolImpl, offset, num, dstBufferImpl, dstOffset);
 	}
@@ -671,7 +671,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_FrameBuffer == null, void(),
 			"Can't reset queries: this operation is allowed only outside render pass.");
 
-		readonly QueryPoolVal queryPoolVal = (QueryPoolVal)(Object)queryPool;
+		readonly QueryPoolVal queryPoolVal = (QueryPoolVal)queryPool;
 
 		if (!queryPoolVal.IsImported())
 		{
@@ -685,7 +685,7 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 			validationCommand.queryNum = num;
 		}
 
-		QueryPool queryPoolImpl = NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)(Object)queryPool);
+		QueryPool queryPoolImpl = NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)queryPool);
 
 		m_ImplObject.ResetQueries(queryPoolImpl, offset, num);
 	}
@@ -699,8 +699,8 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_FrameBuffer == null, void(),
 			"Can't build TLAS: this operation is allowed only outside render pass.");
 
-		BufferVal bufferVal = (BufferVal)(Object)buffer;
-		BufferVal scratchVal = (BufferVal)(Object)scratch;
+		BufferVal bufferVal = (BufferVal)buffer;
+		BufferVal scratchVal = (BufferVal)scratch;
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), bufferOffset < bufferVal.GetDesc().size, void(),
 			"Can't update TLAS: 'bufferOffset' is out of bounds.");
@@ -708,9 +708,9 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), scratchOffset < scratchVal.GetDesc().size, void(),
 			"Can't update TLAS: 'scratchOffset' is out of bounds.");
 
-		AccelerationStructure dstImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)(Object)dst);
-		Buffer scratchImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)scratch);
-		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)buffer);
+		AccelerationStructure dstImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)dst);
+		Buffer scratchImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)scratch);
+		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)buffer);
 
 		m_ImplObject.BuildTopLevelAccelerationStructure(instanceNum, bufferImpl, bufferOffset, flags, dstImpl, scratchImpl, scratchOffset);
 	}
@@ -727,13 +727,13 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), geometryObjects != null, void(),
 			"Can't update BLAS: 'geometryObjects' is invalid.");
 
-		BufferVal scratchVal = (BufferVal)(Object)scratch;
+		BufferVal scratchVal = (BufferVal)scratch;
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), scratchOffset < scratchVal.GetDesc().size, void(),
 			"Can't build BLAS: 'scratchOffset' is out of bounds.");
 
-		AccelerationStructure dstImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)(Object)dst);
-		Buffer scratchImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)scratch);
+		AccelerationStructure dstImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)dst);
+		Buffer scratchImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)scratch);
 
 		List<GeometryObject> objectImplArray = Allocate!<List<GeometryObject>>(m_Device.GetAllocator());
 		defer { Deallocate!(m_Device.GetAllocator(), objectImplArray); }
@@ -752,8 +752,8 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_FrameBuffer == null, void(),
 			"Can't update TLAS: this operation is allowed only outside render pass.");
 
-		BufferVal bufferVal = (BufferVal)(Object)buffer;
-		BufferVal scratchVal = (BufferVal)(Object)scratch;
+		BufferVal bufferVal = (BufferVal)buffer;
+		BufferVal scratchVal = (BufferVal)scratch;
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), bufferOffset < bufferVal.GetDesc().size, void(),
 			"Can't update TLAS: 'bufferOffset' is out of bounds.");
@@ -761,10 +761,10 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), scratchOffset < scratchVal.GetDesc().size, void(),
 			"Can't update TLAS: 'scratchOffset' is out of bounds.");
 
-		AccelerationStructure dstImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)(Object)dst);
-		AccelerationStructure srcImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)(Object)src);
-		Buffer scratchImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)scratch);
-		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)buffer);
+		AccelerationStructure dstImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)dst);
+		AccelerationStructure srcImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)src);
+		Buffer scratchImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)scratch);
+		Buffer bufferImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)buffer);
 
 		m_ImplObject.UpdateTopLevelAccelerationStructure(instanceNum, bufferImpl, bufferOffset, flags, dstImpl, srcImpl, scratchImpl, scratchOffset);
 	}
@@ -781,14 +781,14 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), geometryObjects != null, void(),
 			"Can't update BLAS: 'geometryObjects' is invalid.");
 
-		BufferVal scratchVal = (BufferVal)(Object)scratch;
+		BufferVal scratchVal = (BufferVal)scratch;
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), scratchOffset < scratchVal.GetDesc().size, void(),
 			"Can't update BLAS: 'scratchOffset' is out of bounds.");
 
-		AccelerationStructure dstImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)(Object)dst);
-		AccelerationStructure srcImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)(Object)src);
-		Buffer scratchImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)(Object)scratch);
+		AccelerationStructure dstImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)dst);
+		AccelerationStructure srcImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)src);
+		Buffer scratchImpl = NRI_GET_IMPL_REF!<Buffer...>((BufferVal)scratch);
 
 		List<GeometryObject> objectImplArray = Allocate!<List<GeometryObject>>(m_Device.GetAllocator());
 		defer { Deallocate!(m_Device.GetAllocator(), objectImplArray); }
@@ -809,8 +809,8 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), copyMode < CopyMode.MAX_NUM, void(),
 			"Can't copy AS: 'copyMode' is invalid.");
 
-		AccelerationStructure dstImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)(Object)dst);
-		AccelerationStructure srcImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)(Object)src);
+		AccelerationStructure dstImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)dst);
+		AccelerationStructure srcImpl = NRI_GET_IMPL_REF!<AccelerationStructure...>((AccelerationStructureVal)src);
 
 		m_ImplObject.CopyAccelerationStructure(dstImpl, srcImpl, copyMode);
 	}
@@ -832,10 +832,10 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), accelerationStructures[i] != null, void(),
 				"Can't write AS size: 'accelerationStructures[{}]' is invalid.", i);
 
-			accelerationStructureArray[i] = NRI_GET_IMPL_PTR!<AccelerationStructure...>((AccelerationStructureVal)(Object)accelerationStructures[i]);
+			accelerationStructureArray[i] = NRI_GET_IMPL_PTR!<AccelerationStructure...>((AccelerationStructureVal)accelerationStructures[i]);
 		}
 
-		QueryPool queryPoolImpl = NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)(Object)queryPool);
+		QueryPool queryPoolImpl = NRI_GET_IMPL_REF!<QueryPool...>((QueryPoolVal)queryPool);
 
 		m_ImplObject.WriteAccelerationStructureSize(accelerationStructures, accelerationStructureNum, queryPoolImpl, queryOffset);
 	}
@@ -869,10 +869,10 @@ class CommandBufferVal : CommandBuffer,  DeviceObjectVal<CommandBuffer>
 			"Can't record ray tracing dispatch: 'dispatchRaysDesc.callableShaders.offset' is misaligned.");
 
 		var dispatchRaysDescImpl = dispatchRaysDesc;
-		dispatchRaysDescImpl.raygenShader.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)dispatchRaysDesc.raygenShader.buffer);
-		dispatchRaysDescImpl.missShaders.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)dispatchRaysDesc.missShaders.buffer);
-		dispatchRaysDescImpl.hitShaderGroups.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)dispatchRaysDesc.hitShaderGroups.buffer);
-		dispatchRaysDescImpl.callableShaders.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)(Object)dispatchRaysDesc.callableShaders.buffer);
+		dispatchRaysDescImpl.raygenShader.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)dispatchRaysDesc.raygenShader.buffer);
+		dispatchRaysDescImpl.missShaders.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)dispatchRaysDesc.missShaders.buffer);
+		dispatchRaysDescImpl.hitShaderGroups.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)dispatchRaysDesc.hitShaderGroups.buffer);
+		dispatchRaysDescImpl.callableShaders.buffer = NRI_GET_IMPL_PTR!<Buffer...>((BufferVal)dispatchRaysDesc.callableShaders.buffer);
 
 		m_ImplObject.DispatchRays(dispatchRaysDescImpl);
 	}

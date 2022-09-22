@@ -1095,6 +1095,7 @@ class DeviceD3D12 : Device
 	public void Destroy()
 	{
 		bool skipLiveObjectsReporting = m_SkipLiveObjectsReporting;
+
 		Deallocate!(GetAllocator(), this);
 
 		if (!skipLiveObjectsReporting)

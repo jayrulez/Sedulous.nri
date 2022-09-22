@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using NRI.Validation;
+using NRI.D3D12;
 namespace NRI.Framework;
 
 public static

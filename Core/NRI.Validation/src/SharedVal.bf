@@ -162,7 +162,7 @@ public static
 	}
 
 	public static mixin NRI_GET_IMPL_PTR<TOut, TObj>(TObj object)
-		where TObj : var
+		where TObj : TOut, var
 		where TOut : var
 	{
 		object != null ? object.GetImpl() : null

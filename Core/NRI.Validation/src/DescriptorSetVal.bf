@@ -66,7 +66,7 @@ class DescriptorSetVal : DescriptorSet, DeviceObjectVal<DescriptorSet>
 		        RETURN_ON_FAILURE!(m_Device.GetLogger(), updateDesc.descriptors[j] != null, void(),
 		            "Can't update descriptor ranges: 'rangeUpdateDescs[{}].descriptors[{}]' is invalid.", i, j);
 
-		        descriptors[j] = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)(Object)updateDesc.descriptors[j]);
+		        descriptors[j] = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)updateDesc.descriptors[j]);
 		    }
 		}
 
@@ -96,7 +96,7 @@ class DescriptorSetVal : DescriptorSet, DeviceObjectVal<DescriptorSet>
 		{
 		    RETURN_ON_FAILURE!(m_Device.GetLogger(), descriptors[i] != null, void(), "Can't update dynamic constant buffers: 'descriptors[{}]' is invalid.", i);
 
-		    descriptorsImpl[i] = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)(Object)descriptors[i]);
+		    descriptorsImpl[i] = NRI_GET_IMPL_PTR!<Descriptor...>((DescriptorVal)descriptors[i]);
 		}
 
 		m_ImplObject.UpdateDynamicConstantBuffers(physicalDeviceMask, baseBuffer, bufferNum, descriptorsImpl);
@@ -109,7 +109,7 @@ class DescriptorSetVal : DescriptorSet, DeviceObjectVal<DescriptorSet>
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), descriptorSetCopyDesc.srcDescriptorSet != null, void(),
 		    "Can't copy descriptor set: 'descriptorSetCopyDesc.srcDescriptorSet' is invalid.");
 
-		DescriptorSetVal srcDescriptorSetVal = (DescriptorSetVal)(Object)descriptorSetCopyDesc.srcDescriptorSet;
+		DescriptorSetVal srcDescriptorSetVal = (DescriptorSetVal)descriptorSetCopyDesc.srcDescriptorSet;
 		readonly ref DescriptorSetDesc srcDesc = ref srcDescriptorSetVal.GetDesc();
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), descriptorSetCopyDesc.baseSrcRange < srcDesc.rangeNum, void(),
@@ -151,7 +151,7 @@ class DescriptorSetVal : DescriptorSet, DeviceObjectVal<DescriptorSet>
 		    "Can't copy descriptor set: destination range of dynamic constant buffers is invalid.");
 
 		var descriptorSetCopyDescImpl = descriptorSetCopyDesc;
-		descriptorSetCopyDescImpl.srcDescriptorSet = NRI_GET_IMPL_PTR!<DescriptorSet...>((DescriptorSetVal)(Object)descriptorSetCopyDesc.srcDescriptorSet);
+		descriptorSetCopyDescImpl.srcDescriptorSet = NRI_GET_IMPL_PTR!<DescriptorSet...>((DescriptorSetVal)descriptorSetCopyDesc.srcDescriptorSet);
 
 		m_ImplObject.Copy(descriptorSetCopyDescImpl);
 	}

@@ -16,6 +16,16 @@ class MemoryVal : Memory, DeviceObjectVal<Memory>
 	{
 		m_Size = size;
 		m_MemoryLocation = memoryLocation;
+
+		m_Buffers = Allocate!<List<BufferVal>>(m_Device.GetAllocator());
+		m_Textures = Allocate!<List<TextureVal>>(m_Device.GetAllocator());
+		m_AccelerationStructures = Allocate!<List<AccelerationStructureVal>>(m_Device.GetAllocator());
+	}
+
+	public ~this(){
+		Deallocate!(m_Device.GetAllocator(), m_AccelerationStructures);
+		Deallocate!(m_Device.GetAllocator(), m_Textures);
+		Deallocate!(m_Device.GetAllocator(), m_Buffers);
 	}
 
 	public bool HasBoundResources()

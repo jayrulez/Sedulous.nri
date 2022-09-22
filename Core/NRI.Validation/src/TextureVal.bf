@@ -20,7 +20,7 @@ class TextureVal : Texture, DeviceObjectVal<Texture>
 
 	public readonly ref TextureDesc GetDesc() => ref m_TextureDesc;
 
-	public uint64 GetNativeObject(uint32 physicalDeviceIndex)
+	public uint64 GetTextureNativeObject(uint32 physicalDeviceIndex)
 		{ return m_ImplObject.GetTextureNativeObject(physicalDeviceIndex); }
 
 	public bool IsBoundToMemory()

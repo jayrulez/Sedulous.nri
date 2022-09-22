@@ -130,7 +130,7 @@ class DescriptorVal :Descriptor, DeviceObjectVal<Descriptor>
 		m_ResourceType = .SAMPLER;
 	}
 
-	public uint64 GetNativeObject(uint32 physicalDeviceIndex)
+	public uint64 GetDescriptorNativeObject(uint32 physicalDeviceIndex)
 		{ return m_ImplObject.GetDescriptorNativeObject(physicalDeviceIndex); }
 
 	public bool IsBufferView()

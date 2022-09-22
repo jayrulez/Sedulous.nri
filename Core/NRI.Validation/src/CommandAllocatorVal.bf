@@ -22,7 +22,7 @@ class CommandAllocatorVal : CommandAllocator,  DeviceObjectVal<CommandAllocator>
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), commandBufferImpl != null, Result.FAILURE, "Implementation failure: 'commandBufferImpl' is NULL!");
-			commandBuffer = (CommandBuffer)(Object)Allocate!<CommandBufferVal>(m_Device.GetAllocator(), m_Device, commandBufferImpl, false);
+			commandBuffer = (CommandBuffer)Allocate!<CommandBufferVal>(m_Device.GetAllocator(), m_Device, commandBufferImpl, false);
 		}
 
 		return result;
