@@ -54,7 +54,7 @@ class DeviceVal : Device
 			m_MemoryTypeMap[memoryType] = memoryLocation;
 	}
 
-	public  void* GetNativeObject()
+	public  void* GetDeviceNativeObject()
 		{ return m_Device.GetDeviceNativeObject(); }
 
 	public uint32 GetPhysicalDeviceNum()
@@ -1270,11 +1270,6 @@ class DeviceVal : Device
 		}
 
 		return result;
-	}
-
-	public void* GetDeviceNativeObject()
-	{
-		return GetNativeObject();
 	}
 }
 
