@@ -1,4 +1,5 @@
 using System;
+using NRI.Framework.Mathematics;
 namespace NRI.Framework;
 
 abstract class Window : Surface
@@ -22,5 +23,21 @@ abstract class Window : Surface
 	public this(StringView title, uint32 width, uint32 height)
 		: base(width, height)
 	{
+	}
+
+	/// <summary>
+	/// Warps the cursor to the specified position within this window.
+	/// </summary>
+	/// <param name="x">The x-coordinate within the window to which the mouse will be warped.</param>
+	/// <param name="y">The y-coordinate within the window to which the mouse will be warped.</param>
+	public abstract void WarpMouseWithinWindow(int32 x, int32 y);
+
+	/// <summary>
+	/// Gets or sets the window's client size.
+	/// </summary>
+	public Size2 ClientSize
+	{
+	    get;
+	    set;
 	}
 }

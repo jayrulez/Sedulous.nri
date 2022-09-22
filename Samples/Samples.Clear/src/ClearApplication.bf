@@ -222,4 +222,8 @@ class ClearApplication : NRIApplication
 		mFrameNum++;
 	}
 
+	public override WindowSystem GetWindowSystem()
+	{
+		return default;
+	}
 }

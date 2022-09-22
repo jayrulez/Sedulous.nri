@@ -1,4 +1,5 @@
 using System;
+using NRI.Framework.Input;
 namespace NRI.Framework;
 
 abstract class Application
@@ -64,7 +65,7 @@ abstract class Application
 		mIsRunning = true;
 	}
 
-	public void Update()
+	public void Update(FrameworkTime time)
 	{
 		if(!mIsRunning)
 			return;
@@ -79,4 +80,8 @@ abstract class Application
 		OnFinalize();
 		Shutdown();
 	}
+
+	public abstract IInputManager GetInput();
+
+	public abstract WindowSystem GetWindowSystem();
 }

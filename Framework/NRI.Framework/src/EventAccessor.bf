@@ -19,4 +19,9 @@ class EventAccessor<T> where T : System.Delegate
 	{
 		return mEvent.Remove(handler, true);
 	}
+
+	private rettype(T) Invoke(params T p)
+	{
+		return mEvent.Invoke(params p);
+	}
 }

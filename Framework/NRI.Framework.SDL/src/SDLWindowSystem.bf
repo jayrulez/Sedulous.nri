@@ -2,6 +2,8 @@ using SDL2;
 using System;
 namespace NRI.Framework.SDL;
 
+using internal NRI.Framework;
+
 class SDLWindowSystem : WindowSystem
 {
 	private bool mSDLInitialized = false;
@@ -9,6 +11,8 @@ class SDLWindowSystem : WindowSystem
 	public override bool IsRunning { get; protected set; }
 
 	private Window mPrimaryWindow;
+
+	public override Window PrimaryWindow => mPrimaryWindow;
 
 	public this()
 	{
@@ -42,7 +46,7 @@ class SDLWindowSystem : WindowSystem
 		delete window;
 	}
 
-	public override void CreateMainLoop(delegate void() frameAction)
+	protected internal override void CreateMainLoop(delegate void(FrameworkTime time) frameAction)
 	{
 		SDL.PumpEvents();
 
@@ -63,7 +67,12 @@ class SDLWindowSystem : WindowSystem
 				}
 			}
 
-			frameAction();
+			frameAction(null);
 		}
+	}
+
+	public override Window GetWindowByID(int windowId)
+	{
+		return default;
 	}
 }

@@ -12,7 +12,7 @@ class SDLWindow : Window
 
 	private SDLKeyboardEventDispatcher mKeyboardEventDispatcher = new .() ~ delete _;
 	private SDLMouseEventDispatcher mMouseEventDispatcher = new .(this) ~ delete _;
-	private SDLGamepadEventDispatcher mGamepadEventDispatcher = new .() ~ delete _;
+	private SDLGamePadEventDispatcher mGamePadEventDispatcher = new .() ~ delete _;
 	private SDLTouchEventDispatcher mTouchEventDispatcher = new .(this) ~ delete _;
 	private String mTitle = new String() ~ delete _;
 
@@ -21,7 +21,7 @@ class SDLWindow : Window
 
 	public override MouseEventDispatcher MouseEventDispatcher => mMouseEventDispatcher;
 
-	public override GamepadEventDispatcher GamepadEventDispatcher => mGamepadEventDispatcher;
+	public override GamePadEventDispatcher GamePadEventDispatcher => mGamePadEventDispatcher;
 
 	public override TouchEventDispatcher TouchEventDispatcher => mTouchEventDispatcher;
 
@@ -142,12 +142,17 @@ class SDLWindow : Window
 		{
 			bool handled = mKeyboardEventDispatcher.[Friend]HandleEvent(ev)
 				|| mMouseEventDispatcher.[Friend]HandleEvent(ev)
-				|| mGamepadEventDispatcher.[Friend]HandleEvent(ev);
+				|| mGamePadEventDispatcher.[Friend]HandleEvent(ev);
 
 			if (!handled)
 			{
 				mTouchEventDispatcher.[Friend]HandleEvent(ev);
 			}
 		}
+	}
+
+	public override void WarpMouseWithinWindow(int32 x, int32 y)
+	{
+
 	}
 }

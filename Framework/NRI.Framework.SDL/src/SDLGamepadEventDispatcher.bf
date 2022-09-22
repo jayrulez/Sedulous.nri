@@ -2,7 +2,7 @@ using SDL2;
 using NRI.Framework.Input.Gamepad;
 namespace NRI.Framework.SDL;
 
-class SDLGamepadEventDispatcher : GamepadEventDispatcher
+class SDLGamePadEventDispatcher : GamePadEventDispatcher
 {
 	internal bool HandleEvent(SDL.Event ev)
 	{

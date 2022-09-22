@@ -24,7 +24,7 @@ abstract class Surface
 
 	public abstract KeyboardEventDispatcher KeyboardEventDispatcher { get; }
 	public abstract MouseEventDispatcher MouseEventDispatcher { get; }
-	public abstract GamepadEventDispatcher GamepadEventDispatcher { get; }
+	public abstract GamePadEventDispatcher GamePadEventDispatcher { get; }
 	public abstract TouchEventDispatcher TouchEventDispatcher { get; }
 
 	/// <summary>

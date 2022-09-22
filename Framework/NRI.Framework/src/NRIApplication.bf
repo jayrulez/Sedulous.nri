@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using NRI.Framework.Input;
 namespace NRI.Framework;
 
 public static
@@ -85,5 +86,15 @@ class NRIApplication : Application
 		}
 
 		base.OnShutdown();
+	}
+
+	public override IInputManager GetInput()
+	{
+		return default;
+	}
+
+	public override WindowSystem GetWindowSystem()
+	{
+		return default;
 	}
 }

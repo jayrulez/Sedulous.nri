@@ -1,5 +1,6 @@
 using NRI.Framework.SDL;
 using NRI;
+using System;
 namespace Samples.Clear;
 
 class Program
@@ -18,7 +19,7 @@ class Program
 
 		app.Start();
 
-		windowSystem.Run(scope => app.Update);
+		windowSystem.[Friend]Run(scope => app.Update);
 
 		app.Stop();
 	}
