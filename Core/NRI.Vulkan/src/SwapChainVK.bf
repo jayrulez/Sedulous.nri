@@ -236,20 +236,20 @@ class SwapChainVK : SwapChain
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_SURFACE_KHR, (uint64)m_Surface, name);
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_SWAPCHAIN_KHR, (uint64)m_Handle, name);
 	}
 
-	public override Texture* GetTextures(ref uint32 textureNum, ref Format format)
+	public Texture* GetTextures(ref uint32 textureNum, ref Format format)
 	{
 		textureNum = (uint32)m_Textures.Count;
 		format = m_Format;
 		return (Texture*)m_Textures.Ptr;
 	}
 
-	public override uint32 AcquireNextTexture(ref QueueSemaphore textureReadyForRender)
+	public uint32 AcquireNextTexture(ref QueueSemaphore textureReadyForRender)
 	{
 		const uint64 timeout = 5000000000; // 5 seconds
 		m_TextureIndex = uint32.MaxValue;
@@ -263,7 +263,7 @@ class SwapChainVK : SwapChain
 		return m_TextureIndex;
 	}
 
-	public override Result Present(QueueSemaphore textureReadyForPresent)
+	public Result Present(QueueSemaphore textureReadyForPresent)
 	{
 	/*readonly*/ VkSemaphore semaphore = (QueueSemaphoreVK)textureReadyForPresent;
 
@@ -289,7 +289,7 @@ class SwapChainVK : SwapChain
 		return Result.SUCCESS;
 	}
 
-	public override Result SetHdrMetadata(HdrMetadata hdrMetadata)
+	public Result SetHdrMetadata(HdrMetadata hdrMetadata)
 	{
 		if (VulkanNative.[Friend]vkSetHdrMetadataEXT_ptr == null)
 			return Result.UNSUPPORTED;

@@ -1,8 +1,8 @@
 namespace NRI;
 
-abstract class Descriptor
+interface Descriptor
 {
-	public abstract void SetDebugName(char8* name);
+	public void SetDebugName(char8* name);
 
-	public abstract uint64 GetDescriptorNativeObject(uint32 physicalDeviceIndex);
+	public uint64 GetDescriptorNativeObject(uint32 physicalDeviceIndex);
 }

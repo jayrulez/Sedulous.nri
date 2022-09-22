@@ -249,7 +249,7 @@ class MemoryVK : Memory
 	public MemoryType GetMemoryType() => m_Type;
 	public uint8* GetMappedMemory(uint32 physicalDeviceIndex) => m_MappedMemory[physicalDeviceIndex];
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		uint64[PHYSICAL_DEVICE_GROUP_MAX_SIZE] handles = .();
 		for (uint i = 0; i < handles.Count; i++)

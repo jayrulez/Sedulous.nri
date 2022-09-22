@@ -40,12 +40,12 @@ class CommandAllocatorD3D12 : CommandAllocator
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_CommandAllocator, scope String(name));
 	}
 
-	public override Result CreateCommandBuffer(out CommandBuffer commandBuffer)
+	public Result CreateCommandBuffer(out CommandBuffer commandBuffer)
 	{
 		CommandBufferD3D12 commandBufferD3D12 = Allocate!<CommandBufferD3D12>(m_Device.GetAllocator(), m_Device);
 		readonly Result result = commandBufferD3D12.Create(m_CommandListType, m_CommandAllocator);
@@ -62,7 +62,7 @@ class CommandAllocatorD3D12 : CommandAllocator
 		return result;
 	}
 
-	public override void Reset()
+	public void Reset()
 	{
 		m_CommandAllocator->Reset();
 	}

@@ -1734,32 +1734,32 @@ class DeviceVK : Device
 		}
 	}
 
-	public override DeviceLogger GetLogger()
+	public DeviceLogger GetLogger()
 	{
 		return m_Logger;
 	}
 
-	public override DeviceAllocator<uint8> GetAllocator()
+	public DeviceAllocator<uint8> GetAllocator()
 	{
 		return m_Allocator;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_DEVICE, (uint64)m_Device, name);
 	}
 
-	public override void* GetDeviceNativeObject()
+	public void* GetDeviceNativeObject()
 	{
 	    return (VkDevice)((DeviceVK)this);
 	}
 
-	public override ref DeviceDesc GetDesc()
+	public ref DeviceDesc GetDesc()
 	{
 		return ref m_DeviceDesc;
 	}
 
-	public override Result GetCommandQueue(CommandQueueType commandQueueType, out CommandQueue commandQueue)
+	public Result GetCommandQueue(CommandQueueType commandQueueType, out CommandQueue commandQueue)
 	{
 		commandQueue = ?;
 		using (m_Lock.Enter())
@@ -1772,102 +1772,102 @@ class DeviceVK : Device
 		}
 	}
 
-	public override Result CreateCommandAllocator(CommandQueue commandQueue, uint32 physicalDeviceMask, out CommandAllocator commandAllocator)
+	public Result CreateCommandAllocator(CommandQueue commandQueue, uint32 physicalDeviceMask, out CommandAllocator commandAllocator)
 	{
 		return CreateImplementation<CommandAllocatorVK...>(out commandAllocator, commandQueue, physicalDeviceMask);
 	}
 
-	public override Result CreateDescriptorPool(DescriptorPoolDesc descriptorPoolDesc, out DescriptorPool descriptorPool)
+	public Result CreateDescriptorPool(DescriptorPoolDesc descriptorPoolDesc, out DescriptorPool descriptorPool)
 	{
 		return CreateImplementation<DescriptorPoolVK...>(out descriptorPool, descriptorPoolDesc);
 	}
 
-	public override Result CreateBuffer(BufferDesc bufferDesc, out Buffer buffer)
+	public Result CreateBuffer(BufferDesc bufferDesc, out Buffer buffer)
 	{
 		return CreateImplementation<BufferVK...>(out buffer, bufferDesc);
 	}
 
-	public override Result CreateTexture(TextureDesc textureDesc, out Texture texture)
+	public Result CreateTexture(TextureDesc textureDesc, out Texture texture)
 	{
 		return CreateImplementation<TextureVK...>(out texture, textureDesc);
 	}
 
-	public override Result CreateBufferView(BufferViewDesc bufferViewDesc, out Descriptor bufferView)
+	public Result CreateBufferView(BufferViewDesc bufferViewDesc, out Descriptor bufferView)
 	{
 		return CreateImplementation<DescriptorVK...>(out bufferView, bufferViewDesc);
 	}
 
-	public override Result CreateTexture1DView(Texture1DViewDesc textureViewDesc, out Descriptor textureView)
+	public Result CreateTexture1DView(Texture1DViewDesc textureViewDesc, out Descriptor textureView)
 	{
 		return CreateImplementation<DescriptorVK...>(out textureView, textureViewDesc);
 	}
 
-	public override Result CreateTexture2DView(Texture2DViewDesc textureViewDesc, out Descriptor textureView)
+	public Result CreateTexture2DView(Texture2DViewDesc textureViewDesc, out Descriptor textureView)
 	{
 		return CreateImplementation<DescriptorVK...>(out textureView, textureViewDesc);
 	}
 
-	public override Result CreateTexture3DView(Texture3DViewDesc textureViewDesc, out Descriptor textureView)
+	public Result CreateTexture3DView(Texture3DViewDesc textureViewDesc, out Descriptor textureView)
 	{
 		return CreateImplementation<DescriptorVK...>(out textureView, textureViewDesc);
 	}
 
-	public override Result CreateSampler(SamplerDesc samplerDesc, out Descriptor sampler)
+	public Result CreateSampler(SamplerDesc samplerDesc, out Descriptor sampler)
 	{
 		return CreateImplementation<DescriptorVK...>(out sampler, samplerDesc);
 	}
 
-	public override Result CreatePipelineLayout(PipelineLayoutDesc pipelineLayoutDesc, out PipelineLayout pipelineLayout)
+	public Result CreatePipelineLayout(PipelineLayoutDesc pipelineLayoutDesc, out PipelineLayout pipelineLayout)
 	{
 		return CreateImplementation<PipelineLayoutVK...>(out pipelineLayout, pipelineLayoutDesc);
 	}
 
-	public override Result CreateGraphicsPipeline(GraphicsPipelineDesc graphicsPipelineDesc, out Pipeline pipeline)
+	public Result CreateGraphicsPipeline(GraphicsPipelineDesc graphicsPipelineDesc, out Pipeline pipeline)
 	{
 		return CreateImplementation<PipelineVK...>(out pipeline, graphicsPipelineDesc);
 	}
 
-	public override Result CreateComputePipeline(ComputePipelineDesc computePipelineDesc, out Pipeline pipeline)
+	public Result CreateComputePipeline(ComputePipelineDesc computePipelineDesc, out Pipeline pipeline)
 	{
 		return CreateImplementation<PipelineVK...>(out pipeline, computePipelineDesc);
 	}
 
-	public override Result CreateFrameBuffer(FrameBufferDesc frameBufferDesc, out FrameBuffer frameBuffer)
+	public Result CreateFrameBuffer(FrameBufferDesc frameBufferDesc, out FrameBuffer frameBuffer)
 	{
 		return CreateImplementation<FrameBufferVK...>(out frameBuffer, frameBufferDesc);
 	}
 
-	public override Result CreateQueryPool(QueryPoolDesc queryPoolDesc, out QueryPool queryPool)
+	public Result CreateQueryPool(QueryPoolDesc queryPoolDesc, out QueryPool queryPool)
 	{
 		return CreateImplementation<QueryPoolVK...>(out queryPool, queryPoolDesc);
 	}
 
-	public override Result CreateQueueSemaphore(out QueueSemaphore queueSemaphore)
+	public Result CreateQueueSemaphore(out QueueSemaphore queueSemaphore)
 	{
 		return CreateImplementation<QueueSemaphoreVK...>(out queueSemaphore);
 	}
 
-	public override Result CreateDeviceSemaphore(bool signaled, out DeviceSemaphore deviceSemaphore)
+	public Result CreateDeviceSemaphore(bool signaled, out DeviceSemaphore deviceSemaphore)
 	{
 		return CreateImplementation<DeviceSemaphoreVK...>(out deviceSemaphore, signaled);
 	}
 
-	public override Result CreateCommandBuffer(CommandAllocator commandAllocator, out CommandBuffer commandBuffer)
+	public Result CreateCommandBuffer(CommandAllocator commandAllocator, out CommandBuffer commandBuffer)
 	{
 		return commandAllocator.CreateCommandBuffer(out commandBuffer);
 	}
 
-	public override Result CreateSwapChain(SwapChainDesc swapChainDesc, out SwapChain swapChain)
+	public Result CreateSwapChain(SwapChainDesc swapChainDesc, out SwapChain swapChain)
 	{
 		return CreateImplementation<SwapChainVK...>(out swapChain, swapChainDesc);
 	}
 
-	public override Result CreateRayTracingPipeline(RayTracingPipelineDesc rayTracingPipelineDesc, out Pipeline pipeline)
+	public Result CreateRayTracingPipeline(RayTracingPipelineDesc rayTracingPipelineDesc, out Pipeline pipeline)
 	{
 		return CreateImplementation<PipelineVK...>(out pipeline, rayTracingPipelineDesc);
 	}
 
-	public override Result CreateAccelerationStructure(AccelerationStructureDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure)
+	public Result CreateAccelerationStructure(AccelerationStructureDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure)
 	{
 		return CreateImplementation<AccelerationStructureVK...>(out accelerationStructure, accelerationStructureDesc);
 	}
@@ -1977,92 +1977,92 @@ class DeviceVK : Device
 		return CreateImplementation<DeviceSemaphoreVK...>(out deviceSemaphore, vkFence);
 	}
 
-	public override void DestroyCommandAllocator(CommandAllocator commandAllocator)
+	public void DestroyCommandAllocator(CommandAllocator commandAllocator)
 	{
 		Deallocate!(GetAllocator(), (CommandAllocatorVK)commandAllocator);
 	}
 
-	public override void DestroyDescriptorPool(DescriptorPool descriptorPool)
+	public void DestroyDescriptorPool(DescriptorPool descriptorPool)
 	{
 		Deallocate!(GetAllocator(), (DescriptorPoolVK)descriptorPool);
 	}
 
-	public override void DestroyBuffer(Buffer buffer)
+	public void DestroyBuffer(Buffer buffer)
 	{
 		Deallocate!(GetAllocator(), (BufferVK)buffer);
 	}
 
-	public override void DestroyTexture(Texture texture)
+	public void DestroyTexture(Texture texture)
 	{
 		Deallocate!(GetAllocator(), (TextureVK)texture);
 	}
 
-	public override void DestroyDescriptor(Descriptor descriptor)
+	public void DestroyDescriptor(Descriptor descriptor)
 	{
 		Deallocate!(GetAllocator(), (DescriptorVK)descriptor);
 	}
 
-	public override void DestroyPipelineLayout(PipelineLayout pipelineLayout)
+	public void DestroyPipelineLayout(PipelineLayout pipelineLayout)
 	{
 		Deallocate!(GetAllocator(), (PipelineLayoutVK)pipelineLayout);
 	}
 
-	public override void DestroyPipeline(Pipeline pipeline)
+	public void DestroyPipeline(Pipeline pipeline)
 	{
 		Deallocate!(GetAllocator(), (PipelineVK)pipeline);
 	}
 
-	public override void DestroyFrameBuffer(FrameBuffer frameBuffer)
+	public void DestroyFrameBuffer(FrameBuffer frameBuffer)
 	{
 		Deallocate!(GetAllocator(), (FrameBufferVK)frameBuffer);
 	}
 
-	public override void DestroyQueryPool(QueryPool queryPool)
+	public void DestroyQueryPool(QueryPool queryPool)
 	{
 		Deallocate!(GetAllocator(), (QueryPoolVK)queryPool);
 	}
 
-	public override void DestroyQueueSemaphore(QueueSemaphore queueSemaphore)
+	public void DestroyQueueSemaphore(QueueSemaphore queueSemaphore)
 	{
 		Deallocate!(GetAllocator(), (QueueSemaphoreVK)queueSemaphore);
 	}
 
-	public override void DestroyDeviceSemaphore(DeviceSemaphore deviceSemaphore)
+	public void DestroyDeviceSemaphore(DeviceSemaphore deviceSemaphore)
 	{
 		Deallocate!(GetAllocator(), (DeviceSemaphoreVK)deviceSemaphore);
 	}
 
-	public override void DestroyCommandBuffer(CommandBuffer commandBuffer)
+	public void DestroyCommandBuffer(CommandBuffer commandBuffer)
 	{
 		Deallocate!(GetAllocator(), (CommandBufferVK)commandBuffer);
 	}
 
-	public override void DestroySwapChain(SwapChain swapChain)
+	public void DestroySwapChain(SwapChain swapChain)
 	{
 		Deallocate!(GetAllocator(), (SwapChainVK)swapChain);
 	}
 
-	public override void DestroyAccelerationStructure(AccelerationStructure accelerationStructure)
+	public void DestroyAccelerationStructure(AccelerationStructure accelerationStructure)
 	{
 		Deallocate!(GetAllocator(), (AccelerationStructureVK)accelerationStructure);
 	}
 
-	public override Result GetDisplays(Display** displays, ref uint32 displayNum)
+	public Result GetDisplays(Display** displays, ref uint32 displayNum)
 	{
 		return Result.UNSUPPORTED;
 	}
 
-	public override Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height)
+	public Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height)
 	{
 		return Result.UNSUPPORTED;
 	}
 
-	public override Result AllocateMemory(uint32 physicalDeviceMask, uint32 memoryType, uint64 size, out Memory memory)
+	public Result AllocateMemory(uint32 physicalDeviceMask, uint32 memoryType, uint64 size, out Memory memory)
 	{
 		return CreateImplementation<MemoryVK...>(out memory, physicalDeviceMask, memoryType, size);
 	}
 
-	public override Result BindBufferMemory(BufferMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	public Result BindBufferMemory(BufferMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
 	{
 		if (memoryBindingDescNum == 0)
 			return Result.SUCCESS;
@@ -2139,7 +2139,7 @@ class DeviceVK : Device
 		return Result.SUCCESS;
 	}
 
-	public override Result BindTextureMemory(TextureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	public Result BindTextureMemory(TextureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
 	{
 		readonly uint32 infoMaxNum = memoryBindingDescNum * m_DeviceDesc.phyiscalDeviceGroupSize;
 
@@ -2199,7 +2199,7 @@ class DeviceVK : Device
 		return Result.SUCCESS;
 	}
 
-	public override Result BindAccelerationStructureMemory(AccelerationStructureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
+	public Result BindAccelerationStructureMemory(AccelerationStructureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum)
 	{
 		if (memoryBindingDescNum == 0)
 			return Result.SUCCESS;
@@ -2232,12 +2232,12 @@ class DeviceVK : Device
 		return result;
 	}
 
-	public override void FreeMemory(Memory memory)
+	public void FreeMemory(Memory memory)
 	{
 		Deallocate!(GetAllocator(), (MemoryVK)memory);
 	}
 
-	public override FormatSupportBits GetFormatSupport(Format format)
+	public FormatSupportBits GetFormatSupport(Format format)
 	{
 		readonly VkFormat vulkanFormat = ConvertNRIFormatToVK(format);
 		readonly VkPhysicalDevice physicalDevice = m_PhysicalDevices.Front;
@@ -2281,14 +2281,14 @@ class DeviceVK : Device
 		return mask;
 	}
 
-	public override uint32 CalculateAllocationNumber(NRI.Helpers.ResourceGroupDesc resourceGroupDesc)
+	public uint32 CalculateAllocationNumber(NRI.Helpers.ResourceGroupDesc resourceGroupDesc)
 	{
 		DeviceMemoryAllocatorHelper allocator = scope .(this, m_Allocator);
 
 		return allocator.CalculateAllocationNumber(resourceGroupDesc);
 	}
 
-	public override Result AllocateAndBindMemory(NRI.Helpers.ResourceGroupDesc resourceGroupDesc, Memory* allocations)
+	public Result AllocateAndBindMemory(NRI.Helpers.ResourceGroupDesc resourceGroupDesc, Memory* allocations)
 	{
 		DeviceMemoryAllocatorHelper allocator = scope .(this, m_Allocator);
 
@@ -2300,7 +2300,7 @@ class DeviceVK : Device
 		m_SPIRVBindingOffsets = spirvBindingOffsets;
 	}
 
-	public override void Destroy()
+	public void Destroy()
 	{
 		Deallocate!(GetAllocator(), this);
 	}
@@ -2308,12 +2308,9 @@ class DeviceVK : Device
 
 public static
 {
-	public static Result CreateDeviceVK(DeviceCreationDesc deviceCreationDesc, out Device device)
+	public static Result CreateDeviceVK(DeviceLogger logger, DeviceAllocator<uint8> allocator, DeviceCreationDesc deviceCreationDesc, out Device device)
 	{
 		device = ?;
-
-		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
-		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
 
 		DeviceVK implementation = Allocate!<DeviceVK>(allocator, logger, allocator);
 
@@ -2321,21 +2318,18 @@ public static
 
 		if (res == Result.SUCCESS)
 		{
+
 			device = implementation;
 			return Result.SUCCESS;
 		}
 
 		Deallocate!(allocator, implementation);
-		delete allocator;
-		delete logger;
 		return res;
 	}
 
-	public static Result CreateDeviceVK(DeviceCreationVulkanDesc deviceCreationDesc, out Device device)
+	public static Result CreateDeviceVK(DeviceLogger logger, DeviceAllocator<uint8> allocator, DeviceCreationVulkanDesc deviceCreationDesc, out Device device)
 	{
 		device = ?;
-		DeviceLogger logger = new .(GraphicsAPI.VULKAN, deviceCreationDesc.callbackInterface);
-		DeviceAllocator<uint8> allocator = new .(deviceCreationDesc.memoryAllocatorInterface);
 
 		DeviceVK implementation = Allocate!<DeviceVK>(allocator, logger, allocator);
 		readonly Result res = implementation.Create(deviceCreationDesc);
@@ -2347,8 +2341,6 @@ public static
 		}
 
 		Deallocate!(allocator, implementation);
-		delete allocator;
-		delete logger;
 		return res;
 	}
 
@@ -2356,13 +2348,6 @@ public static
 	{
 		DeviceVK implementation = (DeviceVK)device;
 
-
-		DeviceAllocator<uint8> allocator = implementation.GetAllocator();
-		DeviceLogger logger = implementation.GetLogger();
-
 		implementation.Destroy();
-
-		delete allocator;
-		delete logger;
 	}
 }

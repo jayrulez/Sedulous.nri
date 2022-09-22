@@ -368,7 +368,7 @@ class PipelineLayoutVK : PipelineLayout
 	public VkDescriptorSetLayout GetDescriptorSetLayout(uint32 index) => m_DescriptorSetLayouts[index];
 	public VkPipelineBindPoint GetPipelineBindPoint() => m_PipelineBindPoint;
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
     m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_PIPELINE_LAYOUT, (uint64)m_Handle, name);
 	}

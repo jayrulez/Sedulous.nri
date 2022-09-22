@@ -567,12 +567,12 @@ class PipelineD3D12 : Pipeline
 	public uint8 GetSampleNum() => m_SampleNum;
 	public PipelineLayoutD3D12 GetPipelineLayout() => m_PipelineLayout;
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_PipelineState, scope String(name));
 	}
 
-	public override Result WriteShaderGroupIdentifiers(uint32 baseShaderGroupIndex, uint32 shaderGroupNum, void* buffer)
+	public Result WriteShaderGroupIdentifiers(uint32 baseShaderGroupIndex, uint32 shaderGroupNum, void* buffer)
 	{
 		//#ifdef __ID3D12Device5_INTERFACE_DEFINED__
 		uint8* byteBuffer = (uint8*)buffer;

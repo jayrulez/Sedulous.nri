@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using NRI.Validation;
+using NRI.D3D12;
 namespace NRI.Framework;
 
 public static
@@ -15,6 +17,57 @@ public static
 	public const uint32 DEFAULT_MEMORY_ALIGNMENT = 16;
 	public const uint32 BUFFERED_FRAME_MAX_NUM = 2;
 	public const uint32 SWAP_CHAIN_TEXTURE_NUM = BUFFERED_FRAME_MAX_NUM;
+
+	public static Result CreateDevice(DeviceCreationDesc deviceDesc, out Device device)
+	{
+		Result result = .SUCCESS;
+
+
+		DeviceLogger logger = new .(deviceDesc.graphicsAPI, deviceDesc.callbackInterface);
+		DeviceAllocator<uint8> allocator = new .(deviceDesc.memoryAllocatorInterface);
+
+		if (deviceDesc.graphicsAPI == .VULKAN)
+		{
+			result = NRI.Vulkan.CreateDeviceVK(logger, allocator, deviceDesc, out device);
+		} else if (deviceDesc.graphicsAPI == .D3D12)
+		{
+			result = NRI.D3D12.CreateDeviceD3D12(logger, allocator, deviceDesc, out device);
+		} else
+		{
+			Runtime.FatalError(scope $"GraphicsAPI {deviceDesc.graphicsAPI} is not supported.");
+		}
+
+		if (deviceDesc.enableNRIValidation)
+		{
+			Device deviceVal = null;
+
+			result = CreateDeviceValidation(deviceDesc, device, out deviceVal);
+			if (result != .SUCCESS)
+			{
+				DestroyDevice(device);
+
+				device = null;
+
+				return .FAILURE;
+			}
+
+			device = deviceVal;
+		}
+
+		return result;
+	}
+
+	public static void DestroyDevice(Device device)
+	{
+		DeviceAllocator<uint8> allocator = device.GetAllocator();
+		DeviceLogger logger = device.GetLogger();
+
+		device.Destroy();
+
+		delete allocator;
+
+		delete logger;
+	}
 }
 
 class NRIApplication : Application
@@ -39,23 +92,14 @@ class NRIApplication : Application
 			{
 				graphicsAPI = GraphicsAPI,
 				enableAPIValidation = true,
-				enableNRIValidation = false,
+				enableNRIValidation = true,
 				D3D11CommandBufferEmulation = D3D11_COMMANDBUFFER_EMULATION,
 				spirvBindingOffsets = SPIRV_BINDING_OFFSETS
 			};
 
 		Result result = .SUCCESS;
 
-		if (GraphicsAPI == .VULKAN)
-		{
-			result = NRI.Vulkan.CreateDeviceVK(deviceDesc, out mDevice);
-		} else if (GraphicsAPI == .D3D12)
-		{
-			result = NRI.D3D12.CreateDeviceD3D12(deviceDesc, out mDevice);
-		} else
-		{
-			Runtime.FatalError(scope $"GraphicsAPI {GraphicsAPI} is not supported.");
-		}
+		result = CreateDevice(deviceDesc, out mDevice);
 
 		if (result != .SUCCESS)
 		{
@@ -66,23 +110,9 @@ class NRIApplication : Application
 		return .Ok;
 	}
 
-
 	protected override void OnShutdown()
 	{
-		if (mDevice != null)
-		{
-			if (GraphicsAPI == .VULKAN)
-			{
-				NRI.Vulkan.DestroyDeviceVK(mDevice);
-			} else if (GraphicsAPI == .D3D12)
-			{
-				NRI.D3D12.DestroyDeviceD3D12(mDevice);
-			} else
-			{
-				Runtime.FatalError(scope $"GraphicsAPI {GraphicsAPI} is not supported.");
-			}
-			mDevice = null;
-		}
+		DestroyDevice(mDevice);
 
 		base.OnShutdown();
 	}

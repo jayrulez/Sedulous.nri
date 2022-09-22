@@ -142,7 +142,7 @@ class BufferVK : Buffer
 		}
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		uint64[PHYSICAL_DEVICE_GROUP_MAX_SIZE] handles = .();
 		for (uint i = 0; i < handles.Count; i++)
@@ -151,12 +151,12 @@ class BufferVK : Buffer
 		m_Device.SetDebugNameToDeviceGroupObject(.VK_OBJECT_TYPE_BUFFER, &handles, name);
 	}
 
-	public override uint64 GetBufferNativeObject(uint32 physicalDeviceIndex)
+	public uint64 GetBufferNativeObject(uint32 physicalDeviceIndex)
 	{
 	    return (uint64)(((BufferVK)this).GetHandle(physicalDeviceIndex) );
 	}
 
-	public override void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
+	public void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
 	{
 		VkBuffer handle = .Null;
 		for (uint32 i = 0; i < m_Device.GetPhyiscalDeviceGroupSize() && handle == .Null; i++)
@@ -196,7 +196,7 @@ class BufferVK : Buffer
 		memoryDesc.type = unpack.type;
 	}
 
-	public override void* Map(uint64 offset, uint64 size)
+	public void* Map(uint64 offset, uint64 size)
 	{
 		var size;
 		CHECK(m_Device.GetLogger(), m_Memory != null, "The buffer does not support memory mapping.");
@@ -210,7 +210,7 @@ class BufferVK : Buffer
 		return m_Memory.GetMappedMemory(0) + m_MappedMemoryOffset + offset;
 	}
 
-	public override void Unmap()
+	public void Unmap()
 	{
 	// TODO: flush the range if the memory is not host coherent
 	// if (m_Memory->IsHostCoherent())

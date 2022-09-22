@@ -1,6 +1,6 @@
 namespace NRI;
 
-abstract class DeviceSemaphore
+interface DeviceSemaphore
 {
-	public abstract void SetDebugName(char8* name);
+	public void SetDebugName(char8* name);
 }

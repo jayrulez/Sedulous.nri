@@ -1,11 +1,11 @@
 namespace NRI;
 
-abstract class SwapChain
+interface SwapChain
 {
-	public abstract void SetDebugName(char8* name);
+	public void SetDebugName(char8* name);
 
-	public abstract Texture* GetTextures(ref uint32 textureNum, ref Format format);
-	public abstract uint32 AcquireNextTexture(ref QueueSemaphore textureReadyForRender);
-	public abstract Result Present(QueueSemaphore textureReadyForPresent);
-	public abstract Result SetHdrMetadata(HdrMetadata hdrMetadata);
+	public Texture* GetTextures(ref uint32 textureNum, ref Format format);
+	public uint32 AcquireNextTexture(ref QueueSemaphore textureReadyForRender);
+	public Result Present(QueueSemaphore textureReadyForPresent);
+	public Result SetHdrMetadata(HdrMetadata hdrMetadata);
 }

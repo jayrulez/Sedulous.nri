@@ -623,12 +623,12 @@ class PipelineVK : Pipeline
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_PIPELINE, (uint64)m_Handle, name);
 	}
 
-	public override Result WriteShaderGroupIdentifiers(uint32 baseShaderGroupIndex, uint32 shaderGroupNum, void* buffer)
+	public Result WriteShaderGroupIdentifiers(uint32 baseShaderGroupIndex, uint32 shaderGroupNum, void* buffer)
 	{
 		readonly uint dataSize = (uint)(shaderGroupNum * m_Device.GetDesc().rayTracingShaderGroupIdentifierSize);
 

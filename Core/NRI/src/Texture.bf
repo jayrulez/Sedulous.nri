@@ -1,10 +1,10 @@
 namespace NRI;
 
-abstract class Texture
+interface Texture
 {
-	public abstract void SetDebugName(char8* name);
+	public void SetDebugName(char8* name);
 	
-	public abstract void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc);
+	public void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc);
 
-	public abstract uint64 GetTextureNativeObject(uint32 physicalDeviceIndex);
+	public uint64 GetTextureNativeObject(uint32 physicalDeviceIndex);
 }

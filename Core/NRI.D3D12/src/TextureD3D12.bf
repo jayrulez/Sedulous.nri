@@ -131,19 +131,19 @@ class TextureD3D12 : Texture
 		return size;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_Texture, scope String(name));
 	}
 
-	public override uint64 GetTextureNativeObject(uint32 physicalDeviceIndex)
+	public uint64 GetTextureNativeObject(uint32 physicalDeviceIndex)
 	{
 	    //MaybeUnused(physicalDeviceIndex);
 	
 	    return (uint64)(int)(void*)((ID3D12Resource*)((TextureD3D12)this));
 	}
 
-	public override void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
+	public void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
 	{
 		m_Device.GetMemoryInfo(memoryLocation, m_TextureDesc, ref memoryDesc);
 	}

@@ -252,7 +252,7 @@ public static
 		}
 	}
 
-	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, Object arg1)
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1)
 	{
 		if (!condition)
 		{
@@ -262,7 +262,57 @@ public static
 		}
 	}
 
-	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, params Object[] args)
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1, var arg2)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1, arg2);
+
+			return returnCode;
+		}
+	}
+
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1, var arg2, var arg3)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1, arg2, arg3);
+
+			return returnCode;
+		}
+	}
+
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1, var arg2, var arg3, var arg4)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1, arg2, arg3, arg4);
+
+			return returnCode;
+		}
+	}
+
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1, var arg2, var arg3, var arg4, var arg5)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1, arg2, arg3, arg4, arg5);
+
+			return returnCode;
+		}
+	}
+
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1, var arg2, var arg3, var arg4, var arg5, var arg6)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1, arg2, arg3, arg4, arg5, arg6);
+
+			return returnCode;
+		}
+	}
+
+	/*public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, params Object[] args)
 	{
 		if (!condition)
 		{
@@ -270,7 +320,7 @@ public static
 
 			return returnCode;
 		}
-	}
+	}*/
 
 	public static void REPORT_INFO(DeviceLogger logger, StringView format, params Object[] args)
 	{

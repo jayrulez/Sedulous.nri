@@ -152,7 +152,7 @@ class TextureVK : Texture
 			m_Handles[i] = .Null;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		uint64[PHYSICAL_DEVICE_GROUP_MAX_SIZE] handles = .();
 		for (uint i = 0; i < handles.Count; i++)
@@ -161,12 +161,12 @@ class TextureVK : Texture
 		m_Device.SetDebugNameToDeviceGroupObject(.VK_OBJECT_TYPE_IMAGE, &handles, name);
 	}
 
-	public override uint64 GetTextureNativeObject(uint32 physicalDeviceIndex)
+	public uint64 GetTextureNativeObject(uint32 physicalDeviceIndex)
 	{
 		return uint64(((TextureVK)this).GetHandle(physicalDeviceIndex));
 	}
 
-	public override void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
+	public void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
 	{
 		VkImage handle = .Null;
 		for (uint32 i = 0; i < m_Device.GetPhyiscalDeviceGroupSize() && handle == .Null; i++)

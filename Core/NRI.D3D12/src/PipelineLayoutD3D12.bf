@@ -366,7 +366,7 @@ class PipelineLayoutD3D12 : PipelineLayout
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_RootSignature, scope String(name));
 	}

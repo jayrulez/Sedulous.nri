@@ -1,9 +1,9 @@
 namespace NRI;
 
-abstract class DescriptorPool
+interface DescriptorPool
 {
-	public abstract void SetDebugName(char8* name);
+	public void SetDebugName(char8* name);
 
-	public abstract Result AllocateDescriptorSets(PipelineLayout pipelineLayout, uint32 setIndex, DescriptorSet* descriptorSets, uint32 instanceNum, uint32 physicalDeviceMask, uint32 variableDescriptorNum);
-	public abstract void Reset();
+	public Result AllocateDescriptorSets(PipelineLayout pipelineLayout, uint32 setIndex, DescriptorSet* descriptorSets, uint32 instanceNum, uint32 physicalDeviceMask, uint32 variableDescriptorNum);
+	public void Reset();
 }

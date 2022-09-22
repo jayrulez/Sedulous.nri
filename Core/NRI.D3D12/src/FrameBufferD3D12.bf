@@ -107,7 +107,7 @@ class FrameBufferD3D12 : FrameBuffer
 	}
 
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 	}
 }

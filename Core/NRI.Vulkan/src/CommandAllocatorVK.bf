@@ -55,12 +55,12 @@ class CommandAllocatorVK : CommandAllocator
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_COMMAND_POOL, (uint64)m_Handle, name);
 	}
 
-	public override Result CreateCommandBuffer(out CommandBuffer commandBuffer)
+	public Result CreateCommandBuffer(out CommandBuffer commandBuffer)
 	{
 		commandBuffer = ?;
 	/*readonly*/ VkCommandBufferAllocateInfo info = .()
@@ -86,7 +86,7 @@ class CommandAllocatorVK : CommandAllocator
 		return Result.SUCCESS;
 	}
 
-	public override void Reset()
+	public void Reset()
 	{
 		readonly VkResult result = VulkanNative.vkResetCommandPool(m_Device, m_Handle, (VkCommandPoolResetFlags)0);
 
