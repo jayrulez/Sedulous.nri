@@ -7,7 +7,7 @@ namespace NRI.Validation;
 class DeviceVal : Device
 {
 	private Device m_Device;
-	private String m_Name;
+	private String m_Name ~ delete _;
 	private CommandQueueVal[COMMAND_QUEUE_TYPE_NUM] m_CommandQueues = .();
 	private Dictionary<MemoryType, MemoryLocation> m_MemoryTypeMap;
 	private Monitor m_Lock = new .() ~ delete _;

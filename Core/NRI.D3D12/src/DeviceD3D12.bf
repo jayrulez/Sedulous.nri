@@ -261,7 +261,7 @@ class DeviceD3D12 : Device
 //#ifdef __ID3D12Device5_INTERFACE_DEFINED__
 	private ComPtr<ID3D12Device5> m_Device5;
 //#endif
-	private CommandQueueD3D12[COMMAND_QUEUE_TYPE_NUM] m_CommandQueues = .();
+	private CommandQueueD3D12[COMMAND_QUEUE_TYPE_NUM] m_CommandQueues = .(null, null, null);
 	private List<DescriptorHeapDesc> m_DescriptorHeaps;
 	private List<List<DescriptorHandle>> m_FreeDescriptors;
 	private DeviceDesc m_DeviceDesc = .();
@@ -1175,7 +1175,7 @@ public static
 			return result;
 		}
 
-		device = (Device)implementation;
+		device = implementation;
 
 		return Result.SUCCESS;
 	}

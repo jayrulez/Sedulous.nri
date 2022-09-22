@@ -2318,6 +2318,7 @@ public static
 
 		if (res == Result.SUCCESS)
 		{
+
 			device = implementation;
 			return Result.SUCCESS;
 		}

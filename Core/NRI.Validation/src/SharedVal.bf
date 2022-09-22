@@ -16,7 +16,7 @@ public abstract class DeviceObjectBaseVal
 public abstract class DeviceObjectVal<T> : DeviceObjectBaseVal
 {
 	protected T m_ImplObject;
-	protected String m_Name;
+	protected String m_Name ~ delete _;
 
 	public this(DeviceVal device, T object)
 		: base(device)
@@ -25,8 +25,6 @@ public abstract class DeviceObjectVal<T> : DeviceObjectBaseVal
 
 		m_Name = Allocate!<String>(device.GetAllocator());
 	}
-
-	//public static implicit operator T(Self self) => self.GetImpl();
 
 	public T GetImpl() => m_ImplObject;
 
