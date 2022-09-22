@@ -1,5 +1,14 @@
 namespace NRI.Validation;
 
-class FrameBufferVal
+class FrameBufferVal : DeviceObjectVal<FrameBuffer>
 {
+	public this(DeviceVal device, FrameBuffer frameBuffer) : base(device, frameBuffer)
+	{
+	}
+
+	public void SetDebugName(char8* name)
+	{
+		m_Name.Set(scope .(name));
+		m_ImplObject.SetDebugName(name);
+	}
 }

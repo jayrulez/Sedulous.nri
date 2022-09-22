@@ -33,21 +33,43 @@ public abstract class DeviceObjectVal<T> : DeviceObjectBaseVal
 
 public static
 {
+	public const char8*[?] DESCRIPTOR_TYPE_NAME = .(
+		"SAMPLER",
+		"CONSTANT_BUFFER",
+		"TEXTURE",
+		"STORAGE_TEXTURE",
+		"BUFFER",
+		"STORAGE_BUFFER",
+		"STRUCTURED_BUFFER",
+		"STORAGE_STRUCTURED_BUFFER",
+		"ACCELERATION_STRUCTURE"
+		);
+
+	public static void Asserts()
+	{
+		Compiler.Assert(DESCRIPTOR_TYPE_NAME.Count == (uint32)DescriptorType.MAX_NUM, "descriptor type name array is out of date");
+	}
+
+	public static char8* GetDescriptorTypeName(DescriptorType descriptorType)
+	{
+		return DESCRIPTOR_TYPE_NAME[(uint32)descriptorType];
+	}
+
 	public static DeviceVal GetDeviceVal<T>(T object) where T : var
 	{
 		return ((DeviceObjectBaseVal)object).GetDevice();
 	}
 
 	public static mixin NRI_GET_IMPL_PTR<TOut, TObj>(TObj object)
-		where TOut : TObj
 		where TObj : var
+		where TOut : var
 	{
 		object != null ? object.GetImpl() : null
 	}
 
 	public static mixin NRI_GET_IMPL_REF<TOut, TObj>(TObj object)
-		where TOut : TObj
 		where TObj : var
+		where TOut : var
 	{
 		(TOut)object.GetImpl()
 	}
