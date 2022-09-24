@@ -4,6 +4,3 @@ WorkspaceFolders = {Samples = ["Samples.Triangle", "Samples.Clear"], Dependencie
 
 [Workspace]
 StartupProject = "Samples.Triangle"
-
-[Configs.Debug.Win64]
-AllocType = "Stomp"
