@@ -63,7 +63,7 @@ class TextureD3D12 : Texture
 	public Result BindMemory(MemoryD3D12 memory, uint64 offset)
 	{
 		/*readonly ref*/ D3D12_HEAP_DESC heapDesc = /*ref*/ memory.GetHeapDesc();
-		D3D12_CLEAR_VALUE clearValue = .() { Format = GetFormat(m_Format) };
+		D3D12_CLEAR_VALUE clearValue = .() { Format = ConvertNRIFormatToDXGI(m_Format) };
 		bool isRenderableSurface = m_TextureDesc.Flags & (.D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET | .D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL) != 0;
 
 		if (memory.RequiresDedicatedAllocation())
@@ -131,12 +131,19 @@ class TextureD3D12 : Texture
 		return size;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_Texture, scope String(name));
 	}
 
-	public override void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
+	public uint64 GetTextureNativeObject(uint32 physicalDeviceIndex)
+	{
+	    //MaybeUnused(physicalDeviceIndex);
+	
+	    return (uint64)(int)(void*)((ID3D12Resource*)((TextureD3D12)this));
+	}
+
+	public void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
 	{
 		m_Device.GetMemoryInfo(memoryLocation, m_TextureDesc, ref memoryDesc);
 	}

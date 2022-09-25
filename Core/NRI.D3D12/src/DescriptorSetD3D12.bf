@@ -108,11 +108,11 @@ class DescriptorSetD3D12 : DescriptorSet
 		return m_DynamicConstantBuffers[dynamicConstantBufferIndex];
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 	}
 
-	public override void UpdateDescriptorRanges(uint32 physicalDeviceMask, uint32 rangeOffset, uint32 rangeNum, DescriptorRangeUpdateDesc* rangeUpdateDescs)
+	public void UpdateDescriptorRanges(uint32 physicalDeviceMask, uint32 rangeOffset, uint32 rangeNum, DescriptorRangeUpdateDesc* rangeUpdateDescs)
 	{
 		for (uint32 i = 0; i < rangeNum; i++)
 		{
@@ -129,13 +129,13 @@ class DescriptorSetD3D12 : DescriptorSet
 		}
 	}
 
-	public override void UpdateDynamicConstantBuffers(uint32 physicalDeviceMask, uint32 baseBuffer, uint32 bufferNum, Descriptor* descriptors)
+	public void UpdateDynamicConstantBuffers(uint32 physicalDeviceMask, uint32 baseBuffer, uint32 bufferNum, Descriptor* descriptors)
 	{
 		for (uint32 i = 0; i < bufferNum; i++)
 			m_DynamicConstantBuffers[baseBuffer + i] = ((DescriptorD3D12)descriptors[i]).GetBufferLocation();
 	}
 
-	public override void Copy(DescriptorSetCopyDesc descriptorSetCopyDesc)
+	public void Copy(DescriptorSetCopyDesc descriptorSetCopyDesc)
 	{
 		readonly DescriptorSetD3D12 srcDescriptorSet = (DescriptorSetD3D12)descriptorSetCopyDesc.srcDescriptorSet;
 

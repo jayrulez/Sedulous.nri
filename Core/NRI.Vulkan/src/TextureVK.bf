@@ -68,7 +68,7 @@ class TextureVK : Texture
 		VkImageCreateInfo info = .();
 		info.sType = .VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		info.imageType = imageType;
-		info.format = GetVkFormat(m_Format);
+		info.format = ConvertNRIFormatToVK(m_Format);
 		info.extent.width = textureDesc.size[0];
 		info.extent.height = textureDesc.size[1];
 		info.extent.depth = textureDesc.size[2];
@@ -106,7 +106,7 @@ class TextureVK : Texture
 		m_Extent = .() { width = textureDesc.size[0], height = textureDesc.size[1], depth = textureDesc.size[2] };
 		m_MipNum = textureDesc.mipNum;
 		m_ArraySize = textureDesc.arraySize;
-		m_Format = GetNRIFormat((VkFormat)textureDesc.vkFormat);
+		m_Format = ConvertVKFormatToNRI((VkFormat)textureDesc.vkFormat);
 		m_ImageAspectFlags = (VkImageAspectFlags)textureDesc.vkImageAspectFlags;
 		m_TextureType = NRI.Vulkan.GetTextureType((VkImageType)textureDesc.vkImageType);
 		m_SampleCount = (VkSampleCountFlags)textureDesc.sampleNum;
@@ -152,7 +152,7 @@ class TextureVK : Texture
 			m_Handles[i] = .Null;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		uint64[PHYSICAL_DEVICE_GROUP_MAX_SIZE] handles = .();
 		for (uint i = 0; i < handles.Count; i++)
@@ -161,7 +161,12 @@ class TextureVK : Texture
 		m_Device.SetDebugNameToDeviceGroupObject(.VK_OBJECT_TYPE_IMAGE, &handles, name);
 	}
 
-	public override void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
+	public uint64 GetTextureNativeObject(uint32 physicalDeviceIndex)
+	{
+		return uint64(((TextureVK)this).GetHandle(physicalDeviceIndex));
+	}
+
+	public void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
 	{
 		VkImage handle = .Null;
 		for (uint32 i = 0; i < m_Device.GetPhyiscalDeviceGroupSize() && handle == .Null; i++)
@@ -207,7 +212,7 @@ class TextureVK : Texture
 	{
 		textureVulkanDesc = .();
 		textureVulkanDesc.vkImage = (NRIVkImage)GetHandle(physicalDeviceIndex);
-		textureVulkanDesc.vkFormat = (.)GetVkFormat(GetFormat());
+		textureVulkanDesc.vkFormat = (.)ConvertNRIFormatToVK(GetFormat());
 		textureVulkanDesc.vkImageAspectFlags = (.)GetImageAspectFlags();
 		textureVulkanDesc.vkImageType = (.)GetImageType(GetTextureType());
 		textureVulkanDesc.size[0] = GetSize(0);

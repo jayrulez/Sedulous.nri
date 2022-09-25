@@ -1,10 +1,12 @@
 namespace NRI;
 
-abstract class Buffer
+interface Buffer
 {
-	public abstract void SetDebugName(char8* name);
+	public void SetDebugName(char8* name);
 	
-	public abstract void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc);
-	public abstract void* Map( uint64 offset, uint64 size);
-	public abstract void Unmap();
+	public void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc);
+	public void* Map( uint64 offset, uint64 size);
+	public void Unmap();
+
+	public uint64 GetBufferNativeObject(uint32 physicalDeviceIndex);
 }

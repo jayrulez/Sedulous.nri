@@ -52,12 +52,12 @@ class AccelerationStructureD3D12 : AccelerationStructure
 		return result;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Buffer.SetDebugName(name);
 	}
 
-	public override Result CreateDescriptor(uint32 physicalDeviceMask, out Descriptor descriptor)
+	public Result CreateDescriptor(uint32 physicalDeviceMask, out Descriptor descriptor)
 	{
 		readonly AccelerationStructure accelerationStructure = (AccelerationStructure)this;
 		Result result = m_Device.CreateDescriptor(accelerationStructure, out descriptor);
@@ -65,7 +65,7 @@ class AccelerationStructureD3D12 : AccelerationStructure
 		return result;
 	}
 
-	public override void GetMemoryInfo(ref MemoryDesc memoryDesc)
+	public void GetMemoryInfo(ref MemoryDesc memoryDesc)
 	{
 		memoryDesc.size = m_PrebuildInfo.ResultDataMaxSizeInBytes;
 		memoryDesc.alignment = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BYTE_ALIGNMENT;
@@ -73,12 +73,12 @@ class AccelerationStructureD3D12 : AccelerationStructure
 		memoryDesc.mustBeDedicated = false;
 	}
 
-	public override uint64 GetUpdateScratchBufferSize()
+	public uint64 GetUpdateScratchBufferSize()
 	{
 		return m_PrebuildInfo.UpdateScratchDataSizeInBytes;
 	}
 
-	public override uint64 GetBuildScratchBufferSize()
+	public uint64 GetBuildScratchBufferSize()
 	{
 		return m_PrebuildInfo.ScratchDataSizeInBytes;
 	}
@@ -89,7 +89,7 @@ class AccelerationStructureD3D12 : AccelerationStructure
 		return result;
 	}
 
-	public override uint64 GetHandle(uint32 physicalDeviceIndex)
+	public uint64 GetHandle(uint32 physicalDeviceIndex)
 	{
 		return m_Buffer.GetPointerGPU();
 	}

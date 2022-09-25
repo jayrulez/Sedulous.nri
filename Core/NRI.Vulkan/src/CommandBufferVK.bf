@@ -196,12 +196,16 @@ class CommandBufferVK : CommandBuffer
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_COMMAND_BUFFER, (uint64)m_Handle, name);
 	}
 
-	public override Result Begin(DescriptorPool descriptorPool, uint32 physicalDeviceIndex)
+	public void* GetCommandBufferNativeObject(){
+		return (VkCommandBuffer)((CommandBufferVK)this);
+	}
+
+	public Result Begin(DescriptorPool descriptorPool, uint32 physicalDeviceIndex)
 	{
 	//MaybeUnused(descriptorPool);
 
@@ -245,7 +249,7 @@ class CommandBufferVK : CommandBuffer
 		return Result.SUCCESS;
 	}
 
-	public override Result End()
+	public Result End()
 	{
 		readonly VkResult result = VulkanNative.vkEndCommandBuffer(m_Handle);
 
@@ -255,7 +259,7 @@ class CommandBufferVK : CommandBuffer
 		return Result.SUCCESS;
 	}
 
-	public override void SetPipeline(Pipeline pipeline)
+	public void SetPipeline(Pipeline pipeline)
 	{
 		if (m_CurrentPipeline == (PipelineVK)pipeline)
 			return;
@@ -266,7 +270,7 @@ class CommandBufferVK : CommandBuffer
 		m_CurrentPipeline = pipelineImpl;
 	}
 
-	public override void SetPipelineLayout(PipelineLayout pipelineLayout)
+	public void SetPipelineLayout(PipelineLayout pipelineLayout)
 	{
 		readonly PipelineLayoutVK pipelineLayoutVK = (PipelineLayoutVK)pipelineLayout;
 
@@ -275,7 +279,7 @@ class CommandBufferVK : CommandBuffer
 		m_CurrentPipelineBindPoint = pipelineLayoutVK.GetPipelineBindPoint();
 	}
 
-	public override void SetDescriptorSets(uint32 baseIndex, uint32 setNum, DescriptorSet* descriptorSets, uint32* offsets)
+	public void SetDescriptorSets(uint32 baseIndex, uint32 setNum, DescriptorSet* descriptorSets, uint32* offsets)
 	{
 		VkDescriptorSet* sets = STACK_ALLOC!<VkDescriptorSet>(setNum);
 		uint32 dynamicOffsetNum = 0;
@@ -299,7 +303,7 @@ class CommandBufferVK : CommandBuffer
 			offsets);
 	}
 
-	public override void SetConstants(uint32 pushConstantIndex, void* data, uint32 size)
+	public void SetConstants(uint32 pushConstantIndex, void* data, uint32 size)
 	{
 		readonly ref RuntimeBindingInfo bindingInfo = ref m_CurrentPipelineLayout.GetRuntimeBindingInfo();
 		readonly ref PushConstantRangeBindingDesc desc = ref bindingInfo.pushConstantBindings[pushConstantIndex];
@@ -307,12 +311,12 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdPushConstants(m_Handle, m_CurrentPipelineLayoutHandle, desc.flags, desc.offset, size, data);
 	}
 
-	public override void SetDescriptorPool(DescriptorPool descriptorPool)
+	public void SetDescriptorPool(DescriptorPool descriptorPool)
 	{
 		//MaybeUnused(descriptorPool);
 	}
 
-	public override void PipelineBarrier(TransitionBarrierDesc* transitionBarriers, AliasingBarrierDesc* aliasingBarriers, BarrierDependency dependency)
+	public void PipelineBarrier(TransitionBarrierDesc* transitionBarriers, AliasingBarrierDesc* aliasingBarriers, BarrierDependency dependency)
 	{
 		//MaybeUnused(dependency); // TODO: use it or remove, because it's needed only for VK
 
@@ -354,7 +358,7 @@ class CommandBufferVK : CommandBuffer
 			barriers.images);
 	}
 
-	public override void BeginRenderPass(FrameBuffer frameBuffer, RenderPassBeginFlag renderPassBeginFlag)
+	public void BeginRenderPass(FrameBuffer frameBuffer, RenderPassBeginFlag renderPassBeginFlag)
 	{
 		readonly FrameBufferVK frameBufferImpl = (FrameBufferVK)frameBuffer;
 
@@ -378,12 +382,12 @@ class CommandBufferVK : CommandBuffer
 		m_CurrentFrameBuffer = frameBufferImpl;
 	}
 
-	public override void EndRenderPass()
+	public void EndRenderPass()
 	{
 		VulkanNative.vkCmdEndRenderPass(m_Handle);
 	}
 
-	public override void SetViewports(Viewport* viewports, uint32 viewportNum)
+	public void SetViewports(Viewport* viewports, uint32 viewportNum)
 	{
 		VkViewport* flippedViewports = STACK_ALLOC!<VkViewport>(viewportNum);
 
@@ -399,22 +403,22 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdSetViewport(m_Handle, 0, viewportNum, flippedViewports);
 	}
 
-	public override void SetScissors(Rect* rects, uint32 rectNum)
+	public void SetScissors(Rect* rects, uint32 rectNum)
 	{
 		VulkanNative.vkCmdSetScissor(m_Handle, 0, rectNum, (VkRect2D*)rects);
 	}
 
-	public override void SetDepthBounds(float boundsMin, float boundsMax)
+	public void SetDepthBounds(float boundsMin, float boundsMax)
 	{
 		VulkanNative.vkCmdSetDepthBounds(m_Handle, boundsMin, boundsMax);
 	}
 
-	public override void SetStencilReference(uint8 reference)
+	public void SetStencilReference(uint8 reference)
 	{
 		VulkanNative.vkCmdSetStencilReference(m_Handle, .VK_STENCIL_FRONT_AND_BACK, reference);
 	}
 
-	public override void SetSamplePositions(SamplePosition* positions, uint32 positionNum)
+	public void SetSamplePositions(SamplePosition* positions, uint32 positionNum)
 	{
 		// TODO: not implemented
 		//MaybeUnused(positions);
@@ -424,7 +428,7 @@ class CommandBufferVK : CommandBuffer
 			"CommandBufferVK.SetSamplePositions() is not implemented.");
 	}
 
-	public override void ClearAttachments(ClearDesc* clearDescs, uint32 clearDescNum, Rect* rects, uint32 rectNum)
+	public void ClearAttachments(ClearDesc* clearDescs, uint32 clearDescNum, Rect* rects, uint32 rectNum)
 	{
 		VkClearAttachment* attachments = STACK_ALLOC!<VkClearAttachment>(clearDescNum);
 
@@ -490,13 +494,13 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdClearAttachments(m_Handle, clearDescNum, attachments, rectNum, clearRects);
 	}
 
-	public override void SetIndexBuffer(Buffer buffer, uint64 offset, IndexType indexType)
+	public void SetIndexBuffer(Buffer buffer, uint64 offset, IndexType indexType)
 	{
 		readonly VkBuffer bufferHandle = GetVulkanHandle<VkBuffer, BufferVK, Buffer>(buffer, m_PhysicalDeviceIndex);
 		VulkanNative.vkCmdBindIndexBuffer(m_Handle, bufferHandle, offset, GetIndexType(indexType));
 	}
 
-	public override void SetVertexBuffers(uint32 baseSlot, uint32 bufferNum, Buffer* buffers, uint64* offsets)
+	public void SetVertexBuffers(uint32 baseSlot, uint32 bufferNum, Buffer* buffers, uint64* offsets)
 	{
 		VkBuffer* bufferHandles = STACK_ALLOC!<VkBuffer>(bufferNum);
 
@@ -506,46 +510,46 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdBindVertexBuffers(m_Handle, baseSlot, bufferNum, bufferHandles, offsets);
 	}
 
-	public override void Draw(uint32 vertexNum, uint32 instanceNum, uint32 baseVertex, uint32 baseInstance)
+	public void Draw(uint32 vertexNum, uint32 instanceNum, uint32 baseVertex, uint32 baseInstance)
 	{
 		VulkanNative.vkCmdDraw(m_Handle, vertexNum, instanceNum, baseVertex, baseInstance);
 	}
 
-	public override void DrawIndexed(uint32 indexNum, uint32 instanceNum, uint32 baseIndex, uint32 baseVertex, uint32 baseInstance)
+	public void DrawIndexed(uint32 indexNum, uint32 instanceNum, uint32 baseIndex, uint32 baseVertex, uint32 baseInstance)
 	{
 		VulkanNative.vkCmdDrawIndexed(m_Handle, indexNum, instanceNum, baseIndex, (.)baseVertex, baseInstance);
 	}
 
-	public override void DrawIndirect(Buffer buffer, uint64 offset, uint32 drawNum, uint32 stride)
+	public void DrawIndirect(Buffer buffer, uint64 offset, uint32 drawNum, uint32 stride)
 	{
 		readonly VkBuffer bufferHandle = GetVulkanHandle<VkBuffer, BufferVK, Buffer>(buffer, m_PhysicalDeviceIndex);
 		VulkanNative.vkCmdDrawIndirect(m_Handle, bufferHandle, offset, drawNum, (uint32)stride);
 	}
 
-	public override void DrawIndexedIndirect(Buffer buffer, uint64 offset, uint32 drawNum, uint32 stride)
+	public void DrawIndexedIndirect(Buffer buffer, uint64 offset, uint32 drawNum, uint32 stride)
 	{
 		readonly VkBuffer bufferHandle = GetVulkanHandle<VkBuffer, BufferVK, Buffer>(buffer, m_PhysicalDeviceIndex);
 		VulkanNative.vkCmdDrawIndexedIndirect(m_Handle, bufferHandle, offset, drawNum, (uint32)stride);
 	}
 
-	public override void Dispatch(uint32 x, uint32 y, uint32 z)
+	public void Dispatch(uint32 x, uint32 y, uint32 z)
 	{
 		VulkanNative.vkCmdDispatch(m_Handle, x, y, z);
 	}
 
-	public override void DispatchIndirect(Buffer buffer, uint64 offset)
+	public void DispatchIndirect(Buffer buffer, uint64 offset)
 	{
 		readonly BufferVK bufferImpl = (BufferVK)buffer;
 		VulkanNative.vkCmdDispatchIndirect(m_Handle, bufferImpl.GetHandle(m_PhysicalDeviceIndex), offset);
 	}
 
-	public override void BeginQuery(QueryPool queryPool, uint32 offset)
+	public void BeginQuery(QueryPool queryPool, uint32 offset)
 	{
 		readonly QueryPoolVK queryPoolImpl = (QueryPoolVK)queryPool;
 		VulkanNative.vkCmdBeginQuery(m_Handle, queryPoolImpl.GetHandle(m_PhysicalDeviceIndex), offset, (VkQueryControlFlags)0);
 	}
 
-	public override void EndQuery(QueryPool queryPool, uint32 offset)
+	public void EndQuery(QueryPool queryPool, uint32 offset)
 	{
 		readonly QueryPoolVK queryPoolImpl = (QueryPoolVK)queryPool;
 
@@ -558,7 +562,7 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdEndQuery(m_Handle, queryPoolImpl.GetHandle(m_PhysicalDeviceIndex), offset);
 	}
 
-	public override void BeginAnnotation(char8* name)
+	public void BeginAnnotation(char8* name)
 	{
 		if (VulkanNative.[Friend]vkCmdBeginDebugUtilsLabelEXT_ptr == null)
 			return;
@@ -569,7 +573,7 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdBeginDebugUtilsLabelEXT(m_Handle, &info);
 	}
 
-	public override void EndAnnotation()
+	public void EndAnnotation()
 	{
 		if (VulkanNative.[Friend]vkCmdEndDebugUtilsLabelEXT_ptr == null)
 			return;
@@ -577,13 +581,13 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdEndDebugUtilsLabelEXT(m_Handle);
 	}
 
-	public override void ClearStorageBuffer(ClearStorageBufferDesc clearDesc)
+	public void ClearStorageBuffer(ClearStorageBufferDesc clearDesc)
 	{
 		readonly DescriptorVK descriptor = (DescriptorVK)clearDesc.storageBuffer;
 		VulkanNative.vkCmdFillBuffer(m_Handle, descriptor.GetBuffer(m_PhysicalDeviceIndex), 0, VulkanNative.VK_WHOLE_SIZE, clearDesc.value);
 	}
 
-	public override void ClearStorageTexture(ClearStorageTextureDesc clearDesc)
+	public void ClearStorageTexture(ClearStorageTextureDesc clearDesc)
 	{
 		var clearDesc;
 
@@ -596,7 +600,7 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdClearColorImage(m_Handle, descriptor.GetImage(m_PhysicalDeviceIndex), .VK_IMAGE_LAYOUT_GENERAL, value, 1, &range);
 	}
 
-	public override void CopyBuffer(Buffer dstBuffer, uint32 dstPhysicalDeviceIndex, uint64 dstOffset, Buffer srcBuffer, uint32 srcPhysicalDeviceIndex, uint64 srcOffset, uint64 size)
+	public void CopyBuffer(Buffer dstBuffer, uint32 dstPhysicalDeviceIndex, uint64 dstOffset, Buffer srcBuffer, uint32 srcPhysicalDeviceIndex, uint64 srcOffset, uint64 size)
 	{
 		readonly BufferVK srcBufferImpl = (BufferVK)srcBuffer;
 		readonly BufferVK dstBufferImpl = (BufferVK)dstBuffer;
@@ -611,7 +615,7 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdCopyBuffer(m_Handle, srcBufferImpl.GetHandle(srcPhysicalDeviceIndex), dstBufferImpl.GetHandle(dstPhysicalDeviceIndex), 1, &region);
 	}
 
-	public override void CopyTexture(Texture dstTexture, uint32 dstPhysicalDeviceIndex, TextureRegionDesc* dstRegionDesc, Texture srcTexture, uint32 srcPhysicalDeviceIndex, TextureRegionDesc* srcRegionDesc)
+	public void CopyTexture(Texture dstTexture, uint32 dstPhysicalDeviceIndex, TextureRegionDesc* dstRegionDesc, Texture srcTexture, uint32 srcPhysicalDeviceIndex, TextureRegionDesc* srcRegionDesc)
 	{
 		readonly TextureVK srcTextureImpl = (TextureVK)srcTexture;
 		readonly TextureVK dstTextureImpl = (TextureVK)dstTexture;
@@ -696,7 +700,7 @@ class CommandBufferVK : CommandBuffer
 			dstTextureImpl.GetHandle(srcPhysicalDeviceIndex), .VK_IMAGE_LAYOUT_GENERAL, 1, &region);
 	}
 
-	public override void UploadBufferToTexture(Texture dstTexture, TextureRegionDesc dstRegionDesc, Buffer srcBuffer, TextureDataLayoutDesc srcDataLayoutDesc)
+	public void UploadBufferToTexture(Texture dstTexture, TextureRegionDesc dstRegionDesc, Buffer srcBuffer, TextureDataLayoutDesc srcDataLayoutDesc)
 	{
 		readonly BufferVK srcBufferImpl = (BufferVK)srcBuffer;
 		readonly TextureVK dstTextureImpl = (TextureVK)dstTexture;
@@ -736,7 +740,7 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdCopyBufferToImage(m_Handle, srcBufferImpl.GetHandle(0), dstTextureImpl.GetHandle(m_PhysicalDeviceIndex), .VK_IMAGE_LAYOUT_GENERAL, 1, &region);
 	}
 
-	public override void ReadbackTextureToBuffer(Buffer dstBuffer, ref TextureDataLayoutDesc dstDataLayoutDesc, Texture srcTexture, TextureRegionDesc srcRegionDesc)
+	public void ReadbackTextureToBuffer(Buffer dstBuffer, ref TextureDataLayoutDesc dstDataLayoutDesc, Texture srcTexture, TextureRegionDesc srcRegionDesc)
 	{
 		readonly TextureVK srcTextureImpl = (TextureVK)srcTexture;
 		readonly BufferVK dstBufferImpl = (BufferVK)dstBuffer;
@@ -776,7 +780,7 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdCopyImageToBuffer(m_Handle, srcTextureImpl.GetHandle(m_PhysicalDeviceIndex), .VK_IMAGE_LAYOUT_GENERAL, dstBufferImpl.GetHandle(0), 1, &region);
 	}
 
-	public override void CopyQueries(QueryPool queryPool, uint32 offset, uint32 num, Buffer dstBuffer, uint64 dstOffset)
+	public void CopyQueries(QueryPool queryPool, uint32 offset, uint32 num, Buffer dstBuffer, uint64 dstOffset)
 	{
 		readonly QueryPoolVK queryPoolImpl = (QueryPoolVK)queryPool;
 		readonly BufferVK bufferImpl = (BufferVK)dstBuffer;
@@ -789,14 +793,14 @@ class CommandBufferVK : CommandBuffer
 			queryPoolImpl.GetStride(), flags);
 	}
 
-	public override void ResetQueries(QueryPool queryPool, uint32 offset, uint32 num)
+	public void ResetQueries(QueryPool queryPool, uint32 offset, uint32 num)
 	{
 		readonly QueryPoolVK queryPoolImpl = (QueryPoolVK)queryPool;
 
 		VulkanNative.vkCmdResetQueryPool(m_Handle, queryPoolImpl.GetHandle(m_PhysicalDeviceIndex), offset, num);
 	}
 
-	public override void BuildTopLevelAccelerationStructure(uint32 instanceNum, Buffer buffer, uint64 bufferOffset, AccelerationStructureBuildBits flags, AccelerationStructure dst, Buffer scratch, uint64 scratchOffset)
+	public void BuildTopLevelAccelerationStructure(uint32 instanceNum, Buffer buffer, uint64 bufferOffset, AccelerationStructureBuildBits flags, AccelerationStructure dst, Buffer scratch, uint64 scratchOffset)
 	{
 		readonly VkAccelerationStructureKHR dstASHandle = ((AccelerationStructureVK)dst).GetHandle(m_PhysicalDeviceIndex);
 		readonly VkDeviceAddress scratchAddress = ((BufferVK)scratch).GetDeviceAddress(m_PhysicalDeviceIndex) + scratchOffset;
@@ -828,7 +832,7 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdBuildAccelerationStructuresKHR(m_Handle, 1, &buildGeometryInfo, &rangeArrays);
 	}
 
-	public override void BuildBottomLevelAccelerationStructure(uint32 geometryObjectNum, GeometryObject* geometryObjects, AccelerationStructureBuildBits flags, AccelerationStructure dst, Buffer scratch, uint64 scratchOffset)
+	public void BuildBottomLevelAccelerationStructure(uint32 geometryObjectNum, GeometryObject* geometryObjects, AccelerationStructureBuildBits flags, AccelerationStructure dst, Buffer scratch, uint64 scratchOffset)
 	{
 		readonly VkAccelerationStructureKHR dstASHandle = ((AccelerationStructureVK)dst).GetHandle(m_PhysicalDeviceIndex);
 		readonly VkDeviceAddress scratchAddress = ((BufferVK)scratch).GetDeviceAddress(m_PhysicalDeviceIndex) + scratchOffset;
@@ -856,7 +860,7 @@ class CommandBufferVK : CommandBuffer
 		FREE_SCRATCH!(m_Device, geometries, geometryObjectNum);
 	}
 
-	public override void UpdateTopLevelAccelerationStructure(uint32 instanceNum, Buffer buffer, uint64 bufferOffset, AccelerationStructureBuildBits flags, AccelerationStructure dst, AccelerationStructure src, Buffer scratch, uint64 scratchOffset)
+	public void UpdateTopLevelAccelerationStructure(uint32 instanceNum, Buffer buffer, uint64 bufferOffset, AccelerationStructureBuildBits flags, AccelerationStructure dst, AccelerationStructure src, Buffer scratch, uint64 scratchOffset)
 	{
 		readonly VkAccelerationStructureKHR srcASHandle = ((AccelerationStructureVK)src).GetHandle(m_PhysicalDeviceIndex);
 		readonly VkAccelerationStructureKHR dstASHandle = ((AccelerationStructureVK)dst).GetHandle(m_PhysicalDeviceIndex);
@@ -890,7 +894,7 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdBuildAccelerationStructuresKHR(m_Handle, 1, &buildGeometryInfo, &rangeArrays);
 	}
 
-	public override void UpdateBottomLevelAccelerationStructure(uint32 geometryObjectNum, GeometryObject* geometryObjects, AccelerationStructureBuildBits flags, AccelerationStructure dst, AccelerationStructure src, Buffer scratch, uint64 scratchOffset)
+	public void UpdateBottomLevelAccelerationStructure(uint32 geometryObjectNum, GeometryObject* geometryObjects, AccelerationStructureBuildBits flags, AccelerationStructure dst, AccelerationStructure src, Buffer scratch, uint64 scratchOffset)
 	{
 		readonly VkAccelerationStructureKHR srcASHandle = ((AccelerationStructureVK)src).GetHandle(m_PhysicalDeviceIndex);
 		readonly VkAccelerationStructureKHR dstASHandle = ((AccelerationStructureVK)dst).GetHandle(m_PhysicalDeviceIndex);
@@ -920,7 +924,7 @@ class CommandBufferVK : CommandBuffer
 		FREE_SCRATCH!(m_Device, geometries, geometryObjectNum);
 	}
 
-	public override void CopyAccelerationStructure(AccelerationStructure dst, AccelerationStructure src, CopyMode copyMode)
+	public void CopyAccelerationStructure(AccelerationStructure dst, AccelerationStructure src, CopyMode copyMode)
 	{
 		readonly VkAccelerationStructureKHR dstASHandle = ((AccelerationStructureVK)dst).GetHandle(m_PhysicalDeviceIndex);
 		readonly VkAccelerationStructureKHR srcASHandle = ((AccelerationStructureVK)src).GetHandle(m_PhysicalDeviceIndex);
@@ -934,7 +938,7 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdCopyAccelerationStructureKHR(m_Handle, &info);
 	}
 
-	public override void WriteAccelerationStructureSize(AccelerationStructure* accelerationStructures, uint32 accelerationStructureNum, QueryPool queryPool, uint32 queryPoolOffset)
+	public void WriteAccelerationStructureSize(AccelerationStructure* accelerationStructures, uint32 accelerationStructureNum, QueryPool queryPool, uint32 queryPoolOffset)
 	{
 		VkAccelerationStructureKHR* ASes = ALLOCATE_SCRATCH!<VkAccelerationStructureKHR>(m_Device, accelerationStructureNum);
 
@@ -949,7 +953,7 @@ class CommandBufferVK : CommandBuffer
 		FREE_SCRATCH!(m_Device, ASes, accelerationStructureNum);
 	}
 
-	public override void DispatchRays(DispatchRaysDesc dispatchRaysDesc)
+	public void DispatchRays(DispatchRaysDesc dispatchRaysDesc)
 	{
 		VkStridedDeviceAddressRegionKHR raygen = .();
 		raygen.deviceAddress = GetBufferDeviceAddress(dispatchRaysDesc.raygenShader.buffer, m_PhysicalDeviceIndex) + dispatchRaysDesc.raygenShader.offset;
@@ -974,7 +978,7 @@ class CommandBufferVK : CommandBuffer
 		VulkanNative.vkCmdTraceRaysKHR(m_Handle, &raygen, &miss, &hit, &callable, dispatchRaysDesc.width, dispatchRaysDesc.height, dispatchRaysDesc.depth);
 	}
 
-	public override void DispatchMeshTasks(uint32 taskNum)
+	public void DispatchMeshTasks(uint32 taskNum)
 	{
 		VulkanNative.vkCmdDrawMeshTasksNV(m_Handle, taskNum, 0);
 	}

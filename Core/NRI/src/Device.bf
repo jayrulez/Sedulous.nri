@@ -1,66 +1,68 @@
 using NRI.Helpers;
 namespace NRI;
 
-abstract class Device
+interface Device
 {
-	public abstract DeviceLogger GetLogger();
-	public abstract DeviceAllocator<uint8> GetAllocator();
+	public DeviceLogger GetLogger();
+	public DeviceAllocator<uint8> GetAllocator();
 
-	public abstract void SetDebugName(char8* name);
+	public void SetDebugName(char8* name);
 
-	public abstract readonly ref DeviceDesc GetDesc();
-	public abstract Result GetCommandQueue(CommandQueueType commandQueueType, out CommandQueue commandQueue);
+	public readonly ref DeviceDesc GetDesc();
+	public Result GetCommandQueue(CommandQueueType commandQueueType, out CommandQueue commandQueue);
 
-	public abstract Result CreateCommandAllocator(CommandQueue commandQueue, uint32 physicalDeviceMask, out CommandAllocator commandAllocator);
-	public abstract Result CreateDescriptorPool(DescriptorPoolDesc descriptorPoolDesc, out DescriptorPool descriptorPool);
-	public abstract Result CreateBuffer(BufferDesc bufferDesc, out Buffer buffer);
-	public abstract Result CreateTexture(TextureDesc textureDesc, out Texture texture);
-	public abstract Result CreateBufferView(BufferViewDesc bufferViewDesc, out Descriptor bufferView);
-	public abstract Result CreateTexture1DView(Texture1DViewDesc textureViewDesc, out Descriptor textureView);
-	public abstract Result CreateTexture2DView(Texture2DViewDesc textureViewDesc, out Descriptor textureView);
-	public abstract Result CreateTexture3DView(Texture3DViewDesc textureViewDesc, out Descriptor textureView);
-	public abstract Result CreateSampler(SamplerDesc samplerDesc, out Descriptor sampler);
-	public abstract Result CreatePipelineLayout(PipelineLayoutDesc pipelineLayoutDesc, out PipelineLayout pipelineLayout);
-	public abstract Result CreateGraphicsPipeline(GraphicsPipelineDesc graphicsPipelineDesc, out Pipeline pipeline);
-	public abstract Result CreateComputePipeline(ComputePipelineDesc computePipelineDesc, out Pipeline pipeline);
-	public abstract Result CreateFrameBuffer(FrameBufferDesc frameBufferDesc, out FrameBuffer frameBuffer);
-	public abstract Result CreateQueryPool(QueryPoolDesc queryPoolDesc, out QueryPool queryPool);
-	public abstract Result CreateQueueSemaphore(out QueueSemaphore queueSemaphore);
-	public abstract Result CreateDeviceSemaphore(bool signaled, out DeviceSemaphore deviceSemaphore);
-	public abstract Result CreateCommandBuffer(CommandAllocator commandAllocator, out CommandBuffer commandBuffer);
-    public abstract Result CreateSwapChain(SwapChainDesc swapChainDesc, out SwapChain swapChain);
-    public abstract Result CreateRayTracingPipeline(RayTracingPipelineDesc rayTracingPipelineDesc, out Pipeline pipeline);
-    public abstract Result CreateAccelerationStructure(AccelerationStructureDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure);
+	public Result CreateCommandAllocator(CommandQueue commandQueue, uint32 physicalDeviceMask, out CommandAllocator commandAllocator);
+	public Result CreateDescriptorPool(DescriptorPoolDesc descriptorPoolDesc, out DescriptorPool descriptorPool);
+	public Result CreateBuffer(BufferDesc bufferDesc, out Buffer buffer);
+	public Result CreateTexture(TextureDesc textureDesc, out Texture texture);
+	public Result CreateBufferView(BufferViewDesc bufferViewDesc, out Descriptor bufferView);
+	public Result CreateTexture1DView(Texture1DViewDesc textureViewDesc, out Descriptor textureView);
+	public Result CreateTexture2DView(Texture2DViewDesc textureViewDesc, out Descriptor textureView);
+	public Result CreateTexture3DView(Texture3DViewDesc textureViewDesc, out Descriptor textureView);
+	public Result CreateSampler(SamplerDesc samplerDesc, out Descriptor sampler);
+	public Result CreatePipelineLayout(PipelineLayoutDesc pipelineLayoutDesc, out PipelineLayout pipelineLayout);
+	public Result CreateGraphicsPipeline(GraphicsPipelineDesc graphicsPipelineDesc, out Pipeline pipeline);
+	public Result CreateComputePipeline(ComputePipelineDesc computePipelineDesc, out Pipeline pipeline);
+	public Result CreateFrameBuffer(FrameBufferDesc frameBufferDesc, out FrameBuffer frameBuffer);
+	public Result CreateQueryPool(QueryPoolDesc queryPoolDesc, out QueryPool queryPool);
+	public Result CreateQueueSemaphore(out QueueSemaphore queueSemaphore);
+	public Result CreateDeviceSemaphore(bool signaled, out DeviceSemaphore deviceSemaphore);
+	public Result CreateCommandBuffer(CommandAllocator commandAllocator, out CommandBuffer commandBuffer);
+    public Result CreateSwapChain(SwapChainDesc swapChainDesc, out SwapChain swapChain);
+    public Result CreateRayTracingPipeline(RayTracingPipelineDesc rayTracingPipelineDesc, out Pipeline pipeline);
+    public Result CreateAccelerationStructure(AccelerationStructureDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure);
 
 
-	public abstract void DestroyCommandAllocator(CommandAllocator commandAllocator);
-	public abstract void DestroyDescriptorPool(DescriptorPool descriptorPool);
-	public abstract void DestroyBuffer(Buffer buffer);
-	public abstract void DestroyTexture(Texture texture);
-	public abstract void DestroyDescriptor(Descriptor descriptor);
-	public abstract void DestroyPipelineLayout(PipelineLayout pipelineLayout);
-	public abstract void DestroyPipeline(Pipeline pipeline);
-	public abstract void DestroyFrameBuffer(FrameBuffer frameBuffer);
-	public abstract void DestroyQueryPool(QueryPool queryPool);
-	public abstract void DestroyQueueSemaphore(QueueSemaphore queueSemaphore);
-	public abstract void DestroyDeviceSemaphore(DeviceSemaphore deviceSemaphore);
-	public abstract void DestroyCommandBuffer(CommandBuffer commandBuffer);
-    public abstract void DestroySwapChain(SwapChain swapChain);
-	public abstract void DestroyAccelerationStructure(AccelerationStructure accelerationStructure);
-	public abstract void Destroy();
+	public void DestroyCommandAllocator(CommandAllocator commandAllocator);
+	public void DestroyDescriptorPool(DescriptorPool descriptorPool);
+	public void DestroyBuffer(Buffer buffer);
+	public void DestroyTexture(Texture texture);
+	public void DestroyDescriptor(Descriptor descriptor);
+	public void DestroyPipelineLayout(PipelineLayout pipelineLayout);
+	public void DestroyPipeline(Pipeline pipeline);
+	public void DestroyFrameBuffer(FrameBuffer frameBuffer);
+	public void DestroyQueryPool(QueryPool queryPool);
+	public void DestroyQueueSemaphore(QueueSemaphore queueSemaphore);
+	public void DestroyDeviceSemaphore(DeviceSemaphore deviceSemaphore);
+	public void DestroyCommandBuffer(CommandBuffer commandBuffer);
+    public void DestroySwapChain(SwapChain swapChain);
+	public void DestroyAccelerationStructure(AccelerationStructure accelerationStructure);
+	public void Destroy();
 	
-	public abstract Result GetDisplays(Display** displays, ref uint32 displayNum);
-	public abstract Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height);
+	public Result GetDisplays(Display** displays, ref uint32 displayNum);
+	public Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height);
 
-	public abstract Result AllocateMemory(uint32 physicalDeviceMask, MemoryType memoryType, uint64 size, out Memory memory);
-	public abstract Result BindBufferMemory(BufferMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum);
-	public abstract Result BindTextureMemory(TextureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum);
-    public abstract Result BindAccelerationStructureMemory(AccelerationStructureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum);
-	public abstract void FreeMemory(Memory memory);
+	public Result AllocateMemory(uint32 physicalDeviceMask, MemoryType memoryType, uint64 size, out Memory memory);
+	public Result BindBufferMemory(BufferMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum);
+	public Result BindTextureMemory(TextureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum);
+    public Result BindAccelerationStructureMemory(AccelerationStructureMemoryBindingDesc* memoryBindingDescs, uint32 memoryBindingDescNum);
+	public void FreeMemory(Memory memory);
 
-	public abstract FormatSupportBits GetFormatSupport(Format format);
+	public FormatSupportBits GetFormatSupport(Format format);
 
 	
-	public abstract uint32 CalculateAllocationNumber(ResourceGroupDesc resourceGroupDesc);
-	public abstract Result AllocateAndBindMemory(ResourceGroupDesc resourceGroupDesc, Memory* allocations);
+	public uint32 CalculateAllocationNumber(ResourceGroupDesc resourceGroupDesc);
+	public Result AllocateAndBindMemory(ResourceGroupDesc resourceGroupDesc, Memory* allocations);
+
+	public void* GetDeviceNativeObject();
 }

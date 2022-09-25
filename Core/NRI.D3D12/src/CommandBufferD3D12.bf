@@ -114,12 +114,16 @@ class CommandBufferD3D12 : CommandBuffer
 
 		return Result.SUCCESS;
 	}
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_GraphicsCommandList, scope String(name));
 	}
 
-	public override Result Begin(DescriptorPool descriptorPool, uint32 physicalDeviceIndex)
+	public void* GetCommandBufferNativeObject(){
+		return (CommandBufferD3D12)this;
+	}
+
+	public Result Begin(DescriptorPool descriptorPool, uint32 physicalDeviceIndex)
 	{
 		HRESULT hr = m_GraphicsCommandList->Reset(m_CommandAllocator, null);
 		if (FAILED(hr))
@@ -140,7 +144,7 @@ class CommandBufferD3D12 : CommandBuffer
 		return Result.SUCCESS;
 	}
 
-	public override Result End()
+	public Result End()
 	{
 		HRESULT hr = m_GraphicsCommandList->Close();
 		if (FAILED(hr))
@@ -149,7 +153,7 @@ class CommandBufferD3D12 : CommandBuffer
 		return Result.SUCCESS;
 	}
 
-	public override void SetPipeline(Pipeline pipeline)
+	public void SetPipeline(Pipeline pipeline)
 	{
 		PipelineD3D12 pipelineD3D12 = (PipelineD3D12)pipeline;
 
@@ -161,7 +165,7 @@ class CommandBufferD3D12 : CommandBuffer
 		m_Pipeline = pipelineD3D12;
 	}
 
-	public override void SetPipelineLayout(PipelineLayout pipelineLayout)
+	public void SetPipelineLayout(PipelineLayout pipelineLayout)
 	{
 		readonly PipelineLayoutD3D12 pipelineLayoutD3D12 = (PipelineLayoutD3D12)pipelineLayout;
 
@@ -177,7 +181,7 @@ class CommandBufferD3D12 : CommandBuffer
 			m_GraphicsCommandList->SetComputeRootSignature(pipelineLayoutD3D12);
 	}
 
-	public override void SetDescriptorSets(uint32 baseIndex, uint32 setNum, DescriptorSet* descriptorSets, uint32* offsets)
+	public void SetDescriptorSets(uint32 baseIndex, uint32 setNum, DescriptorSet* descriptorSets, uint32* offsets)
 	{
 		m_PipelineLayout.SetDescriptorSets(ref *m_GraphicsCommandList.Get(), m_IsGraphicsPipelineLayout, baseIndex, setNum, descriptorSets, offsets);
 
@@ -185,7 +189,7 @@ class CommandBufferD3D12 : CommandBuffer
 			m_DescriptorSets[baseIndex + i] = (DescriptorSetD3D12)descriptorSets[i];
 	}
 
-	public override void SetConstants(uint32 pushConstantRangeIndex, void* data, uint32 size)
+	public void SetConstants(uint32 pushConstantRangeIndex, void* data, uint32 size)
 	{
 		uint32 rootParameterIndex = m_PipelineLayout.GetPushConstantsRootOffset(pushConstantRangeIndex);
 		uint32 constantNum = size / 4;
@@ -196,12 +200,12 @@ class CommandBufferD3D12 : CommandBuffer
 			m_GraphicsCommandList->SetComputeRoot32BitConstants(rootParameterIndex, constantNum, data, 0);
 	}
 
-	public override void SetDescriptorPool(DescriptorPool descriptorPool)
+	public void SetDescriptorPool(DescriptorPool descriptorPool)
 	{
 		((DescriptorPoolD3D12)descriptorPool).Bind(m_GraphicsCommandList);
 	}
 
-	public override void PipelineBarrier(TransitionBarrierDesc* transitionBarriers, AliasingBarrierDesc* aliasingBarriers, BarrierDependency dependency)
+	public void PipelineBarrier(TransitionBarrierDesc* transitionBarriers, AliasingBarrierDesc* aliasingBarriers, BarrierDependency dependency)
 	{
 		//MaybeUnused(dependency);
 
@@ -294,18 +298,18 @@ class CommandBufferD3D12 : CommandBuffer
 		m_GraphicsCommandList->ResourceBarrier(barrierNum, resourceBarriers);
 	}
 
-	public override void BeginRenderPass(FrameBuffer frameBuffer, RenderPassBeginFlag renderPassBeginFlag)
+	public void BeginRenderPass(FrameBuffer frameBuffer, RenderPassBeginFlag renderPassBeginFlag)
 	{
 		m_FrameBuffer = (FrameBufferD3D12)frameBuffer;
 		m_FrameBuffer.Bind(m_GraphicsCommandList, renderPassBeginFlag);
 	}
 
-	public override void EndRenderPass()
+	public void EndRenderPass()
 	{
 		m_FrameBuffer = null;
 	}
 
-	public override void SetViewports(Viewport* viewports, uint32 viewportNum)
+	public void SetViewports(Viewport* viewports, uint32 viewportNum)
 	{
 		Compiler.Assert(offsetof(Viewport, offset) == 0, "Unsupported viewport data layout.");
 		Compiler.Assert(offsetof(Viewport, size) == 8, "Unsupported viewport data layout.");
@@ -315,7 +319,7 @@ class CommandBufferD3D12 : CommandBuffer
 		m_GraphicsCommandList->RSSetViewports(viewportNum, (D3D12_VIEWPORT*)viewports);
 	}
 
-	public override void SetScissors(Rect* rects, uint32 rectNum)
+	public void SetScissors(Rect* rects, uint32 rectNum)
 	{
 		D3D12_RECT* rectsD3D12 = STACK_ALLOC!<D3D12_RECT>(rectNum);
 		ConvertRects(rectsD3D12, rects, rectNum);
@@ -323,18 +327,18 @@ class CommandBufferD3D12 : CommandBuffer
 		m_GraphicsCommandList->RSSetScissorRects(rectNum, rectsD3D12);
 	}
 
-	public override void SetDepthBounds(float boundsMin, float boundsMax)
+	public void SetDepthBounds(float boundsMin, float boundsMax)
 	{
 		if (m_GraphicsCommandList1.Get() != null)
 			m_GraphicsCommandList1->OMSetDepthBounds(boundsMin, boundsMax);
 	}
 
-	public override void SetStencilReference(uint8 reference)
+	public void SetStencilReference(uint8 reference)
 	{
 		m_GraphicsCommandList->OMSetStencilRef(reference);
 	}
 
-	public override void SetSamplePositions(SamplePosition* positions, uint32 positionNum)
+	public void SetSamplePositions(SamplePosition* positions, uint32 positionNum)
 	{
 		if (m_GraphicsCommandList1.Get() != null)
 		{
@@ -345,12 +349,12 @@ class CommandBufferD3D12 : CommandBuffer
 		}
 	}
 
-	public override void ClearAttachments(ClearDesc* clearDescs, uint32 clearDescNum, Rect* rects, uint32 rectNum)
+	public void ClearAttachments(ClearDesc* clearDescs, uint32 clearDescNum, Rect* rects, uint32 rectNum)
 	{
 		m_FrameBuffer.Clear(m_GraphicsCommandList, clearDescs, clearDescNum, rects, rectNum);
 	}
 
-	public override void SetIndexBuffer(Buffer buffer, uint64 offset, IndexType indexType)
+	public void SetIndexBuffer(Buffer buffer, uint64 offset, IndexType indexType)
 	{
 		readonly BufferD3D12 bufferD3D12 = (BufferD3D12)buffer;
 
@@ -362,7 +366,7 @@ class CommandBufferD3D12 : CommandBuffer
 		m_GraphicsCommandList->IASetIndexBuffer(&indexBufferView);
 	}
 
-	public override void SetVertexBuffers(uint32 baseSlot, uint32 bufferNum, Buffer* buffers, uint64* offsets)
+	public void SetVertexBuffers(uint32 baseSlot, uint32 bufferNum, Buffer* buffers, uint64* offsets)
 	{
 		D3D12_VERTEX_BUFFER_VIEW* vertexBufferViews = STACK_ALLOC!<D3D12_VERTEX_BUFFER_VIEW>(bufferNum);
 
@@ -387,59 +391,59 @@ class CommandBufferD3D12 : CommandBuffer
 		m_GraphicsCommandList->IASetVertexBuffers(baseSlot, bufferNum, vertexBufferViews);
 	}
 
-	public override void Draw(uint32 vertexNum, uint32 instanceNum, uint32 baseVertex, uint32 baseInstance)
+	public void Draw(uint32 vertexNum, uint32 instanceNum, uint32 baseVertex, uint32 baseInstance)
 	{
 		m_GraphicsCommandList->DrawInstanced(vertexNum, instanceNum, baseVertex, baseInstance);
 	}
 
-	public override void DrawIndexed(uint32 indexNum, uint32 instanceNum, uint32 baseIndex, uint32 baseVertex, uint32 baseInstance)
+	public void DrawIndexed(uint32 indexNum, uint32 instanceNum, uint32 baseIndex, uint32 baseVertex, uint32 baseInstance)
 	{
 		m_GraphicsCommandList->DrawIndexedInstanced(indexNum, instanceNum, baseIndex, (.)baseVertex, baseInstance);
 	}
 
-	public override void DrawIndirect(Buffer buffer, uint64 offset, uint32 drawNum, uint32 stride)
+	public void DrawIndirect(Buffer buffer, uint64 offset, uint32 drawNum, uint32 stride)
 	{
 		m_GraphicsCommandList->ExecuteIndirect(m_Device.GetDrawCommandSignature(stride), drawNum, (BufferD3D12)buffer, offset, null, 0);
 	}
 
-	public override void DrawIndexedIndirect(Buffer buffer, uint64 offset, uint32 drawNum, uint32 stride)
+	public void DrawIndexedIndirect(Buffer buffer, uint64 offset, uint32 drawNum, uint32 stride)
 	{
 		m_GraphicsCommandList->ExecuteIndirect(m_Device.GetDrawIndexedCommandSignature(stride), drawNum, (BufferD3D12)buffer, offset, null, 0);
 	}
 
-	public override void Dispatch(uint32 x, uint32 y, uint32 z)
+	public void Dispatch(uint32 x, uint32 y, uint32 z)
 	{
 		m_GraphicsCommandList->Dispatch(x, y, z);
 	}
 
-	public override void DispatchIndirect(Buffer buffer, uint64 offset)
+	public void DispatchIndirect(Buffer buffer, uint64 offset)
 	{
 		m_GraphicsCommandList->ExecuteIndirect(m_Device.GetDispatchCommandSignature(), 1, (BufferD3D12)buffer, offset, null, 0);
 	}
 
-	public override void BeginQuery(QueryPool queryPool, uint32 offset)
+	public void BeginQuery(QueryPool queryPool, uint32 offset)
 	{
 		readonly QueryPoolD3D12 queryPoolD3D12 = (QueryPoolD3D12)queryPool;
 		m_GraphicsCommandList->BeginQuery(queryPoolD3D12, queryPoolD3D12.GetQueryType(), offset);
 	}
 
-	public override void EndQuery(QueryPool queryPool, uint32 offset)
+	public void EndQuery(QueryPool queryPool, uint32 offset)
 	{
 		readonly QueryPoolD3D12 queryPoolD3D12 = (QueryPoolD3D12)queryPool;
 		m_GraphicsCommandList->EndQuery(queryPoolD3D12, queryPoolD3D12.GetQueryType(), offset);
 	}
 
-	public override void BeginAnnotation(char8* name)
+	public void BeginAnnotation(char8* name)
 	{
 		WinPixEventRuntime.PIXBeginEvent(m_GraphicsCommandList.Get(), WinPixEventRuntime.PIX_COLOR_DEFAULT, scope String(name));
 	}
 
-	public override void EndAnnotation()
+	public void EndAnnotation()
 	{
 		WinPixEventRuntime.PIXEndEvent(m_GraphicsCommandList.Get());
 	}
 
-	public override void ClearStorageBuffer(ClearStorageBufferDesc clearDesc)
+	public void ClearStorageBuffer(ClearStorageBufferDesc clearDesc)
 	{
 		DescriptorSetD3D12 descriptorSet = m_DescriptorSets[clearDesc.setIndex];
 		DescriptorD3D12 resourceView = (DescriptorD3D12)clearDesc.storageBuffer;
@@ -454,7 +458,7 @@ class CommandBufferD3D12 : CommandBuffer
 			null);
 	}
 
-	public override void ClearStorageTexture(ClearStorageTextureDesc clearDesc)
+	public void ClearStorageTexture(ClearStorageTextureDesc clearDesc)
 	{
 		var clearDesc;
 		DescriptorSetD3D12 descriptorSet = m_DescriptorSets[clearDesc.setIndex];
@@ -482,7 +486,7 @@ class CommandBufferD3D12 : CommandBuffer
 		}
 	}
 
-	public override void CopyBuffer(Buffer dstBuffer, uint32 dstPhysicalDeviceIndex, uint64 dstOffset, Buffer srcBuffer, uint32 srcPhysicalDeviceIndex, uint64 srcOffset, uint64 size)
+	public void CopyBuffer(Buffer dstBuffer, uint32 dstPhysicalDeviceIndex, uint64 dstOffset, Buffer srcBuffer, uint32 srcPhysicalDeviceIndex, uint64 srcOffset, uint64 size)
 	{
 		var size;
 		if (size == WHOLE_SIZE)
@@ -491,7 +495,7 @@ class CommandBufferD3D12 : CommandBuffer
 		m_GraphicsCommandList->CopyBufferRegion((BufferD3D12)dstBuffer, dstOffset, (BufferD3D12)srcBuffer, srcOffset, size);
 	}
 
-	public override void CopyTexture(Texture dstTexture, uint32 dstPhysicalDeviceIndex, TextureRegionDesc* dstRegion, Texture srcTexture, uint32 srcPhysicalDeviceIndex, TextureRegionDesc* srcRegion)
+	public void CopyTexture(Texture dstTexture, uint32 dstPhysicalDeviceIndex, TextureRegionDesc* dstRegion, Texture srcTexture, uint32 srcPhysicalDeviceIndex, TextureRegionDesc* srcRegion)
 	{
 		TextureD3D12 dstTextureD3D12 = (TextureD3D12)dstTexture;
 		TextureD3D12 srcTextureD3D12 = (TextureD3D12)srcTexture;
@@ -523,7 +527,7 @@ class CommandBufferD3D12 : CommandBuffer
 		}
 	}
 
-	public override void UploadBufferToTexture(Texture dstTexture, TextureRegionDesc dstRegionDesc, Buffer srcBuffer, TextureDataLayoutDesc srcDataLayoutDesc)
+	public void UploadBufferToTexture(Texture dstTexture, TextureRegionDesc dstRegionDesc, Buffer srcBuffer, TextureDataLayoutDesc srcDataLayoutDesc)
 	{
 		TextureD3D12 dstTextureD3D12 = (TextureD3D12)dstTexture;
 		readonly ref D3D12_RESOURCE_DESC textureDesc = ref dstTextureD3D12.GetTextureDesc();
@@ -551,7 +555,7 @@ class CommandBufferD3D12 : CommandBuffer
 		m_GraphicsCommandList->CopyTextureRegion(&dstTextureCopyLocation, offset[0], offset[1], offset[2], &srcTextureCopyLocation, &@box);
 	}
 
-	public override void ReadbackTextureToBuffer(Buffer dstBuffer, ref TextureDataLayoutDesc dstDataLayoutDesc, Texture srcTexture, TextureRegionDesc srcRegionDesc)
+	public void ReadbackTextureToBuffer(Buffer dstBuffer, ref TextureDataLayoutDesc dstDataLayoutDesc, Texture srcTexture, TextureRegionDesc srcRegionDesc)
 	{
 		TextureD3D12 srcTextureD3D12 = (TextureD3D12)srcTexture;
 		readonly ref D3D12_RESOURCE_DESC textureDesc = ref srcTextureD3D12.GetTextureDesc();
@@ -578,7 +582,7 @@ class CommandBufferD3D12 : CommandBuffer
 		m_GraphicsCommandList->CopyTextureRegion(&dstTextureCopyLocation, 0, 0, 0, &srcTextureCopyLocation, &@box);
 	}
 
-	public override void CopyQueries(QueryPool queryPool, uint32 offset, uint32 num, Buffer buffer, uint64 alignedBufferOffset)
+	public void CopyQueries(QueryPool queryPool, uint32 offset, uint32 num, Buffer buffer, uint64 alignedBufferOffset)
 	{
 		readonly QueryPoolD3D12 queryPoolD3D12 = (QueryPoolD3D12)queryPool;
 		readonly BufferD3D12 bufferD3D12 = (BufferD3D12)buffer;
@@ -595,11 +599,11 @@ class CommandBufferD3D12 : CommandBuffer
 		m_GraphicsCommandList->ResolveQueryData(queryPoolD3D12, queryPoolD3D12.GetQueryType(), offset, num, bufferD3D12, alignedBufferOffset);
 	}
 
-	public override void ResetQueries(QueryPool queryPool, uint32 offset, uint32 num)
+	public void ResetQueries(QueryPool queryPool, uint32 offset, uint32 num)
 	{
 	}
 
-	public override void BuildTopLevelAccelerationStructure(uint32 instanceNum, Buffer buffer, uint64 bufferOffset, AccelerationStructureBuildBits flags, AccelerationStructure dst, Buffer scratch, uint64 scratchOffset)
+	public void BuildTopLevelAccelerationStructure(uint32 instanceNum, Buffer buffer, uint64 bufferOffset, AccelerationStructureBuildBits flags, AccelerationStructure dst, Buffer scratch, uint64 scratchOffset)
 	{
 		//#ifdef __ID3D12GraphicsCommandList4_INTERFACE_DEFINED__
 		D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC desc = .();
@@ -616,7 +620,7 @@ class CommandBufferD3D12 : CommandBuffer
 		//#endif
 	}
 
-	public override void BuildBottomLevelAccelerationStructure(uint32 geometryObjectNum, GeometryObject* geometryObjects, AccelerationStructureBuildBits flags, AccelerationStructure dst, Buffer scratch, uint64 scratchOffset)
+	public void BuildBottomLevelAccelerationStructure(uint32 geometryObjectNum, GeometryObject* geometryObjects, AccelerationStructureBuildBits flags, AccelerationStructure dst, Buffer scratch, uint64 scratchOffset)
 	{
 //#ifdef __ID3D12GraphicsCommandList4_INTERFACE_DEFINED__
 		D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC desc = .();
@@ -637,7 +641,7 @@ class CommandBufferD3D12 : CommandBuffer
 //#endif
 	}
 
-	public override void UpdateTopLevelAccelerationStructure(uint32 instanceNum, Buffer buffer, uint64 bufferOffset, AccelerationStructureBuildBits flags, AccelerationStructure dst, AccelerationStructure src, Buffer scratch, uint64 scratchOffset)
+	public void UpdateTopLevelAccelerationStructure(uint32 instanceNum, Buffer buffer, uint64 bufferOffset, AccelerationStructureBuildBits flags, AccelerationStructure dst, AccelerationStructure src, Buffer scratch, uint64 scratchOffset)
 	{
 		//#ifdef __ID3D12GraphicsCommandList4_INTERFACE_DEFINED__
 		D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC desc = .();
@@ -653,7 +657,7 @@ class CommandBufferD3D12 : CommandBuffer
 		//#endif
 	}
 
-	public override void UpdateBottomLevelAccelerationStructure(uint32 geometryObjectNum, GeometryObject* geometryObjects, AccelerationStructureBuildBits flags, AccelerationStructure dst, AccelerationStructure src, Buffer scratch, uint64 scratchOffset)
+	public void UpdateBottomLevelAccelerationStructure(uint32 geometryObjectNum, GeometryObject* geometryObjects, AccelerationStructureBuildBits flags, AccelerationStructure dst, AccelerationStructure src, Buffer scratch, uint64 scratchOffset)
 	{
 //#ifdef __ID3D12GraphicsCommandList4_INTERFACE_DEFINED__
 		D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC desc = .();
@@ -675,7 +679,7 @@ class CommandBufferD3D12 : CommandBuffer
 //#endif
 	}
 
-	public override void CopyAccelerationStructure(AccelerationStructure dst, AccelerationStructure src, CopyMode copyMode)
+	public void CopyAccelerationStructure(AccelerationStructure dst, AccelerationStructure src, CopyMode copyMode)
 	{
 
 //#ifdef __ID3D12GraphicsCommandList4_INTERFACE_DEFINED__
@@ -683,7 +687,7 @@ class CommandBufferD3D12 : CommandBuffer
 //#endif
 	}
 
-	public override void WriteAccelerationStructureSize(AccelerationStructure* accelerationStructures, uint32 accelerationStructureNum, QueryPool queryPool, uint32 queryPoolOffset)
+	public void WriteAccelerationStructureSize(AccelerationStructure* accelerationStructures, uint32 accelerationStructureNum, QueryPool queryPool, uint32 queryPoolOffset)
 	{
 		//MaybeUnused(accelerationStructures);
 		//MaybeUnused(queryOffset);
@@ -703,7 +707,7 @@ class CommandBufferD3D12 : CommandBuffer
 //#endif
 	}
 
-	public override void DispatchRays(DispatchRaysDesc dispatchRaysDesc)
+	public void DispatchRays(DispatchRaysDesc dispatchRaysDesc)
 	{
 //#ifdef __ID3D12GraphicsCommandList4_INTERFACE_DEFINED__
 		D3D12_DISPATCH_RAYS_DESC desc = .();
@@ -740,7 +744,7 @@ class CommandBufferD3D12 : CommandBuffer
 //#endif
 	}
 
-	public override void DispatchMeshTasks(uint32 taskNum)
+	public void DispatchMeshTasks(uint32 taskNum)
 	{
 //#ifdef __ID3D12GraphicsCommandList6_INTERFACE_DEFINED__
 		m_GraphicsCommandList6->DispatchMesh(taskNum, 1, 1);

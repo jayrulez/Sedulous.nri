@@ -124,11 +124,11 @@ class PipelineD3D12 : Pipeline
 		if (graphicsPipelineDesc.outputMerger != null)
 		{
 			FillDepthStencilState(ref stream.depthStencil.desc, *graphicsPipelineDesc.outputMerger);
-			stream.depthStencilFormat = GetFormat(graphicsPipelineDesc.outputMerger.depthStencilFormat);
+			stream.depthStencilFormat = ConvertNRIFormatToDXGI(graphicsPipelineDesc.outputMerger.depthStencilFormat);
 
 			stream.renderTargetFormats.desc.NumRenderTargets = graphicsPipelineDesc.outputMerger.colorNum;
 			for (uint32 i = 0; i < graphicsPipelineDesc.outputMerger.colorNum; i++)
-				stream.renderTargetFormats.desc.RTFormats[i] = GetFormat(graphicsPipelineDesc.outputMerger.color[i].format);
+				stream.renderTargetFormats.desc.RTFormats[i] = ConvertNRIFormatToDXGI(graphicsPipelineDesc.outputMerger.color[i].format);
 		}
 
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = .();
@@ -167,7 +167,7 @@ class PipelineD3D12 : Pipeline
 
 			inputElementsDescs[i].SemanticName = (.)vertexAttributeDesc.d3d.semanticName;
 			inputElementsDescs[i].SemanticIndex = vertexAttributeDesc.d3d.semanticIndex;
-			inputElementsDescs[i].Format = GetFormat(vertexAttributeDesc.format);
+			inputElementsDescs[i].Format = ConvertNRIFormatToDXGI(vertexAttributeDesc.format);
 			inputElementsDescs[i].InputSlot = vertexStreamDesc.bindingSlot;
 			inputElementsDescs[i].AlignedByteOffset = vertexAttributeDesc.offset;
 			inputElementsDescs[i].InputSlotClass = isPerVertexData ? .D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA : .D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
@@ -343,11 +343,11 @@ class PipelineD3D12 : Pipeline
 		if (graphicsPipelineDesc.outputMerger != null)
 		{
 			FillDepthStencilState(ref graphicsPipleineStateDesc.DepthStencilState, *graphicsPipelineDesc.outputMerger);
-			graphicsPipleineStateDesc.DSVFormat = GetFormat(graphicsPipelineDesc.outputMerger.depthStencilFormat);
+			graphicsPipleineStateDesc.DSVFormat = ConvertNRIFormatToDXGI(graphicsPipelineDesc.outputMerger.depthStencilFormat);
 
 			graphicsPipleineStateDesc.NumRenderTargets = graphicsPipelineDesc.outputMerger.colorNum;
 			for (uint32 i = 0; i < graphicsPipelineDesc.outputMerger.colorNum; i++)
-				graphicsPipleineStateDesc.RTVFormats[i] = GetFormat(graphicsPipelineDesc.outputMerger.color[i].format);
+				graphicsPipleineStateDesc.RTVFormats[i] = ConvertNRIFormatToDXGI(graphicsPipelineDesc.outputMerger.color[i].format);
 		}
 
 		HRESULT hr = ((ID3D12Device*)m_Device).CreateGraphicsPipelineState(&graphicsPipleineStateDesc, ID3D12PipelineState.IID, (void**)(&m_PipelineState));
@@ -567,12 +567,12 @@ class PipelineD3D12 : Pipeline
 	public uint8 GetSampleNum() => m_SampleNum;
 	public PipelineLayoutD3D12 GetPipelineLayout() => m_PipelineLayout;
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_PipelineState, scope String(name));
 	}
 
-	public override Result WriteShaderGroupIdentifiers(uint32 baseShaderGroupIndex, uint32 shaderGroupNum, void* buffer)
+	public Result WriteShaderGroupIdentifiers(uint32 baseShaderGroupIndex, uint32 shaderGroupNum, void* buffer)
 	{
 		//#ifdef __ID3D12Device5_INTERFACE_DEFINED__
 		uint8* byteBuffer = (uint8*)buffer;

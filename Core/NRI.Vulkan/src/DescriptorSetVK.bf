@@ -204,7 +204,7 @@ class DescriptorSetVK : DescriptorSet
 		}
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		uint64[PHYSICAL_DEVICE_GROUP_MAX_SIZE] handles = .();
 		for (uint i = 0; i < handles.Count; i++)
@@ -213,7 +213,7 @@ class DescriptorSetVK : DescriptorSet
 		m_Device.SetDebugNameToDeviceGroupObject(.VK_OBJECT_TYPE_DESCRIPTOR_SET, &handles, name);
 	}
 
-	public override void UpdateDescriptorRanges(uint32 physicalDeviceMask, uint32 rangeOffset, uint32 rangeNum, DescriptorRangeUpdateDesc* rangeUpdateDescs)
+	public void UpdateDescriptorRanges(uint32 physicalDeviceMask, uint32 rangeOffset, uint32 rangeNum, DescriptorRangeUpdateDesc* rangeUpdateDescs)
 	{
 		var physicalDeviceMask;
 		const uint32 writesPerIteration = 1024;
@@ -268,7 +268,7 @@ class DescriptorSetVK : DescriptorSet
 		}
 	}
 
-	public override void UpdateDynamicConstantBuffers(uint32 physicalDeviceMask, uint32 bufferOffset, uint32 descriptorNum, Descriptor* descriptors)
+	public void UpdateDynamicConstantBuffers(uint32 physicalDeviceMask, uint32 bufferOffset, uint32 descriptorNum, Descriptor* descriptors)
 	{
 		var physicalDeviceMask;
 		readonly uint32 descriptorMaxNum = descriptorNum * m_Device.GetPhyiscalDeviceGroupSize();
@@ -311,7 +311,7 @@ class DescriptorSetVK : DescriptorSet
 		VulkanNative.vkUpdateDescriptorSets(m_Device, writeNum, writes, 0, null);
 	}
 
-	public override void Copy(DescriptorSetCopyDesc descriptorSetCopyDesc)
+	public void Copy(DescriptorSetCopyDesc descriptorSetCopyDesc)
 	{
 		readonly uint32 descriptorRangeNum = descriptorSetCopyDesc.rangeNum + descriptorSetCopyDesc.dynamicConstantBufferNum;
 		readonly uint32 copyMaxNum = descriptorRangeNum * m_Device.GetPhyiscalDeviceGroupSize();

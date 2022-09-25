@@ -39,7 +39,7 @@ class QueueSemaphoreVK : QueueSemaphore
 		return Result.SUCCESS;
 	}
 
-	public Result Create(void* vkSemaphore)
+	public Result Create(NRIVkSemaphore vkSemaphore)
 	{
 		m_OwnsNativeObjects = false;
 		m_Handle = (VkSemaphore)vkSemaphore;
@@ -47,7 +47,7 @@ class QueueSemaphoreVK : QueueSemaphore
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_SEMAPHORE, (uint64)m_Handle, name);
 	}

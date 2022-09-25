@@ -212,12 +212,12 @@ class SwapChainD3D12 : SwapChain
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_SwapChain, scope String(name));
 	}
 
-	public override Texture* GetTextures(ref uint32 textureNum, ref Format format)
+	public Texture* GetTextures(ref uint32 textureNum, ref Format format)
 	{
 		textureNum = (uint32)m_TexturePointer.Count;
 		format = m_Format;
@@ -225,14 +225,14 @@ class SwapChainD3D12 : SwapChain
 		return m_TexturePointer.Ptr;
 	}
 
-	public override uint32 AcquireNextTexture(ref QueueSemaphore textureReadyForRender)
+	public uint32 AcquireNextTexture(ref QueueSemaphore textureReadyForRender)
 	{
 		((QueueSemaphoreD3D12)textureReadyForRender).Signal(m_CommandQueue);
 
 		return m_SwapChain->GetCurrentBackBufferIndex();
 	}
 
-	public override Result Present(QueueSemaphore textureReadyForPresent)
+	public Result Present(QueueSemaphore textureReadyForPresent)
 	{
 		((QueueSemaphoreD3D12)textureReadyForPresent).Wait(m_CommandQueue);
 
@@ -250,7 +250,7 @@ class SwapChainD3D12 : SwapChain
 		return Result.SUCCESS;
 	}
 
-	public override Result SetHdrMetadata(HdrMetadata hdrMetadata)
+	public Result SetHdrMetadata(HdrMetadata hdrMetadata)
 	{
 		DXGI_HDR_METADATA_HDR10 data = .();
 		data.RedPrimary[0] = uint16(hdrMetadata.displayPrimaryRed[0] * 50000.0f);

@@ -26,7 +26,7 @@ class PipelineVK : Pipeline
 				attachmentDescs[i] = .()
 					{
 						flags = (VkAttachmentDescriptionFlags)0,
-						format = GetVkFormat(outputMerger.color[i].format),
+						format = ConvertNRIFormatToVK(outputMerger.color[i].format),
 						samples = sampleNum,
 						loadOp = .VK_ATTACHMENT_LOAD_OP_LOAD,
 						storeOp = .VK_ATTACHMENT_STORE_OP_STORE,
@@ -42,7 +42,7 @@ class PipelineVK : Pipeline
 				attachmentDescs[outputMerger.colorNum] = .()
 					{
 						flags = (VkAttachmentDescriptionFlags)0,
-						format = GetVkFormat(outputMerger.depthStencilFormat),
+						format = ConvertNRIFormatToVK(outputMerger.depthStencilFormat),
 						samples = sampleNum,
 						loadOp = .VK_ATTACHMENT_LOAD_OP_LOAD,
 						storeOp = .VK_ATTACHMENT_STORE_OP_STORE,
@@ -121,7 +121,7 @@ class PipelineVK : Pipeline
 				{
 					location = (uint32)i,
 					binding = attribute_desc.streamIndex,
-					format = GetVkFormat(attribute_desc.format),
+					format = ConvertNRIFormatToVK(attribute_desc.format),
 					offset = attribute_desc.offset
 				};
 		}
@@ -605,7 +605,7 @@ class PipelineVK : Pipeline
 		return Result.SUCCESS;
 	}
 
-	public Result CreateGraphics(void* vkPipeline)
+	public Result CreateGraphics(NRIVkPipeline vkPipeline)
 	{
 		m_OwnsNativeObjects = false;
 		m_Handle = (VkPipeline)vkPipeline;
@@ -614,7 +614,7 @@ class PipelineVK : Pipeline
 		return Result.SUCCESS;
 	}
 
-	public Result CreateCompute(void* vkPipeline)
+	public Result CreateCompute(NRIVkPipeline vkPipeline)
 	{
 		m_OwnsNativeObjects = false;
 		m_Handle = (VkPipeline)vkPipeline;
@@ -623,12 +623,12 @@ class PipelineVK : Pipeline
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_PIPELINE, (uint64)m_Handle, name);
 	}
 
-	public override Result WriteShaderGroupIdentifiers(uint32 baseShaderGroupIndex, uint32 shaderGroupNum, void* buffer)
+	public Result WriteShaderGroupIdentifiers(uint32 baseShaderGroupIndex, uint32 shaderGroupNum, void* buffer)
 	{
 		readonly uint dataSize = (uint)(shaderGroupNum * m_Device.GetDesc().rayTracingShaderGroupIdentifierSize);
 

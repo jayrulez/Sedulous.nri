@@ -97,7 +97,7 @@ class DescriptorPoolVK : DescriptorPool
 		return Result.SUCCESS;
 	}
 
-	public Result Create(void* vkDescriptorPool)
+	public Result Create(NRIVkDescriptorPool vkDescriptorPool)
 	{
 		m_OwnsNativeObjects = false;
 		m_Handle = (VkDescriptorPool)vkDescriptorPool;
@@ -105,12 +105,12 @@ class DescriptorPoolVK : DescriptorPool
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_DESCRIPTOR_POOL, (uint64)m_Handle, name);
 	}
 
-	public override Result AllocateDescriptorSets(PipelineLayout pipelineLayout, uint32 setIndex, DescriptorSet* descriptorSets, uint32 numberOfCopies, uint32 physicalDeviceMask, uint32 variableDescriptorNum)
+	public Result AllocateDescriptorSets(PipelineLayout pipelineLayout, uint32 setIndex, DescriptorSet* descriptorSets, uint32 numberOfCopies, uint32 physicalDeviceMask, uint32 variableDescriptorNum)
 	{
 		var physicalDeviceMask;
 		var variableDescriptorNum;
@@ -188,7 +188,7 @@ class DescriptorPoolVK : DescriptorPool
 		return Result.SUCCESS;
 	}
 
-	public override void Reset()
+	public void Reset()
 	{
 		m_UsedSets = 0;
 

@@ -1,6 +1,24 @@
 namespace NRI.Vulkan;
 
-typealias NRIVkInstance       = uint64;
+typealias NRIVkCommandPool = uint64;
+typealias NRIVkImage = uint64;
+typealias NRIVkBuffer = uint64;
+typealias NRIVkDeviceMemory = uint64;
+typealias NRIVkQueryPool = uint64;
+typealias NRIVkPipeline = uint64;
+typealias NRIVkDescriptorPool = uint64;
+typealias NRIVkSemaphore = uint64;
+typealias NRIVkFence = uint64;
+typealias NRIVkImageView = uint64;
+typealias NRIVkBufferView = uint64;
+
+typealias NRIVkInstance = void*;
+typealias NRIVkPhysicalDevice = void*;
+typealias NRIVkDevice = void*;
+typealias NRIVkQueue = void*;
+typealias NRIVkCommandBuffer = void*;
+
+/*typealias NRIVkInstance       = uint64;
 typealias NRIVkPhysicalDevice = uint64;
 typealias NRIVkDevice         = uint64;
 typealias NRIVkQueue          = uint64;
@@ -16,7 +34,7 @@ typealias NRIVkSemaphore      = void*;
 typealias NRIVkFence          = void*;
 
 typealias NRIVkImageView      = void*;
-typealias NRIVkBufferView     = void*;
+typealias NRIVkBufferView     = void*;*/
 
 struct DeviceCreationVulkanDesc
 {
@@ -35,6 +53,7 @@ struct DeviceCreationVulkanDesc
 	public char8** /*const**/ deviceExtensions;
 	public uint32 deviceExtensionNum;
 	public char8* vulkanLoaderPath;
+	public SPIRVBindingOffsets spirvBindingOffsets;
 }
 
 struct CommandQueueVulkanDesc
@@ -59,8 +78,8 @@ struct CommandBufferVulkanDesc
 struct BufferVulkanDesc
 {
 	public NRIVkBuffer vkBuffer;
-	public uint64 bufferSize;
 	public Memory memory;
+	public uint64 bufferSize;
 	public uint64 memoryOffset;
 	public uint64 deviceAddress;
 	public uint32 physicalDeviceMask;

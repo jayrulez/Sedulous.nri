@@ -114,7 +114,6 @@ class DescriptorVK : Descriptor
 	private using Descs m_Descs;
 	private DescriptorTypeVK m_Type = DescriptorTypeVK.NONE;
 	private VkFormat m_Format = .VK_FORMAT_UNDEFINED;
-	private VkExtent3D m_Extent = .();
 	private DeviceVK m_Device;
 
 	public this(DeviceVK device)
@@ -159,7 +158,7 @@ class DescriptorVK : Descriptor
 		readonly BufferVK buffer = (BufferVK)bufferViewDesc.buffer;
 
 		m_Type = DescriptorTypeVK.BUFFER_VIEW;
-		m_Format = GetVkFormat((Format)bufferViewDesc.format);
+		m_Format = ConvertNRIFormatToVK((Format)bufferViewDesc.format);
 		m_BufferDesc.offset = bufferViewDesc.offset;
 		m_BufferDesc.size = (bufferViewDesc.size == WHOLE_SIZE) ? VulkanNative.VK_WHOLE_SIZE : bufferViewDesc.size;
 
@@ -283,7 +282,6 @@ class DescriptorVK : Descriptor
 	public TextureVK GetTexture() => m_TextureDesc.texture;
 
 	public DescriptorTypeVK GetDescriptorType() => m_Type;
-	public VkExtent3D GetExtent() => m_Extent;
 	public VkFormat GetFormat() => m_Format;
 	public void GetImageSubresourceRange(ref VkImageSubresourceRange range)
 	{
@@ -295,6 +293,9 @@ class DescriptorVK : Descriptor
 	}
 	public VkImageLayout GetImageLayout() => m_TextureDesc.imageLayout;
 
+	public readonly ref DescriptorTextureDesc GetTextureDesc() => ref m_Descs.m_TextureDesc;
+	public readonly ref DescriptorBufferDesc GetBufferDesc() => ref m_Descs.m_BufferDesc;
+
 	public Result CreateTextureView<T>(T textureViewDesc) where T : var
 	{
 		readonly TextureVK texture = (TextureVK)textureViewDesc.texture;
@@ -305,7 +306,6 @@ class DescriptorVK : Descriptor
 
 		m_Type = DescriptorTypeVK.IMAGE_VIEW;
 		m_Format = GetVkImageViewFormat(textureViewDesc.format);
-		m_Extent = texture.GetExtent();
 		FillTextureDesc(textureViewDesc, ref m_TextureDesc);
 
 		VkImageSubresourceRange subresource = .();
@@ -337,7 +337,7 @@ class DescriptorVK : Descriptor
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		uint64[PHYSICAL_DEVICE_GROUP_MAX_SIZE] handles = .();
 
@@ -371,6 +371,22 @@ class DescriptorVK : Descriptor
 		}
 	}
 
+	public uint64 GetDescriptorNativeObject(uint32 physicalDeviceIndex)
+	{
+		readonly DescriptorVK d = ((DescriptorVK)this);
+
+		uint64 handle = 0;
+		if (d.GetDescriptorType() == DescriptorTypeVK.BUFFER_VIEW)
+			handle = (uint64)d.GetBufferView(physicalDeviceIndex);
+		else if (d.GetDescriptorType() == DescriptorTypeVK.IMAGE_VIEW)
+			handle = (uint64)d.GetImageView(physicalDeviceIndex);
+		else if (d.GetDescriptorType() == DescriptorTypeVK.SAMPLER)
+			handle = (uint64)d.GetSampler();
+		else if (d.GetDescriptorType() == DescriptorTypeVK.ACCELERATION_STRUCTURE)
+			handle = (uint64)d.GetAccelerationStructure(physicalDeviceIndex);
+
+		return handle;
+	}
 
 	public VkBufferView GetBufferDescriptorVK(uint32 physicalDeviceIndex)
 	{

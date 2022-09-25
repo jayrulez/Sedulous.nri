@@ -41,7 +41,7 @@ class DeviceSemaphoreVK : DeviceSemaphore
 		return Result.SUCCESS;
 	}
 
-	public Result Create(void* vkFence)
+	public Result Create(NRIVkSemaphore vkFence)
 	{
 		m_OwnsNativeObjects = false;
 		m_Handle = (VkFence)vkFence;
@@ -49,7 +49,7 @@ class DeviceSemaphoreVK : DeviceSemaphore
 		return Result.SUCCESS;
 	}
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		m_Device.SetDebugNameToTrivialObject(.VK_OBJECT_TYPE_FENCE, (uint64)m_Handle, name);
 	}

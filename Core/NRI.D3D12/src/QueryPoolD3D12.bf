@@ -85,10 +85,10 @@ class QueryPoolD3D12 : QueryPool
 	public D3D12_QUERY_TYPE GetQueryType() => m_QueryType;
 	public ID3D12Resource* GetReadbackBuffer() => m_ReadbackBuffer.GetInterface();
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_QueryHeap, scope String(name));
 	}
 
-	public override uint32 GetQuerySize() => m_QuerySize;
+	public uint32 GetQuerySize() => m_QuerySize;
 }

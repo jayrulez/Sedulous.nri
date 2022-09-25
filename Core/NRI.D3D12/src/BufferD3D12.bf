@@ -115,17 +115,24 @@ class BufferD3D12 : Buffer
 	public uint32 GetStructureStride() => m_StructureStride;
 	public D3D12_GPU_VIRTUAL_ADDRESS GetPointerGPU() => m_Buffer->GetGPUVirtualAddress();
 
-	public override void SetDebugName(char8* name)
+	public void SetDebugName(char8* name)
 	{
 		SET_D3D_DEBUG_OBJECT_NAME!(m_Buffer, scope String(name));
 	}
 
-	public override void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
+	public uint64 GetBufferNativeObject(uint32 physicalDeviceIndex)
+	{
+	    //MaybeUnused(physicalDeviceIndex);
+
+	    return (uint64)(int)(void*)((ID3D12Resource*)((BufferD3D12)this));
+	}
+
+	public void GetMemoryInfo(MemoryLocation memoryLocation, ref MemoryDesc memoryDesc)
 	{
 		m_Device.GetMemoryInfo(memoryLocation, m_BufferDesc, ref memoryDesc);
 	}
 
-	public override void* Map(uint64 offset, uint64 size)
+	public void* Map(uint64 offset, uint64 size)
 	{
 		var size;
 		uint8* data = null;
@@ -141,7 +148,7 @@ class BufferD3D12 : Buffer
 		return data + offset;
 	}
 
-	public override void Unmap()
+	public void Unmap()
 	{
 		m_Buffer->Unmap(0, null);
 	}

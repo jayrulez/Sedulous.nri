@@ -237,7 +237,7 @@ public static
 	    return DXGI_FORMAT_TABLE[dxgiFormat];
 	}
 	
-	public static Format GetFormatDXGI(uint32 dxgiFormat)
+	public static Format ConvertDXGIFormatToNRI(uint32 dxgiFormat)
 	{
 	    return GetFormat(dxgiFormat);
 	}
